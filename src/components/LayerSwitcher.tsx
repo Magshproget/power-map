@@ -18,7 +18,7 @@ export const LayerSwitcher: React.FC<LayerSwitcherProps> = ({
       id: 'auto',
       label: 'Авто-зум',
       icon: <Layers className="w-4 h-4" />,
-      desc: currentZoom < 13 ? 'Зараз: Райони' : currentZoom < 15 ? 'Зараз: Зони черг' : 'Зараз: Вулиці',
+      desc: currentZoom < 13 ? 'Зараз: Райони' : currentZoom < 16.5 ? 'Зараз: Зони черг' : 'Зараз: Вулиці',
     },
     {
       id: 'districts',
@@ -36,7 +36,7 @@ export const LayerSwitcher: React.FC<LayerSwitcherProps> = ({
       id: 'streets',
       label: 'Вулиці',
       icon: <Navigation className="w-4 h-4" />,
-      desc: 'Точкові лінії вулиць',
+      desc: 'Точкові маркери вулиць',
     },
   ];
 

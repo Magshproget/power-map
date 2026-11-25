@@ -174,10 +174,13 @@ export const Map: React.FC<MapProps> = ({
       showZones = true;
       showStreets = true;
     } else {
-      // Auto mode based on zoom
+      // Auto mode based on zoom:
+      // zoom < 13: Clean district polygons
+      // 13 <= zoom < 16.5: Clean outage zone polygons
+      // zoom >= 16.5: Street-level markers in view
       if (currentZoom < 13) {
         showDistricts = true;
-      } else if (currentZoom < 15) {
+      } else if (currentZoom < 16.5) {
         showZones = true;
       } else {
         showZones = true;
@@ -347,9 +350,9 @@ export const Map: React.FC<MapProps> = ({
       group.addLayer(zLayer);
     }
 
-    // 3. Render Street Markers Layer
+    // 3. Render Street Markers Layer (only when explicitly requested or at detailed zoom >= 16.5)
     if (showStreets) {
-      const bounds = map.getBounds().pad(0.15);
+      const bounds = map.getBounds().pad(0.1);
       (streetsData as any[]).forEach((st) => {
         const isSelected = selectedFeature?.type === 'street' && selectedFeature.id === st.id;
         if (!isSelected && !bounds.contains([st.lat, st.lon])) return;
@@ -358,11 +361,11 @@ export const Map: React.FC<MapProps> = ({
         const color = getStatusColor(status, true);
 
         const marker = L.circleMarker([st.lat, st.lon], {
-          radius: isSelected ? 11 : 6,
+          radius: isSelected ? 8 : 4.5,
           fillColor: color,
-          fillOpacity: 0.95,
+          fillOpacity: 0.9,
           color: isSelected ? '#38bdf8' : '#ffffff',
-          weight: isSelected ? 3.5 : 1.5,
+          weight: isSelected ? 2.5 : 1,
         });
 
         marker.bindTooltip(
@@ -393,30 +396,85 @@ export const Map: React.FC<MapProps> = ({
 
         group.addLayer(marker);
       });
-    } else if (selectedFeature?.type === 'street' && selectedFeature.center) {
-      // Pin selected street marker even when zoomed out
+    }
+
+    // 4. If a zone is selected, render subtle markers for its key streets
+    if (!showStreets && selectedFeature?.type === 'zone' && selectedFeature.streets?.length) {
+      const zoneStreetNames = new Set(
+        selectedFeature.streets.map((s: string) => s.toLowerCase().replace(/^(вул\.|просп\.|пл\.)\s*/, '').trim())
+      );
+      (streetsData as any[]).forEach((st) => {
+        const norm = st.name.toLowerCase().replace(/^(вул\.|просп\.|пл\.)\s*/, '').trim();
+        if (!zoneStreetNames.has(norm)) return;
+
+        const status = getGroupStatus(st.group);
+        const color = getStatusColor(status, true);
+
+        const marker = L.circleMarker([st.lat, st.lon], {
+          radius: 5,
+          fillColor: color,
+          fillOpacity: 0.95,
+          color: '#ffffff',
+          weight: 1.5,
+        });
+
+        marker.bindTooltip(
+          `<div class="text-xs font-sans">
+            <strong class="text-white">${st.name}</strong><br/>
+            <span class="text-amber-400 font-mono">Черга ${st.group}</span>
+          </div>`,
+          { className: 'custom-tooltip' }
+        );
+
+        marker.on('click', () => {
+          closeMapTooltips(map);
+          onSelectFeature({
+            type: 'street',
+            id: st.id,
+            name: st.name,
+            districtName: st.district,
+            cityName: st.cityName,
+            group: st.group,
+            center: [st.lat, st.lon],
+            buildings: st.buildings,
+          });
+        });
+
+        group.addLayer(marker);
+      });
+    }
+
+    // 5. Pin on Demand: Prominent glowing pin card for searched or selected street
+    if (selectedFeature?.type === 'street' && selectedFeature.center) {
       const st = selectedFeature;
       const center = selectedFeature.center;
       const status = st.group ? getGroupStatus(st.group) : 'on';
-      const color = getStatusColor(status, true);
+      const statusColor = status === 'on' ? '#10b981' : status === 'off' ? '#ef4444' : '#f59e0b';
+      const statusText = status === 'on' ? 'Світло є' : status === 'off' ? 'Немає світла' : 'Можливо';
 
-      const marker = L.circleMarker(center, {
-        radius: 12,
-        fillColor: color,
-        fillOpacity: 1,
-        color: '#38bdf8',
-        weight: 3.5,
+      const pinIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div class="relative flex items-center justify-center pointer-events-none">
+          <span class="absolute w-8 h-8 rounded-full animate-ping opacity-35" style="background-color: ${statusColor};"></span>
+          <div class="relative flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-slate-900/95 backdrop-blur-md border-2 shadow-2xl" style="border-color: ${statusColor}; transform: translate(0, -60%);">
+            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${statusColor};"></span>
+            <div class="flex flex-col text-left whitespace-nowrap">
+              <span class="text-xs font-bold text-white">${st.name}</span>
+              <span class="text-[10px] text-amber-300 font-mono">Черга ${st.group || ''} • ${statusText}</span>
+            </div>
+          </div>
+        </div>`,
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
       });
 
-      marker.bindTooltip(
-        `<div class="text-xs font-sans">
-          <strong class="text-white">${st.name}</strong><br/>
-          <span class="text-amber-400 font-mono">Черга ${st.group}</span>
-        </div>`,
-        { className: 'custom-tooltip', permanent: true, direction: 'top' }
-      );
+      const pinMarker = L.marker(center, {
+        icon: pinIcon,
+        interactive: false,
+        zIndexOffset: 1000,
+      });
 
-      group.addLayer(marker);
+      group.addLayer(pinMarker);
     }
   }, [layerMode, currentZoom, schedule, selectedHour, selectedFeature, mapViewportVer]);
 
