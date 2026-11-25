@@ -239,10 +239,19 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
         </div>
 
         {groupDesc && (
-          <p className="text-[10px] md:text-xs text-slate-300 leading-tight border-t border-white/5 pt-1">
-            <span className="text-slate-400">Львівобленерго: </span>
-            {groupDesc}
-          </p>
+          <div className="flex flex-col gap-0.5 border-t border-white/5 pt-1 text-[10px] md:text-xs">
+            <div className="flex items-center justify-between text-slate-400 text-[9px] md:text-[10px]">
+              <span>Львівобленерго {schedule?.date ? `(${schedule.date})` : ''}</span>
+              {schedule?.updatedAt && (
+                <span className="text-amber-400/90 font-mono font-medium">
+                  Оновлено о {schedule.updatedAt}
+                </span>
+              )}
+            </div>
+            <p className="text-slate-200 leading-tight">
+              {groupDesc}
+            </p>
+          </div>
         )}
       </div>
 

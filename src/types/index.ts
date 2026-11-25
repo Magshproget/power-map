@@ -21,6 +21,7 @@ export interface ScheduleData {
   updatedAt: string;
   groups: Record<string, GroupSchedule>;
   isLive?: boolean;
+  fetchedAt?: string;
 }
 
 export interface DistrictProperties {

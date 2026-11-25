@@ -154,6 +154,22 @@ export const Header: React.FC<HeaderProps> = ({
     resetScroll();
   };
 
+  const formatSyncTime = (isoString?: string) => {
+    if (!isoString) return null;
+    try {
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    } catch {
+      return null;
+    }
+  };
+
+  const syncTimeStr = formatSyncTime(schedule?.fetchedAt);
+  const refreshTooltip = syncTimeStr
+    ? `Оновити графік (перевірено о ${syncTimeStr})`
+    : 'Оновити графік';
+
   const layerOptions: { id: LayerMode; label: string; icon: React.ReactNode; desc: string }[] = [
     {
       id: 'auto',
@@ -421,7 +437,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onRefresh}
           disabled={isLoading}
-          title="Оновити графік"
+          title={refreshTooltip}
           className="p-1.5 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-md text-slate-400 hover:text-white active:scale-95 disabled:opacity-50 shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
@@ -493,16 +509,27 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="font-bold text-base text-white tracking-wide">
                 СвітлоМапа <span className="text-amber-400 font-semibold text-sm">Львів</span>
               </h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${
+                schedule?.isLive
+                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                  : 'bg-slate-800 text-slate-300 border-slate-700'
+              }`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${schedule?.isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'}`} />
                 {schedule?.isLive ? 'LIVE' : 'Автономно'}
               </span>
             </div>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5">
-              <Clock className="w-3 h-3 text-slate-500" />
-              <span>{schedule?.title || 'Графік відключень на сьогодні'}</span>
+            <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
+              <Clock className="w-3 h-3 text-slate-500 shrink-0" />
+              <span>{schedule?.date ? `Графік на ${schedule.date}` : (schedule?.title || 'Графік відключень')}</span>
               {schedule?.updatedAt && (
-                <span className="text-slate-500">• {schedule.updatedAt}</span>
+                <span className="text-amber-400 font-medium">
+                  • Оновлено о {schedule.updatedAt}
+                </span>
+              )}
+              {syncTimeStr && (
+                <span className="text-slate-500 text-[10px]">
+                  (перевірено {syncTimeStr})
+                </span>
               )}
             </p>
           </div>
@@ -510,7 +537,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onRefresh}
             disabled={isLoading}
-            title="Оновити графік"
+            title={refreshTooltip}
             className="ml-2 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all active:scale-95 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />

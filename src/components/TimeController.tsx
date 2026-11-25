@@ -143,9 +143,12 @@ export const TimeController: React.FC<TimeControllerProps> = ({
               )}
             </div>
           ) : (
-            <span className="text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750">
-              Загальний графік (Львів)
-            </span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750">
+              <span>Загальний графік (Львів)</span>
+              {schedule?.updatedAt && (
+                <span className="text-amber-400/90 font-mono font-medium">• Оновлено о {schedule.updatedAt}</span>
+              )}
+            </div>
           )}
         </div>
 
