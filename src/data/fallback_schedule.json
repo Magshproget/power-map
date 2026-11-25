@@ -1,70 +1,425 @@
 {
-  "date": "2026-11-25",
+  "date": "25.11.2026",
   "title": "Графік погодинних відключень на 25.11.2026",
-  "updatedAt": "12:31",
+  "updatedAt": "21:51",
   "groups": {
     "1.1": {
-      "desc": "Електроенергії немає з 20:30 до 24:00.",
-      "intervals": [{ "start": "20:30", "end": "24:00", "s": 20.5, "e": 24 }],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","off","off","off","off"]
+      "desc": "Електроенергії немає з 20:00 до 22:00.",
+      "intervals": [
+        {
+          "start": "20:00",
+          "end": "22:00",
+          "s": 20,
+          "e": 22
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on"
+      ]
     },
     "1.2": {
-      "desc": "Електроенергії немає з 08:00 до 09:30, з 15:00 до 17:00.",
+      "desc": "Електроенергії немає з 08:00 до 09:30.",
       "intervals": [
-        { "start": "08:00", "end": "09:30", "s": 8, "e": 9.5 },
-        { "start": "15:00", "end": "17:00", "s": 15, "e": 17 }
+        {
+          "start": "08:00",
+          "end": "09:30",
+          "s": 8,
+          "e": 9.5
+        }
       ],
-      "hourly": ["on","on","on","on","on","on","on","on","off","off","on","on","on","on","on","off","off","on","on","on","on","on","on","on"]
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "2.1": {
       "desc": "Електроенергії немає з 08:00 до 09:30.",
-      "intervals": [{ "start": "08:00", "end": "09:30", "s": 8, "e": 9.5 }],
-      "hourly": ["on","on","on","on","on","on","on","on","off","off","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "intervals": [
+        {
+          "start": "08:00",
+          "end": "09:30",
+          "s": 8,
+          "e": 9.5
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "2.2": {
       "desc": "Електроенергії немає з 09:30 до 11:00.",
-      "intervals": [{ "start": "09:30", "end": "11:00", "s": 9.5, "e": 11 }],
-      "hourly": ["on","on","on","on","on","on","on","on","on","off","off","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "intervals": [
+        {
+          "start": "09:30",
+          "end": "11:00",
+          "s": 9.5,
+          "e": 11
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "3.1": {
       "desc": "Електроенергії немає з 09:30 до 11:00.",
-      "intervals": [{ "start": "09:30", "end": "11:00", "s": 9.5, "e": 11 }],
-      "hourly": ["on","on","on","on","on","on","on","on","on","off","off","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "intervals": [
+        {
+          "start": "09:30",
+          "end": "11:00",
+          "s": 9.5,
+          "e": 11
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "3.2": {
-      "desc": "Електроенергії немає з 16:30 до 20:00.",
-      "intervals": [{ "start": "16:30", "end": "20:00", "s": 16.5, "e": 20 }],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","off","off","off","off","on","on","on","on"]
+      "desc": "Електроенергії немає з 16:00 до 20:00.",
+      "intervals": [
+        {
+          "start": "16:00",
+          "end": "20:00",
+          "s": 16,
+          "e": 20
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "4.1": {
-      "desc": "Електроенергії немає з 16:30 до 20:30.",
-      "intervals": [{ "start": "16:30", "end": "20:30", "s": 16.5, "e": 20.5 }],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","off","off","off","off","off","on","on","on"]
+      "desc": "Електроенергії немає з 16:00 до 20:30.",
+      "intervals": [
+        {
+          "start": "16:00",
+          "end": "20:30",
+          "s": 16,
+          "e": 20.5
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "off",
+        "off",
+        "off",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "4.2": {
-      "desc": "Електроенергія є.",
-      "intervals": [],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "desc": "Електроенергії немає з 20:30 до 22:00.",
+      "intervals": [
+        {
+          "start": "20:30",
+          "end": "22:00",
+          "s": 20.5,
+          "e": 22
+        }
+      ],
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "off",
+        "off",
+        "on",
+        "on"
+      ]
     },
     "5.1": {
       "desc": "Електроенергія є.",
       "intervals": [],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "5.2": {
       "desc": "Електроенергія є.",
       "intervals": [],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "6.1": {
       "desc": "Електроенергія є.",
       "intervals": [],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     },
     "6.2": {
       "desc": "Електроенергія є.",
       "intervals": [],
-      "hourly": ["on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on","on"]
+      "hourly": [
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on",
+        "on"
+      ]
     }
-  }
+  },
+  "isLive": true,
+  "fetchedAt": "2026-11-25T21:43:37.765Z"
 }

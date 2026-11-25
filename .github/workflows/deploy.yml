@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ['main']
+  schedule:
+    # Auto-update schedules from Lvivoblenergo API every 30 minutes
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -29,6 +32,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Fetch latest schedule
+        run: node scripts/fetch-schedule.mjs
 
       - name: Build
         run: npm run build

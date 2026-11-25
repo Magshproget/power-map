@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-schedule.mjs",
     "build": "tsc -b && vite build",
+    "fetch:schedule": "node scripts/fetch-schedule.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
