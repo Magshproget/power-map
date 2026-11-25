@@ -37,7 +37,7 @@ export function App() {
   };
 
   const [selectedHour, setSelectedHour] = useState<number>(getNowHour());
-  const [layerMode, setLayerMode] = useState<LayerMode>('auto');
+  const [layerMode, setLayerMode] = useState<LayerMode>('zones');
   const [currentZoom, setCurrentZoom] = useState<number>(12);
   const [selectedFeature, setSelectedFeature] = useState<SelectedFeature | null>(null);
   const [savedLocations, setSavedLocations] = useState<SavedLocation[]>(loadSavedFromStorage);

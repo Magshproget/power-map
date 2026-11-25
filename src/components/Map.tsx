@@ -383,7 +383,7 @@ export const Map: React.FC<MapProps> = ({
             });
 
             // Add clean zone label badge
-            if (zProps.center && (isAutoMode || currentZoom >= 13.2)) {
+            if (zProps.center && (isAutoMode || currentZoom >= 12.2)) {
               const statusColor = status === 'on' ? '#10b981' : '#ef4444';
               const labelIcon = L.divIcon({
                 className: 'custom-div-icon',

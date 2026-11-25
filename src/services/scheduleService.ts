@@ -113,7 +113,7 @@ export async function fetchSchedule(): Promise<ScheduleData> {
 
     if (res.ok) {
       const data = await res.json();
-      const members = data['hydra:member'] || [];
+      const members = Array.isArray(data) ? data : data['hydra:member'] || [];
       const menuItems = members[0]?.menuItems || [];
       const todayItem = menuItems.find(
         (m: { name?: string }) => m.name?.toLowerCase() === 'today'

@@ -97,8 +97,8 @@ async function main() {
     }
 
     const data = await res.json();
-    const members = data['hydra:member'] || [];
-    if (!members.length) throw new Error('No hydra:member');
+    const members = Array.isArray(data) ? data : data['hydra:member'] || [];
+    if (!members.length) throw new Error('No menu data');
 
     const menuItems = members[0]?.menuItems || [];
     const todayItem = menuItems.find((m) => m.name?.toLowerCase() === 'today') || menuItems[0];
