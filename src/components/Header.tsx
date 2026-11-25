@@ -172,52 +172,54 @@ export const Header: React.FC<HeaderProps> = ({
     filteredStreets.length > 0 || filteredDistricts.length > 0 || filteredZones.length > 0;
 
   return (
-    <header className="absolute top-4 left-4 right-4 z-[1000] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pointer-events-none">
+    <header className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 z-[1000] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 md:gap-3 pointer-events-none">
       {/* Brand & Status Banner */}
-      <div className="flex items-center gap-3 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl pointer-events-auto">
-        <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-          <Zap className="w-5 h-5 fill-amber-400 text-amber-400" />
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="font-bold text-base text-white tracking-wide">
-              СвітлоМапа <span className="text-amber-400 font-semibold text-sm">Львів</span>
-            </h1>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              {schedule?.isLive ? 'LIVE' : 'Автономно'}
-            </span>
+      <div className="flex items-center justify-between md:justify-start gap-2.5 md:gap-3 bg-slate-900/90 backdrop-blur-md px-3 py-2 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl border border-slate-700/60 shadow-xl pointer-events-auto">
+        <div className="flex items-center gap-2.5 md:gap-3 min-w-0">
+          <div className="flex items-center justify-center w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 shrink-0">
+            <Zap className="w-4 h-4 md:w-5 md:h-5 fill-amber-400 text-amber-400" />
           </div>
-          <p className="text-xs text-slate-400 flex items-center gap-1.5">
-            <Clock className="w-3 h-3 text-slate-500" />
-            <span>{schedule?.title || 'Графік відключень на сьогодні'}</span>
-            {schedule?.updatedAt && (
-              <span className="text-slate-500">• {schedule.updatedAt}</span>
-            )}
-          </p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <h1 className="font-bold text-sm md:text-base text-white tracking-wide truncate">
+                СвітлоМапа <span className="text-amber-400 font-semibold text-xs md:text-sm">Львів</span>
+              </h1>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] md:text-[11px] font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                {schedule?.isLive ? 'LIVE' : 'Автономно'}
+              </span>
+            </div>
+            <p className="text-[11px] md:text-xs text-slate-400 flex items-center gap-1 md:gap-1.5 truncate">
+              <Clock className="w-3 h-3 text-slate-500 shrink-0" />
+              <span className="truncate">{schedule?.title || 'Графік відключень на сьогодні'}</span>
+              {schedule?.updatedAt && (
+                <span className="text-slate-500 hidden sm:inline">• {schedule.updatedAt}</span>
+              )}
+            </p>
+          </div>
         </div>
 
         <button
           onClick={onRefresh}
           disabled={isLoading}
           title="Оновити графік"
-          className="ml-2 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all active:scale-95 disabled:opacity-50"
+          className="p-1.5 md:p-2 rounded-lg md:rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all active:scale-95 disabled:opacity-50 shrink-0"
         >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
         </button>
       </div>
 
       {/* Street & Zone Search Bar */}
       <div className="relative w-full md:w-96 pointer-events-auto">
-        <div className="flex items-center bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
-          <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2.5" />
+        <div className="flex items-center bg-slate-900/90 backdrop-blur-md px-3 py-2 md:px-3.5 md:py-2.5 rounded-xl md:rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
+          <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2 md:mr-2.5" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setIsFocused(true)}
             placeholder="Введіть вулицю або мікрорайон..."
-            className="w-full bg-transparent text-sm text-white placeholder-slate-400 outline-none"
+            className="w-full bg-transparent text-xs md:text-sm text-white placeholder-slate-400 outline-none"
           />
           {query && (
             <button

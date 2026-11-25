@@ -83,7 +83,10 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   }[status];
 
   return (
-    <div className="absolute top-32 left-4 z-[1000] w-88 md:w-96 bg-slate-900/95 backdrop-blur-xl p-5 rounded-3xl border border-slate-700/70 shadow-2xl flex flex-col gap-4 pointer-events-auto max-h-[calc(100vh-210px)] overflow-y-auto">
+    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-32 md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-4 md:p-5 rounded-t-3xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-12px_40px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-3.5 md:gap-4 pointer-events-auto max-h-[72vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+      {/* Mobile Drawer Grab Bar */}
+      <div className="w-12 h-1 bg-slate-600 rounded-full mx-auto -mt-1 mb-1 md:hidden shrink-0" />
+
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">

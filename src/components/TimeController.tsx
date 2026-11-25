@@ -81,25 +81,29 @@ export const TimeController: React.FC<TimeControllerProps> = ({
   const offNowCount = groupsList.filter((g) => g.hourly[currentSlot] === 'off').length;
 
   return (
-    <div className="absolute bottom-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-4 rounded-3xl border border-slate-700/80 shadow-2xl flex flex-col gap-3 pointer-events-auto">
+    <div
+      className={`absolute bottom-3 md:bottom-6 left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-3 md:p-4 rounded-2xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-2 md:gap-3 pointer-events-auto ${
+        selectedFeature ? 'hidden md:flex' : 'flex'
+      }`}
+    >
       {/* Top row: Controls, Context name, Clock */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+      <div className="flex items-center justify-between gap-2 md:gap-3">
+        <div className="flex items-center gap-2 md:gap-2.5">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center justify-center w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/20 font-semibold"
+            className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/20 font-semibold shrink-0"
             title={isPlaying ? 'Пауза' : 'Анімувати добу'}
           >
             {isPlaying ? (
-              <Pause className="w-5 h-5 fill-current" />
+              <Pause className="w-4 h-4 md:w-5 md:h-5 fill-current" />
             ) : (
-              <Play className="w-5 h-5 fill-current ml-0.5" />
+              <Play className="w-4 h-4 md:w-5 md:h-5 fill-current ml-0.5" />
             )}
           </button>
 
           <button
             onClick={onSetNow}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-all"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-all shrink-0"
             title="Перейти на поточний час"
           >
             <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
@@ -217,18 +221,18 @@ export const TimeController: React.FC<TimeControllerProps> = ({
       </div>
 
       {/* Legend & Hint */}
-      <div className="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-slate-800">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between text-[11px] md:text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800">
+        <div className="flex flex-wrap items-center gap-2.5 md:gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+            <span className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
             <span className="text-slate-300">Світло є</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span>
+            <span className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span>
             <span className="text-slate-300">Немає світла</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
+            <span className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
             <span className="text-slate-300">Змішано / Можливо</span>
           </div>
         </div>

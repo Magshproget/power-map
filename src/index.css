@@ -104,3 +104,28 @@ html, body, #root {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.8);
 }
+
+/* Mobile Leaflet optimizations */
+@media (max-width: 768px) {
+  .leaflet-bottom.leaflet-right {
+    bottom: 110px !important;
+    right: 8px !important;
+  }
+  .leaflet-control-zoom {
+    border: 1px solid rgba(51, 65, 85, 0.8) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+  }
+  .leaflet-control-zoom a {
+    background-color: rgba(15, 23, 42, 0.92) !important;
+    color: #f8fafc !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+  }
+  .leaflet-control-attribution {
+    display: none !important;
+  }
+}
