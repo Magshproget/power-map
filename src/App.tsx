@@ -101,6 +101,8 @@ export function App() {
         onChangeHour={setSelectedHour}
         onSetNow={() => setSelectedHour(getNowHour())}
         schedule={schedule}
+        selectedFeature={selectedFeature}
+        onClearSelectedFeature={() => setSelectedFeature(null)}
       />
     </div>
   );
