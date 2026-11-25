@@ -85,8 +85,8 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
 
   if (validLocations.length === 0) {
     return (
-      <div className="hidden md:block fixed top-20 left-4 z-[990] pointer-events-auto">
-        <div className="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400">
+      <div className="hidden md:flex fixed top-[84px] left-0 right-0 justify-center z-[990] pointer-events-none px-4">
+        <div className="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400 pointer-events-auto">
           <Bookmark className="w-3.5 h-3.5 text-amber-400/80" />
           <span>Зберігайте адреси (дім, робота) через «★ В обране» для швидкого моніторингу</span>
         </div>
@@ -159,12 +159,12 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   return (
     <>
       <div
-        className={`fixed top-11 md:top-20 left-2 md:left-4 right-2 md:right-4 z-[990] items-center gap-1.5 md:gap-2 pointer-events-none ${
+        className={`fixed top-14 md:top-[84px] left-0 right-0 z-[990] flex justify-center items-center pointer-events-none px-2 md:px-4 ${
           selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
         }`}
       >
         {/* MOBILE VIEW (< md): 1st address + "+N" Dropdown button */}
-        <div className="flex md:hidden items-center gap-1.5 pointer-events-auto max-w-full">
+        <div className="flex md:hidden items-center justify-center gap-1.5 pointer-events-auto max-w-full">
           <div className="flex items-center gap-1 px-1.5 py-1 bg-slate-900/95 backdrop-blur-md rounded-lg border border-slate-700/60 shadow-lg text-[11px] font-semibold text-slate-300 shrink-0">
             <Bookmark className="w-3 h-3 text-amber-400 fill-amber-400/30" />
           </div>
@@ -190,7 +190,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
         </div>
 
         {/* DESKTOP VIEW (>= md): Full horizontal chips row */}
-        <div className="hidden md:flex items-center gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
+        <div className="hidden md:flex items-center justify-center gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-lg text-xs font-semibold text-slate-300 shrink-0">
             <Bookmark className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
             <span>Мої адреси:</span>
@@ -207,7 +207,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
             className="fixed inset-0 z-[1250] bg-black/50 pointer-events-auto md:hidden"
             onClick={() => setIsDropdownOpen(false)}
           />
-          <div className="fixed top-20 left-2 right-2 max-w-sm mx-auto bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-[1300] flex flex-col gap-1 pointer-events-auto md:hidden animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto">
+          <div className="fixed top-24 left-2 right-2 max-w-sm mx-auto bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-[1300] flex flex-col gap-1 pointer-events-auto md:hidden animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto">
             <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
               <span>Мої адреси ({validLocations.length})</span>
               <button
