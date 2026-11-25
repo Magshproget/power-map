@@ -361,7 +361,7 @@ export const Header: React.FC<HeaderProps> = ({
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
               placeholder="Пошук вулиці..."
-              className="w-full bg-transparent text-xs text-white placeholder-slate-400 outline-none truncate"
+              className="w-full bg-transparent text-[16px] md:text-xs text-white placeholder-slate-400 outline-none truncate"
             />
             {query && (
               <button
