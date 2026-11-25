@@ -55,10 +55,8 @@ def find_settlement(lat, lon):
     return None
 
 def stem(w):
-    w = re.sub(r'(івського|івська|івське|івські|ського|ської|ському|ських|ські|ська|ське|цького|цької|цькому|цьких|цькі|цька|цьке)$', '', w)
-    w = re.sub(r'(ового|ової|овому|ових|ові|ова|ове|ного|ної|ному|них|ні|на|не)$', '', w)
-    w = re.sub(r'(ого|ому|ими|их|ій|им|ою|ем|ям|ам|ах|ях|ів|ей|а|я|у|ю|е|є|и|і|ї)$', '', w)
-    return w
+    # Strip inflection endings while preserving root and suffixes like -ськ, -цьк
+    return re.sub(r'(ів|ей|ого|ому|ими|их|ій|им|ою|ем|ям|ам|ах|ях|а|я|у|ю|е|є|и|і|ї|о)$', '', w)
 
 def normalize_name(s):
     if not s: return ''
@@ -271,10 +269,10 @@ with open('src/data/streets.json', 'w', encoding='utf-8') as f:
     json.dump(updated_streets, f, ensure_ascii=False, indent=2)
 
 # Write all geometries
-with open('src/data/allStreetGeometries.json', 'w', encoding='utf-8') as f:
+with open('public/data/streetGeometries.json', 'w', encoding='utf-8') as f:
     json.dump(all_geometries, f, ensure_ascii=False)
 
-print('Successfully updated src/data/streets.json and src/data/allStreetGeometries.json!')
+print('Successfully updated src/data/streets.json and public/data/streetGeometries.json!')
 
 # Check heroiv maidanu, franka, konovaltsia
 for test_id in ['38490', '12540', '12742', '12470', '12712']:
