@@ -65,3 +65,10 @@ export interface SelectedFeature {
   center?: [number, number];
   buildings?: string;
 }
+
+export interface SavedLocation {
+  id: string;
+  customLabel?: string;
+  feature: SelectedFeature;
+  createdAt: number;
+}

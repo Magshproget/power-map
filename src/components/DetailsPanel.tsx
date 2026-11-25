@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin } from 'lucide-react';
+import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin, Star } from 'lucide-react';
 import { SelectedFeature, ScheduleData, PowerStatus } from '../types';
 
 interface DetailsPanelProps {
@@ -8,6 +8,9 @@ interface DetailsPanelProps {
   selectedHour: number;
   schedule: ScheduleData | null;
   onSelectStreet?: (streetName: string) => void;
+  isSaved?: boolean;
+  savedCustomLabel?: string;
+  onToggleSaved?: (feature: SelectedFeature, customLabel?: string) => void;
 }
 
 export const DetailsPanel: React.FC<DetailsPanelProps> = ({
@@ -16,6 +19,9 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   selectedHour,
   schedule,
   onSelectStreet,
+  isSaved,
+  savedCustomLabel,
+  onToggleSaved,
 }) => {
   if (!feature) return null;
 
@@ -77,7 +83,7 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   }[status];
 
   return (
-    <div className="absolute top-24 left-4 z-[1000] w-88 md:w-96 bg-slate-900/95 backdrop-blur-xl p-5 rounded-3xl border border-slate-700/70 shadow-2xl flex flex-col gap-4 pointer-events-auto max-h-[calc(100vh-180px)] overflow-y-auto">
+    <div className="absolute top-32 left-4 z-[1000] w-88 md:w-96 bg-slate-900/95 backdrop-blur-xl p-5 rounded-3xl border border-slate-700/70 shadow-2xl flex flex-col gap-4 pointer-events-auto max-h-[calc(100vh-210px)] overflow-y-auto">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -109,13 +115,52 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {onToggleSaved && (
+            <button
+              onClick={() => onToggleSaved(feature)}
+              title={isSaved ? 'Видалити з обраного' : 'Зберегти в обране'}
+              className={`p-2 rounded-xl transition-all ${
+                isSaved
+                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500/30'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Star className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+            </button>
+          )}
+
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
+
+      {/* Quick Tag Selector if saved */}
+      {isSaved && onToggleSaved && (
+        <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-800/60 rounded-2xl border border-slate-700/60">
+          <span className="text-[11px] text-slate-400 font-medium mr-1">Мітка:</span>
+          {['Дім', 'Робота', 'Батьки'].map((tag) => {
+            const isTagActive = savedCustomLabel === tag;
+            return (
+              <button
+                key={tag}
+                onClick={() => onToggleSaved(feature, isTagActive ? undefined : tag)}
+                className={`text-xs px-2.5 py-1 rounded-xl border transition-all ${
+                  isTagActive
+                    ? 'bg-amber-500/25 border-amber-500/50 text-amber-300 font-semibold shadow-sm'
+                    : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white hover:border-slate-600'
+                }`}
+              >
+                {tag === 'Дім' ? '🏠 Дім' : tag === 'Робота' ? '💼 Робота' : '❤️ Батьки'}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Power status card */}
       <div className={`p-3.5 rounded-2xl border ${statusConfig.bg} flex items-center justify-between`}>
