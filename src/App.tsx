@@ -15,7 +15,12 @@ const loadSavedFromStorage = (): SavedLocation[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (item): item is SavedLocation =>
+        Boolean(item && item.id && item.feature && item.feature.id && item.feature.name)
+    );
   } catch {
     return [];
   }

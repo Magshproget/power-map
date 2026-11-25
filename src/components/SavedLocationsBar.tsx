@@ -74,32 +74,39 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           <span className="hidden sm:inline">Мої адреси:</span>
         </div>
 
-        {savedLocations.map((loc) => {
-          const status = getStatus(loc.feature);
-          const isSelected = selectedFeatureId === loc.feature.id;
+        {savedLocations
+          .filter((loc) => loc && loc.feature && loc.feature.id && loc.feature.name)
+          .map((loc) => {
+            const status = getStatus(loc.feature) || 'on';
+            const isSelected = selectedFeatureId === loc.feature.id;
 
-          const statusBadge = {
-            on: {
-              dot: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]',
+            const statusBadge = ({
+              on: {
+                dot: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]',
+                text: 'Світло є',
+                textColor: 'text-emerald-400',
+                border: isSelected ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-slate-700/60',
+              },
+              off: {
+                dot: 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]',
+                text: 'Вимкнено',
+                textColor: 'text-rose-400',
+                border: isSelected ? 'border-rose-500 ring-2 ring-rose-500/30' : 'border-slate-700/60',
+              },
+              maybe: {
+                dot: 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]',
+                text: 'Можливо',
+                textColor: 'text-amber-400',
+                border: isSelected ? 'border-amber-500 ring-2 ring-amber-500/30' : 'border-slate-700/60',
+              },
+            } as const)[status] || {
+              dot: 'bg-emerald-400',
               text: 'Світло є',
               textColor: 'text-emerald-400',
-              border: isSelected ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-slate-700/60',
-            },
-            off: {
-              dot: 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.8)]',
-              text: 'Вимкнено',
-              textColor: 'text-rose-400',
-              border: isSelected ? 'border-rose-500 ring-2 ring-rose-500/30' : 'border-slate-700/60',
-            },
-            maybe: {
-              dot: 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]',
-              text: 'Можливо',
-              textColor: 'text-amber-400',
-              border: isSelected ? 'border-amber-500 ring-2 ring-amber-500/30' : 'border-slate-700/60',
-            },
-          }[status];
+              border: 'border-slate-700/60',
+            };
 
-          const displayName = loc.customLabel || loc.feature.name;
+            const displayName = loc.customLabel || loc.feature.name;
 
           return (
             <div

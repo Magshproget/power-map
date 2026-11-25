@@ -15,6 +15,12 @@
       crossorigin=""
     />
     <script>
+      // Prevent iOS Safari from restoring off-screen scroll positions
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
       // Auto-reload once if an outdated chunk fails to load
       window.addEventListener('error', function (e) {
         if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
