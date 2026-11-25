@@ -44,6 +44,8 @@ const curatedList = [
   { match: 'козельницьк', lat: 49.8100, lon: 24.0250, district: 'Сихівський район', group: '3.1' },
 
   // Франківський район
+  { match: 'героїв майдану', city: 'Сокільники', lat: 49.7908, lon: 24.0114, district: 'Сокільники', group: '3.1' },
+  { match: 'героїв майдану', city: 'Львів', lat: 49.8260, lon: 24.0191, district: 'Франківський район', group: '5.1' },
   { match: 'науков', lat: 49.8030, lon: 24.0010, district: 'Франківський район', group: '5.1' },
   { match: 'володимира великого', lat: 49.8110, lon: 23.9920, district: 'Франківський район', group: '3.1' },
   { match: 'великого в', lat: 49.8110, lon: 23.9920, district: 'Франківський район', group: '3.1' },
@@ -174,26 +176,29 @@ const districtAnchors = {
   ]
 };
 
-// Suburb centers and radius
+// Suburb centers and radius aligned precisely with official district boundaries
 const suburbConfig = {
-  'Винники': { center: [49.8150, 24.1350], rLat: 0.015, rLon: 0.025, group: '4.2' },
-  'Брюховичі': { center: [49.9020, 23.9530], rLat: 0.020, rLon: 0.025, group: '2.2' },
-  'Рудне': { center: [49.8400, 23.8850], rLat: 0.012, rLon: 0.020, group: '1.1' },
-  'Дубляни': { center: [49.8980, 24.0880], rLat: 0.015, rLon: 0.020, group: '2.2' },
-  'Малехів': { center: [49.8780, 24.0680], rLat: 0.012, rLon: 0.020, group: '2.2' },
-  'Рясне-Руське': { center: [49.8650, 23.9150], rLat: 0.015, rLon: 0.020, group: '4.1' },
-  'Лисиничі': { center: [49.8350, 24.1020], rLat: 0.012, rLon: 0.020, group: '4.2' },
-  'Підбірці': { center: [49.8450, 24.1350], rLat: 0.012, rLon: 0.020, group: '4.2' },
-  'Сокільники': { center: [49.7780, 24.0150], rLat: 0.018, rLon: 0.025, group: '3.1' },
-  'Зимна Вода': { center: [49.8280, 23.8950], rLat: 0.018, rLon: 0.025, group: '6.1' },
-  'Лапаївка': { center: [49.8160, 23.8920], rLat: 0.008, rLon: 0.012, group: '1.1' },
-  'Холодновідка': { center: [49.8100, 23.9050], rLat: 0.008, rLon: 0.012, group: '1.1' },
-  'Суховоля': { center: [49.8520, 23.8450], rLat: 0.015, rLon: 0.025, group: '1.1' },
-  'Скнилів': { center: [49.8150, 23.9400], rLat: 0.012, rLon: 0.020, group: '6.1' },
-  'Солонка': { center: [49.7420, 24.0180], rLat: 0.018, rLon: 0.025, group: '3.1' },
-  'Зубра': { center: [49.7750, 24.0480], rLat: 0.010, rLon: 0.015, group: '3.1' },
-  'Пустомити': { center: [49.7150, 23.9050], rLat: 0.020, rLon: 0.030, group: '3.1' },
-  'Наварія': { center: [49.7350, 23.9250], rLat: 0.012, rLon: 0.018, group: '3.1' }
+  'Винники': { center: [49.8156, 24.1284], rLat: 0.012, rLon: 0.020, group: '4.2' },
+  'Брюховичі': { center: [49.9052, 23.9521], rLat: 0.016, rLon: 0.022, group: '2.2' },
+  'Рудне': { center: [49.8411, 23.8800], rLat: 0.008, rLon: 0.016, group: '1.1' },
+  'Дубляни': { center: [49.9002, 24.0855], rLat: 0.009, rLon: 0.012, group: '2.2' },
+  'Малехів': { center: [49.8860, 24.0674], rLat: 0.009, rLon: 0.015, group: '2.2' },
+  'Рясне-Руське': { center: [49.8774, 23.9028], rLat: 0.010, rLon: 0.010, group: '4.1' },
+  'Лисиничі': { center: [49.8391, 24.1243], rLat: 0.009, rLon: 0.018, group: '4.2' },
+  'Підбірці': { center: [49.8451, 24.1476], rLat: 0.009, rLon: 0.016, group: '4.2' },
+  'Сокільники': { center: [49.7832, 23.9762], rLat: 0.014, rLon: 0.019, group: '3.1' },
+  'Зимна Вода': { center: [49.8306, 23.8946], rLat: 0.015, rLon: 0.022, group: '6.1' },
+  'Лапаївка': { center: [49.8123, 23.9060], rLat: 0.005, rLon: 0.008, group: '1.1' },
+  'Холодновідка': { center: [49.8140, 23.9146], rLat: 0.005, rLon: 0.008, group: '1.1' },
+  'Суховоля': { center: [49.8308, 23.8341], rLat: 0.010, rLon: 0.018, group: '1.1' },
+  'Скнилів': { center: [49.8150, 23.9400], rLat: 0.008, rLon: 0.014, group: '6.1' },
+  'Солонка': { center: [49.7497, 24.0041], rLat: 0.015, rLon: 0.018, group: '3.1' },
+  'Зубра': { center: [49.7706, 24.0508], rLat: 0.007, rLon: 0.010, group: '3.1' },
+  'Пасіки-Зубрицькі': { center: [49.7730, 24.0892], rLat: 0.009, rLon: 0.015, group: '3.1' },
+  'Давидів': { center: [49.7460, 24.1422], rLat: 0.010, rLon: 0.018, group: '3.1' },
+  'Муроване': { center: [49.8758, 24.0942], rLat: 0.005, rLon: 0.010, group: '2.2' },
+  'Пустомити': { center: [49.7229, 23.9042], rLat: 0.015, rLon: 0.022, group: '3.1' },
+  'Наварія': { center: [49.7350, 23.9250], rLat: 0.008, rLon: 0.012, group: '3.1' }
 };
 
 // Stable pseudo-random hash generator for reproducible realistic coordinates
@@ -221,6 +226,7 @@ for (const st of allLoeStreets) {
   // 1. Check curated exact road coords first
   let curated = null;
   for (const c of curatedList) {
+    if (c.city && c.city !== st.cityName) continue;
     if (lower.includes(c.match)) {
       curated = c;
       break;
@@ -229,14 +235,13 @@ for (const st of allLoeStreets) {
 
   if (curated) {
     curatedMatches++;
-    const [jLat, jLon] = getStreetCoordJitter(stId, 0.002, 0.003);
     processed.push({
       id: String(st.id),
       name: `вул. ${cleanName.replace(/^(вул\.|просп\.|пл\.|пров\.|проїзд)\s*/, '')}`,
       district: curated.district,
       group: curated.group,
-      lat: Number((curated.lat + jLat).toFixed(5)),
-      lon: Number((curated.lon + jLon).toFixed(5)),
+      lat: curated.lat,
+      lon: curated.lon,
       cityId: st.cityId,
       cityName: st.cityName,
       buildings: '1-80'
