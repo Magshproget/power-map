@@ -82,31 +82,31 @@ export const TimeController: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`absolute bottom-3 md:bottom-6 left-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-3 md:p-4 rounded-2xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-2 md:gap-3 pointer-events-auto ${
+      className={`absolute bottom-2 md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1 md:gap-3 pointer-events-auto ${
         selectedFeature ? 'hidden md:flex' : 'flex'
       }`}
     >
       {/* Top row: Controls, Context name, Clock */}
       <div className="flex items-center justify-between gap-2 md:gap-3">
-        <div className="flex items-center gap-2 md:gap-2.5">
+        <div className="flex items-center gap-1.5 md:gap-2.5">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-all shadow-lg shadow-amber-500/20 font-semibold shrink-0"
+            className="flex items-center justify-center w-7 h-7 md:w-10 md:h-10 rounded-lg md:rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-all shadow-md font-semibold shrink-0"
             title={isPlaying ? 'Пауза' : 'Анімувати добу'}
           >
             {isPlaying ? (
-              <Pause className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+              <Pause className="w-3.5 h-3.5 md:w-5 md:h-5 fill-current" />
             ) : (
-              <Play className="w-4 h-4 md:w-5 md:h-5 fill-current ml-0.5" />
+              <Play className="w-3.5 h-3.5 md:w-5 md:h-5 fill-current ml-0.5" />
             )}
           </button>
 
           <button
             onClick={onSetNow}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 md:px-3 md:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-all shrink-0"
+            className="flex items-center gap-1 px-2 py-1 md:px-3 md:py-2 rounded-lg md:rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] md:text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-all shrink-0"
             title="Перейти на поточний час"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+            <RotateCcw className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400" />
             <span>Зараз</span>
           </button>
 
@@ -148,11 +148,11 @@ export const TimeController: React.FC<TimeControllerProps> = ({
         </div>
 
         {/* Selected Hour Clock Display */}
-        <div className="flex items-baseline gap-1.5 bg-slate-800/90 px-3.5 py-1.5 rounded-2xl border border-slate-700/80">
-          <span className="text-2xl font-bold font-mono text-white tracking-wider">
+        <div className="flex items-baseline gap-1 bg-slate-800/90 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-xl md:rounded-2xl border border-slate-700/80">
+          <span className="text-sm md:text-2xl font-bold font-mono text-white tracking-wider">
             {formatTime(currentHour)}
           </span>
-          <span className="text-[11px] font-medium text-slate-400 uppercase">сьогодні</span>
+          <span className="text-[9px] md:text-[11px] font-medium text-slate-400 uppercase">сьогодні</span>
         </div>
       </div>
 
@@ -220,8 +220,8 @@ export const TimeController: React.FC<TimeControllerProps> = ({
         </div>
       </div>
 
-      {/* Legend & Hint */}
-      <div className="flex flex-wrap items-center justify-between text-[11px] md:text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800">
+      {/* Legend & Hint (desktop only to save mobile height) */}
+      <div className="hidden md:flex flex-wrap items-center justify-between text-[11px] md:text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800">
         <div className="flex flex-wrap items-center gap-2.5 md:gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>

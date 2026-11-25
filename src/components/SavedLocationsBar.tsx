@@ -61,10 +61,14 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   }
 
   return (
-    <div className="absolute top-[58px] md:top-20 left-3 md:left-4 right-3 md:right-4 z-[990] flex items-center gap-2 pointer-events-none overflow-hidden">
-      <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-lg text-xs font-semibold text-slate-300 shrink-0">
-          <Bookmark className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
+    <div
+      className={`absolute top-11 md:top-20 left-2 md:left-4 right-2 md:right-4 z-[990] items-center gap-1.5 md:gap-2 pointer-events-none overflow-hidden ${
+        selectedFeatureId ? 'hidden md:flex' : 'flex'
+      }`}
+    >
+      <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
+        <div className="flex items-center gap-1.5 px-2 py-1 md:px-2.5 md:py-1.5 bg-slate-900/90 backdrop-blur-md rounded-lg md:rounded-xl border border-slate-700/60 shadow-lg text-[11px] md:text-xs font-semibold text-slate-300 shrink-0">
+          <Bookmark className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400 fill-amber-400/30" />
           <span className="hidden sm:inline">Мої адреси:</span>
         </div>
 
@@ -99,7 +103,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
             <div
               key={loc.id}
               onClick={() => onSelectLocation(loc.feature)}
-              className={`group flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800/95 backdrop-blur-md border ${statusBadge.border} shadow-lg cursor-pointer transition-all shrink-0 active:scale-95`}
+              className={`group flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl bg-slate-900/90 hover:bg-slate-800/95 backdrop-blur-md border ${statusBadge.border} shadow-lg cursor-pointer transition-all shrink-0 active:scale-95`}
               title={`${loc.feature.name} (${loc.feature.group ? `Черга ${loc.feature.group}` : 'Район'}) — ${statusBadge.text}`}
             >
               {getLabelIcon(loc.customLabel)}

@@ -83,76 +83,76 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   }[status];
 
   return (
-    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-32 md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-4 md:p-5 rounded-t-3xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-12px_40px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-3.5 md:gap-4 pointer-events-auto max-h-[72vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-32 md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
       {/* Mobile Drawer Grab Bar */}
-      <div className="w-12 h-1 bg-slate-600 rounded-full mx-auto -mt-1 mb-1 md:hidden shrink-0" />
+      <div className="w-8 h-1 bg-slate-600/70 rounded-full mx-auto -mt-1 mb-0.5 md:hidden shrink-0" />
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-slate-800 border border-slate-700 text-amber-400">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="p-1.5 md:p-2.5 rounded-lg md:rounded-2xl bg-slate-800 border border-slate-700 text-amber-400 shrink-0">
             {feature.type === 'district' ? (
-              <Shield className="w-5 h-5" />
+              <Shield className="w-4 h-4 md:w-5 md:h-5" />
             ) : feature.type === 'zone' ? (
-              <Grid className="w-5 h-5" />
+              <Grid className="w-4 h-4 md:w-5 md:h-5" />
             ) : (
-              <Navigation className="w-5 h-5" />
+              <Navigation className="w-4 h-4 md:w-5 md:h-5" />
             )}
           </div>
-          <div>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+          <div className="min-w-0">
+            <span className="text-[9px] md:text-[11px] font-semibold text-slate-400 uppercase tracking-wider block leading-none mb-0.5">
               {feature.type === 'district'
                 ? 'Адміністративний район'
                 : feature.type === 'zone'
                 ? 'Зона черги'
                 : 'Вулиця'}
             </span>
-            <h2 className="text-base font-bold text-white leading-tight">{feature.name}</h2>
+            <h2 className="text-xs md:text-base font-bold text-white leading-tight truncate">{feature.name}</h2>
             {feature.districtName && (
-              <span className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                <MapPin className="w-3 h-3 text-slate-500" />
-                {feature.districtName}
-                {feature.buildings && ` • буд. ${feature.buildings}`}
+              <span className="text-[10px] md:text-xs text-slate-400 flex items-center gap-1 mt-0.5 truncate">
+                <MapPin className="w-2.5 h-2.5 md:w-3 md:h-3 text-slate-500 shrink-0" />
+                <span className="truncate">{feature.districtName}</span>
+                {feature.buildings && <span className="shrink-0">• буд. {feature.buildings}</span>}
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           {onToggleSaved && (
             <button
               onClick={() => onToggleSaved(feature)}
               title={isSaved ? 'Видалити з обраного' : 'Зберегти в обране'}
-              className={`p-2 rounded-xl transition-all ${
+              className={`p-1.5 md:p-2 rounded-lg md:rounded-xl transition-all ${
                 isSaved
                   ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500/30'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Star className={`w-4 h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+              <Star className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
             </button>
           )}
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg md:rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5 md:w-4 md:h-4" />
           </button>
         </div>
       </div>
 
       {/* Quick Tag Selector if saved */}
       {isSaved && onToggleSaved && (
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-800/60 rounded-2xl border border-slate-700/60">
-          <span className="text-[11px] text-slate-400 font-medium mr-1">Мітка:</span>
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-800/60 rounded-lg border border-slate-700/60">
+          <span className="text-[9px] md:text-[11px] text-slate-400 font-medium mr-0.5">Мітка:</span>
           {['Дім', 'Робота', 'Батьки'].map((tag) => {
             const isTagActive = savedCustomLabel === tag;
             return (
               <button
                 key={tag}
                 onClick={() => onToggleSaved(feature, isTagActive ? undefined : tag)}
-                className={`text-xs px-2.5 py-1 rounded-xl border transition-all ${
+                className={`text-[10px] md:text-xs px-2 py-0.5 rounded-md md:rounded-lg border transition-all ${
                   isTagActive
                     ? 'bg-amber-500/25 border-amber-500/50 text-amber-300 font-semibold shadow-sm'
                     : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white hover:border-slate-600'
@@ -165,43 +165,46 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
         </div>
       )}
 
-      {/* Power status card */}
-      <div className={`p-3.5 rounded-2xl border ${statusConfig.bg} flex items-center justify-between`}>
-        <div className="flex items-center gap-3">
-          {statusConfig.icon}
-          <div>
-            <div className={`font-bold text-sm ${statusConfig.color}`}>
-              {statusConfig.label}
+      {/* Power status card with integrated notice */}
+      <div className={`p-2 md:p-3 rounded-xl border ${statusConfig.bg} flex flex-col gap-1.5`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {React.cloneElement(statusConfig.icon, { className: 'w-4 h-4 md:w-5 md:h-5' })}
+            <div className="flex items-center gap-1.5">
+              <span className={`font-bold text-xs md:text-sm ${statusConfig.color}`}>
+                {statusConfig.label}
+              </span>
+              <span className="text-[10px] md:text-xs text-slate-400 font-medium">
+                {feature.group ? `• Черга ${feature.group}` : `• Черги: ${feature.groups?.join(', ')}`}
+              </span>
             </div>
-            <div className="text-xs text-slate-400">
-              {feature.group ? `Черга ${feature.group}` : `Черги: ${feature.groups?.join(', ')}`}
-            </div>
+          </div>
+
+          <div className="text-right shrink-0">
+            <span className="text-[10px] md:text-xs font-mono font-semibold text-white bg-slate-900/70 px-1.5 py-0.5 md:py-1 rounded-md md:rounded-lg border border-slate-700/70">
+              {Math.floor(selectedHour).toString().padStart(2, '0')}:00
+            </span>
           </div>
         </div>
 
-        <div className="text-right">
-          <span className="text-xs font-mono text-white bg-slate-900/60 px-2 py-1 rounded-lg border border-slate-700">
-            {Math.floor(selectedHour).toString().padStart(2, '0')}:00
-          </span>
-        </div>
+        {groupDesc && (
+          <p className="text-[10px] md:text-xs text-slate-300 leading-tight border-t border-white/5 pt-1">
+            <span className="text-slate-400">Львівобленерго: </span>
+            {groupDesc}
+          </p>
+        )}
       </div>
 
-      {/* Official notice from Oblenergo */}
-      {groupDesc && (
-        <div className="bg-slate-800/60 p-3 rounded-2xl border border-slate-750 text-xs text-slate-300">
-          <span className="text-slate-400 block mb-1 font-medium">Офіційний статус Львівобленерго:</span>
-          <p className="font-medium text-white">{groupDesc}</p>
-        </div>
-      )}
-
       {/* 24-Hour Timeline */}
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center text-xs text-slate-400">
-          <span className="font-semibold text-slate-300">Графік на 24 години:</span>
-          <span>{intervalsSummary.length > 0 ? `Відключення: ${intervalsSummary.join(', ')}` : 'Без вимкнень'}</span>
+      <div className="flex flex-col gap-1 md:gap-2">
+        <div className="flex justify-between items-center text-[10px] md:text-xs text-slate-400">
+          <span className="font-semibold text-slate-300">Графік 24г:</span>
+          <span className="truncate max-w-[190px] sm:max-w-none text-[9px] md:text-xs">
+            {intervalsSummary.length > 0 ? `Вимкнення: ${intervalsSummary.join(', ')}` : 'Без вимкнень'}
+          </span>
         </div>
 
-        <div className="grid grid-cols-12 gap-1 bg-slate-950/60 p-2 rounded-2xl border border-slate-800">
+        <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 h-4 md:h-6 rounded-md md:rounded-lg overflow-hidden bg-slate-950/80 p-0.5 border border-slate-800">
           {hourlyBars.map((slotStatus, h) => {
             const isCurrent = h === hourSlot;
             const bgClass =
@@ -217,18 +220,14 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
                 title={`${h}:00 – ${h + 1}:00: ${
                   slotStatus === 'on' ? 'Є світло' : slotStatus === 'off' ? 'Немає світла' : 'Частково'
                 }`}
-                className={`relative flex flex-col items-center justify-end h-8 rounded-lg ${bgClass} transition-all cursor-pointer ${
-                  isCurrent ? 'ring-2 ring-white scale-105 z-10' : 'opacity-85 hover:opacity-100'
+                className={`h-full rounded-xs ${bgClass} transition-all ${
+                  isCurrent ? 'ring-2 ring-white scale-110 z-10' : 'opacity-85 hover:opacity-100'
                 }`}
-              >
-                <span className="text-[9px] font-mono font-bold text-slate-950 pb-0.5">
-                  {h % 4 === 0 ? h : ''}
-                </span>
-              </div>
+              />
             );
           })}
         </div>
-        <div className="flex justify-between text-[10px] text-slate-400 font-mono px-1">
+        <div className="flex justify-between text-[9px] md:text-[10px] text-slate-400 font-mono px-0.5">
           <span>00:00</span>
           <span>06:00</span>
           <span>12:00</span>

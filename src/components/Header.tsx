@@ -340,20 +340,20 @@ export const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <header className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 z-[1000] pointer-events-none">
-      {/* MOBILE UNIFIED TOP BAR (< md): ultra-compact 40px single-row */}
+    <header className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 z-[1000] pointer-events-none">
+      {/* MOBILE UNIFIED TOP BAR (< md): ultra-compact single-row */}
       <div className="flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
         {/* Compact Logo Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-lg shrink-0">
-          <Zap className="w-4 h-4 fill-amber-400 text-amber-400" />
-          <span className="font-bold text-xs text-white tracking-wide">
+        <div className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-md shrink-0">
+          <Zap className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <span className="font-bold text-[11px] text-white tracking-wide">
             Світло<span className="text-amber-400">Мапа</span>
           </span>
         </div>
 
         {/* Search Bar Input */}
         <div className="relative flex-1 min-w-0">
-          <div className="flex items-center bg-slate-900/95 backdrop-blur-md px-2.5 py-2 rounded-xl border border-slate-700/70 shadow-lg focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
+          <div className="flex items-center bg-slate-900/95 backdrop-blur-md px-2 py-1.5 rounded-lg border border-slate-700/70 shadow-md focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
             <Search className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1.5" />
             <input
               type="text"
@@ -368,7 +368,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => setQuery('')}
                 className="text-slate-400 hover:text-white p-0.5"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3 h-3" />
               </button>
             )}
           </div>
@@ -382,7 +382,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setIsMobileLayersOpen(!isMobileLayersOpen)}
             title="Шари мапи"
-            className={`p-2 rounded-xl backdrop-blur-md border shadow-lg shrink-0 transition-all active:scale-95 ${
+            className={`p-1.5 rounded-lg backdrop-blur-md border shadow-md shrink-0 transition-all active:scale-95 ${
               layerMode !== 'auto'
                 ? 'bg-amber-500 text-slate-950 border-amber-400 font-semibold'
                 : 'bg-slate-900/95 text-amber-400 border-slate-700/70 hover:bg-slate-800'
@@ -397,9 +397,9 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={onRefresh}
           disabled={isLoading}
           title="Оновити графік"
-          className="p-2 rounded-xl bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-lg text-slate-400 hover:text-white active:scale-95 disabled:opacity-50 shrink-0"
+          className="p-1.5 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-md text-slate-400 hover:text-white active:scale-95 disabled:opacity-50 shrink-0"
         >
-          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
         </button>
 
         {/* Mobile Layers Modal Dropdown */}
