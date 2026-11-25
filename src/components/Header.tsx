@@ -165,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
       id: 'districts',
       label: 'Райони',
       icon: <Shield className="w-4 h-4" />,
-      desc: '27 районів та громад',
+      desc: '26 районів та громад',
     },
     {
       id: 'zones',

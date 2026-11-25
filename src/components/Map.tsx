@@ -103,29 +103,32 @@ export const Map: React.FC<MapProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    // Constrain map strictly to Greater Lviv (fast tile loading, no unnecessary requests)
+    // Constrain map strictly to Greater Lviv coverage area (fast tile loading, no outside requests)
     const greaterLvivBounds = L.latLngBounds(
-      [49.68, 23.74], // South-West (covers Pustomyty, Solonka, Sukhovolia, Rudne)
-      [49.99, 24.28]  // North-East (covers Hrybovychi, Malehiv, Dublyany, Vynnyky, Davydiv)
+      [49.68, 23.78], // South-West (Pustomyty, Solonka, Sukhovolia, Rudne)
+      [49.94, 24.20]  // North-East (Vynnyky, Dublyany, Malehiv, Hrybovychi, Briukhovychi)
     );
+
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
     const map = L.map(mapContainerRef.current, {
       center: [49.8397, 24.0297],
-      zoom: 11.5,
-      minZoom: 10.5,
+      zoom: isMobile ? 11.8 : 12.2,
+      minZoom: 11.6,
       maxZoom: 18,
       maxBounds: greaterLvivBounds,
-      maxBoundsViscosity: 0.9,
+      maxBoundsViscosity: 1.0,
       zoomControl: false,
     });
 
-    // Add high-performance OpenStreetMap tiles with domain sharding and tile buffering
+    // Add high-performance OpenStreetMap tiles strictly bounded to Greater Lviv
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       subdomains: ['a', 'b', 'c'],
+      bounds: greaterLvivBounds,
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
-      keepBuffer: 8,
+      keepBuffer: 6,
       updateWhenZooming: true,
       updateWhenIdle: false,
       updateInterval: 100,
