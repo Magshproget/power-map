@@ -94,7 +94,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
     );
   }
 
-  const firstLoc = validLocations[0];
+  const activeLoc = validLocations.find((loc) => loc.feature?.id === selectedFeatureId) || validLocations[0];
   const hasMoreThanOne = validLocations.length > 1;
 
   const renderChip = (loc: SavedLocation) => {
@@ -169,8 +169,8 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
             <span className="hidden sm:inline">Мої адреси:</span>
           </div>
 
-          {/* First Saved Address Chip */}
-          {firstLoc && renderChip(firstLoc)}
+          {/* Active / Selected Saved Address Chip */}
+          {activeLoc && renderChip(activeLoc)}
 
           {/* More Addresses Dropdown Trigger */}
           {hasMoreThanOne && (

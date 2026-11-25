@@ -61,7 +61,7 @@ export const Map: React.FC<MapProps> = ({
   const lastRenderedKeyRef = useRef<string>('');
   const [currentZoom, setCurrentZoom] = useState(12);
   const [mapViewportVer, setMapViewportVer] = useState(0);
-  const [streetGeometry, setStreetGeometry] = useState<[number, number][][] | null>(null);
+  const [streetGeometry, setStreetGeometry] = useState<{ streetId: string; lines: [number, number][][] } | null>(null);
 
   const hourSlot = Math.floor(selectedHour) % 24;
 
@@ -208,9 +208,14 @@ export const Map: React.FC<MapProps> = ({
         ? '1'
         : '0';
 
-    const renderKey = `${layerMode}-${hourSlot}-${selectedFeature?.type || ''}-${selectedFeature?.id || ''}-${Boolean(
-      streetGeometry
-    )}-${labelTier}-${layerMode === 'streets' ? mapViewportVer : ''}`;
+    const currentStreetLines =
+      selectedFeature?.type === 'street' && streetGeometry?.streetId === selectedFeature.id
+        ? streetGeometry.lines
+        : null;
+
+    const renderKey = `${layerMode}-${hourSlot}-${selectedFeature?.type || ''}-${selectedFeature?.id || ''}-${
+      currentStreetLines ? currentStreetLines.length : 0
+    }-${labelTier}-${layerMode === 'streets' ? mapViewportVer : ''}`;
 
     // Skip heavy DOM teardown and recreation if layer tier and styling parameters haven't changed
     if (renderKey === lastRenderedKeyRef.current) {
@@ -507,9 +512,9 @@ export const Map: React.FC<MapProps> = ({
       const statusText = status === 'on' ? 'Світло є' : status === 'off' ? 'Немає світла' : 'Можливо';
 
       // 5a. Render glowing street polyline if geometry is resolved
-      if (streetGeometry && streetGeometry.length > 0) {
+      if (currentStreetLines && currentStreetLines.length > 0) {
         // Outer neon glow
-        const glowHalo = L.polyline(streetGeometry as any, {
+        const glowHalo = L.polyline(currentStreetLines as any, {
           color: statusColor,
           weight: 10,
           opacity: 0.38,
@@ -520,7 +525,7 @@ export const Map: React.FC<MapProps> = ({
         group.addLayer(glowHalo);
 
         // Dark contrast casing for razor-sharp visibility over map tiles
-        const contrastCasing = L.polyline(streetGeometry as any, {
+        const contrastCasing = L.polyline(currentStreetLines as any, {
           color: '#0f172a',
           weight: 6,
           opacity: 0.85,
@@ -531,7 +536,7 @@ export const Map: React.FC<MapProps> = ({
         group.addLayer(contrastCasing);
 
         // Core bright neon stroke matching power status
-        const coreStroke = L.polyline(streetGeometry as any, {
+        const coreStroke = L.polyline(currentStreetLines as any, {
           color: statusColor,
           weight: 3.5,
           opacity: 1,
@@ -572,15 +577,15 @@ export const Map: React.FC<MapProps> = ({
   // Resolve street geometry whenever selected street changes
   useEffect(() => {
     let isCancelled = false;
+    setStreetGeometry(null);
 
-    if (selectedFeature?.type === 'street') {
+    if (selectedFeature?.type === 'street' && selectedFeature.id) {
+      const targetId = selectedFeature.id;
       fetchStreetGeometry(selectedFeature).then((lines) => {
-        if (!isCancelled) {
-          setStreetGeometry(lines);
+        if (!isCancelled && lines && lines.length > 0) {
+          setStreetGeometry({ streetId: targetId, lines });
         }
       });
-    } else {
-      setStreetGeometry(null);
     }
 
     return () => {
@@ -593,8 +598,13 @@ export const Map: React.FC<MapProps> = ({
     const map = mapInstanceRef.current;
     if (!map || !selectedFeature?.center) return;
 
-    if (selectedFeature.type === 'street' && streetGeometry && streetGeometry.length > 0) {
-      const allPts = streetGeometry.flat();
+    const currentStreetLines =
+      selectedFeature.type === 'street' && streetGeometry?.streetId === selectedFeature.id
+        ? streetGeometry.lines
+        : null;
+
+    if (currentStreetLines && currentStreetLines.length > 0) {
+      const allPts = currentStreetLines.flat();
       if (allPts.length >= 2) {
         const bounds = L.latLngBounds(allPts as any);
         if (bounds.isValid()) {
