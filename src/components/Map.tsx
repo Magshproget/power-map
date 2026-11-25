@@ -179,32 +179,38 @@ export const Map: React.FC<MapProps> = ({
     const group = activeGroupRef.current;
     if (!map || !group) return;
 
-    // Determine target tier
-    const activeTier: 'districts' | 'zones' | 'streets' = (() => {
-      if (layerMode === 'districts') return 'districts';
-      if (layerMode === 'zones') return 'zones';
-      if (layerMode === 'streets') return 'streets';
-      if (currentZoom < 13) return 'districts';
-      if (currentZoom < 16.5) return 'zones';
-      return 'streets';
-    })();
+    // Determine what to show
+    let showDistricts = false;
+    let showZones = false;
+    let showStreets = false;
+
+    if (layerMode === 'districts') {
+      showDistricts = true;
+    } else if (layerMode === 'zones') {
+      showZones = true;
+    } else if (layerMode === 'streets') {
+      showDistricts = true;
+      showStreets = true;
+    } else {
+      // Auto mode (Detail on Demand):
+      // Districts are always the clean, responsive base.
+      showDistricts = true;
+      // Detailed zones only render when a zone or district is explicitly selected
+      if (selectedFeature?.type === 'zone' || selectedFeature?.type === 'district') {
+        showZones = true;
+      }
+    }
 
     const labelTier =
-      activeTier === 'districts'
-        ? currentZoom >= 12.3
-          ? '2'
-          : currentZoom >= 11.6
-          ? '1'
-          : '0'
-        : activeTier === 'zones'
-        ? currentZoom >= 13.2
-          ? '1'
-          : '0'
-        : '';
+      currentZoom >= 12.3
+        ? '2'
+        : currentZoom >= 11.6
+        ? '1'
+        : '0';
 
-    const renderKey = `${activeTier}-${hourSlot}-${selectedFeature?.id || ''}-${Boolean(
+    const renderKey = `${layerMode}-${hourSlot}-${selectedFeature?.type || ''}-${selectedFeature?.id || ''}-${Boolean(
       streetGeometry
-    )}-${labelTier}-${activeTier === 'streets' ? mapViewportVer : ''}`;
+    )}-${labelTier}-${layerMode === 'streets' ? mapViewportVer : ''}`;
 
     // Skip heavy DOM teardown and recreation if layer tier and styling parameters haven't changed
     if (renderKey === lastRenderedKeyRef.current) {
@@ -215,20 +221,6 @@ export const Map: React.FC<MapProps> = ({
     // Clear previous layers and close tooltips
     group.clearLayers();
     closeMapTooltips(map);
-
-    // Determine what to show
-    let showDistricts = false;
-    let showZones = false;
-    let showStreets = false;
-
-    if (activeTier === 'districts') {
-      showDistricts = true;
-    } else if (activeTier === 'zones') {
-      showZones = true;
-    } else if (activeTier === 'streets') {
-      showZones = true;
-      showStreets = true;
-    }
 
     // 1. Render Districts Layer
     if (showDistricts) {
@@ -316,80 +308,98 @@ export const Map: React.FC<MapProps> = ({
       group.addLayer(dLayer);
     }
 
-    // 2. Render Outage Zones Layer
+    // 2. Render Outage Zones Layer (only for selected zones in auto mode, or all zones in explicit mode)
     if (showZones) {
-      const zLayer = L.geoJSON(zonesGeoJson as any, {
-        style: (feature) => {
-          const zProps = feature?.properties;
-          const status = getGroupStatus(zProps?.group);
-          const isSelected = selectedFeature?.type === 'zone' && selectedFeature.id === feature?.id;
-
-          return {
-            fillColor: getStatusColor(status),
-            fillOpacity: isSelected ? 0.5 : 0.3,
-            color: isSelected ? '#0f172a' : getStatusColor(status, true),
-            weight: isSelected ? 3.5 : 2,
-          };
-        },
-        onEachFeature: (feature, layer) => {
-          const zProps = feature.properties;
-          const status = getGroupStatus(zProps.group);
-          const statusText = status === 'on' ? 'Світло є' : 'Немає світла';
-
-          layer.bindTooltip(
-            `<div class="text-xs font-sans">
-              <strong class="text-white text-sm">${zProps.name}</strong><br/>
-              <span class="text-slate-300">${zProps.districtName}</span><br/>
-              <span class="text-amber-400 font-mono font-semibold">Черга ${zProps.group}</span> • 
-              <span class="${status === 'on' ? 'text-emerald-400' : 'text-rose-400'} font-bold">${statusText}</span>
-            </div>`,
-            { className: 'custom-tooltip', sticky: false, direction: 'auto' }
-          );
-
-          layer.on({
-            mouseover: (e) => {
-              e.target.setStyle({ fillOpacity: 0.6, weight: 3 });
-            },
-            mouseout: (e) => {
-              zLayer.resetStyle(e.target);
-              layer.closeTooltip();
-            },
-            click: () => {
-              closeMapTooltips(map);
-              onSelectFeature({
-                type: 'zone',
-                id: feature.id as string,
-                name: zProps.name,
-                districtName: zProps.districtName,
-                group: zProps.group,
-                streets: zProps.streets,
-                center: zProps.center,
-              });
-            },
-          });
-
-          // Add clean zone label badge at appropriate zoom
-          if (zProps.center && currentZoom >= 13.2) {
-            const statusColor = status === 'on' ? '#10b981' : '#ef4444';
-            const labelIcon = L.divIcon({
-              className: 'custom-div-icon',
-              html: `<div class="zone-label-badge">
-                <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
-                <span>Черга ${zProps.group}</span>
-              </div>`,
-              iconSize: [0, 0],
-              iconAnchor: [0, 0],
-            });
-            const marker = L.marker([zProps.center[0], zProps.center[1]], {
-              icon: labelIcon,
-              interactive: false,
-            });
-            group.addLayer(marker);
+      const isAutoMode = layerMode === 'auto';
+      const zonesDataToRender = isAutoMode
+        ? {
+            ...zonesGeoJson,
+            features: (zonesGeoJson as any).features.filter((f: any) => {
+              if (selectedFeature?.type === 'zone') {
+                return f.id === selectedFeature.id;
+              }
+              if (selectedFeature?.type === 'district') {
+                return f.properties?.districtId === selectedFeature.id;
+              }
+              return false;
+            }),
           }
-        },
-      });
+        : zonesGeoJson;
 
-      group.addLayer(zLayer);
+      if (zonesDataToRender.features.length > 0) {
+        const zLayer = L.geoJSON(zonesDataToRender as any, {
+          style: (feature) => {
+            const zProps = feature?.properties;
+            const status = getGroupStatus(zProps?.group);
+            const isSelected = selectedFeature?.type === 'zone' && selectedFeature.id === feature?.id;
+
+            return {
+              fillColor: getStatusColor(status),
+              fillOpacity: isSelected ? 0.55 : 0.35,
+              color: isSelected ? '#0f172a' : getStatusColor(status, true),
+              weight: isSelected ? 3.5 : 2,
+            };
+          },
+          onEachFeature: (feature, layer) => {
+            const zProps = feature.properties;
+            const status = getGroupStatus(zProps.group);
+            const statusText = status === 'on' ? 'Світло є' : 'Немає світла';
+
+            layer.bindTooltip(
+              `<div class="text-xs font-sans">
+                <strong class="text-white text-sm">${zProps.name}</strong><br/>
+                <span class="text-slate-300">${zProps.districtName}</span><br/>
+                <span class="text-amber-400 font-mono font-semibold">Черга ${zProps.group}</span> • 
+                <span class="${status === 'on' ? 'text-emerald-400' : 'text-rose-400'} font-bold">${statusText}</span>
+              </div>`,
+              { className: 'custom-tooltip', sticky: false, direction: 'auto' }
+            );
+
+            layer.on({
+              mouseover: (e) => {
+                e.target.setStyle({ fillOpacity: 0.65, weight: 3 });
+              },
+              mouseout: (e) => {
+                zLayer.resetStyle(e.target);
+                layer.closeTooltip();
+              },
+              click: () => {
+                closeMapTooltips(map);
+                onSelectFeature({
+                  type: 'zone',
+                  id: feature.id as string,
+                  name: zProps.name,
+                  districtName: zProps.districtName,
+                  group: zProps.group,
+                  streets: zProps.streets,
+                  center: zProps.center,
+                });
+              },
+            });
+
+            // Add clean zone label badge
+            if (zProps.center && (isAutoMode || currentZoom >= 13.2)) {
+              const statusColor = status === 'on' ? '#10b981' : '#ef4444';
+              const labelIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="zone-label-badge">
+                  <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
+                  <span>Черга ${zProps.group}</span>
+                </div>`,
+                iconSize: [0, 0],
+                iconAnchor: [0, 0],
+              });
+              const marker = L.marker([zProps.center[0], zProps.center[1]], {
+                icon: labelIcon,
+                interactive: false,
+              });
+              group.addLayer(marker);
+            }
+          },
+        });
+
+        group.addLayer(zLayer);
+      }
     }
 
     // 3. Render Street Markers Layer (only when explicitly requested or at detailed zoom >= 16.5)

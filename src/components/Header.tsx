@@ -159,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
       id: 'auto',
       label: 'Авто-зум',
       icon: <Layers className="w-4 h-4" />,
-      desc: currentZoom < 13 ? 'Зараз: Райони' : currentZoom < 16.5 ? 'Зараз: Зони черг' : 'Зараз: Вулиці',
+      desc: 'Фокус на обраному (швидкий)',
     },
     {
       id: 'districts',
