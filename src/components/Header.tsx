@@ -229,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({
   const renderDropdown = () => (
     <>
       <div
-        className="fixed inset-0 z-[1300] bg-black/50 backdrop-blur-xs pointer-events-auto md:bg-transparent"
+        className="fixed inset-0 z-[1300] bg-black/60 pointer-events-auto md:bg-transparent"
         onClick={handleCloseSearch}
       />
       <div className="fixed inset-x-2 top-11 bottom-3 md:bottom-auto md:absolute md:inset-x-auto md:top-full md:left-0 md:w-full md:mt-2 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-[1350] md:max-h-96 flex flex-col pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
@@ -361,7 +361,7 @@ export const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <header className="fixed top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 z-[1200] pointer-events-none">
+    <header className={`fixed top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 pointer-events-none transition-all ${isFocused ? 'z-[1400]' : 'z-[1200]'}`}>
       {/* MOBILE UNIFIED TOP BAR (< md): ultra-compact single-row */}
       <div className="flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
         {/* Compact Logo Badge */}
@@ -373,8 +373,8 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Search Bar Input */}
-        <div className="relative flex-1 min-w-0">
-          <div className="flex items-center bg-slate-900/95 backdrop-blur-md px-2 py-1.5 rounded-lg border border-slate-700/70 shadow-md focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
+        <div className={`relative flex-1 min-w-0 ${isFocused ? 'z-[1400]' : ''}`}>
+          <div className="relative z-[1400] flex items-center bg-slate-900/98 px-2 py-1.5 rounded-lg border border-slate-700/70 shadow-md focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
             <Search className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1.5" />
             <input
               type="text"
@@ -518,8 +518,8 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Desktop Search Bar */}
-        <div className="relative w-96 pointer-events-auto">
-          <div className="flex items-center bg-slate-900/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
+        <div className={`relative w-96 pointer-events-auto ${isFocused ? 'z-[1400]' : ''}`}>
+          <div className="relative z-[1400] flex items-center bg-slate-900/95 px-3.5 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
             <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2.5" />
             <input
               type="text"
