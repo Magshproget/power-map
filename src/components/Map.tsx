@@ -353,6 +353,7 @@ export const Map: React.FC<MapProps> = ({
     // 3. Render Street Markers Layer (only when explicitly requested or at detailed zoom >= 16.5)
     if (showStreets) {
       const bounds = map.getBounds().pad(0.1);
+      const canvasRenderer = L.canvas({ padding: 0.5 });
       (streetsData as any[]).forEach((st) => {
         const isSelected = selectedFeature?.type === 'street' && selectedFeature.id === st.id;
         if (!isSelected && !bounds.contains([st.lat, st.lon])) return;
@@ -361,6 +362,7 @@ export const Map: React.FC<MapProps> = ({
         const color = getStatusColor(status, true);
 
         const marker = L.circleMarker([st.lat, st.lon], {
+          renderer: canvasRenderer,
           radius: isSelected ? 8 : 4.5,
           fillColor: color,
           fillOpacity: 0.9,
