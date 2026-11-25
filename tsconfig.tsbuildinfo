@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/detailspanel.tsx","./src/components/header.tsx","./src/components/layerswitcher.tsx","./src/components/map.tsx","./src/components/timecontroller.tsx","./src/services/scheduleservice.ts","./src/types/index.ts"],"version":"5.7.3"}
