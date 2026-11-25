@@ -26,18 +26,18 @@ export const Header: React.FC<HeaderProps> = ({
   const zones = zonesData.features;
 
   const filteredStreets = query.trim().length > 1
-    ? streets.filter((s) => s.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5)
+    ? streets.filter((s) => s.name.toLowerCase().includes(query.toLowerCase())).slice(0, 8)
     : [];
 
   const filteredDistricts = query.trim().length > 1
-    ? districts.filter((d) => d.properties.name.toLowerCase().includes(query.toLowerCase())).slice(0, 3)
+    ? districts.filter((d) => d.properties.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5)
     : [];
 
   const filteredZones = query.trim().length > 1
     ? zones.filter((z) =>
         z.properties.name.toLowerCase().includes(query.toLowerCase()) ||
         z.properties.group.includes(query)
-      ).slice(0, 4)
+      ).slice(0, 5)
     : [];
 
   const hasResults =

@@ -69,11 +69,19 @@ export const Map: React.FC<MapProps> = ({
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
+    // Constrain map strictly to Greater Lviv (fast tile loading, no unnecessary requests)
+    const greaterLvivBounds = L.latLngBounds(
+      [49.70, 23.75], // South-West (below Sokilnyky, Zubra, west of Rudne)
+      [49.98, 24.22]  // North-East (above Briukhovychi, Dublyany, east of Vynnyky)
+    );
+
     const map = L.map(mapContainerRef.current, {
       center: [49.8397, 24.0297],
       zoom: 12,
-      minZoom: 10,
+      minZoom: 11,
       maxZoom: 18,
+      maxBounds: greaterLvivBounds,
+      maxBoundsViscosity: 0.95,
       zoomControl: false,
     });
 
