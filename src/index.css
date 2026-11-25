@@ -26,39 +26,67 @@ html, body, #root {
   border-radius: 10px !important;
   box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6) !important;
   padding: 7px 14px !important;
+  pointer-events: none !important;
 }
 
 .custom-tooltip::before {
   border-top-color: rgba(15, 23, 42, 0.94) !important;
 }
 
+/* Reset Leaflet default div-icon box */
+.custom-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
 /* Permanent map labels */
-.zone-label-badge {
-  background: rgba(15, 23, 42, 0.88);
-  backdrop-filter: blur(4px);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+.district-label-badge {
+  background: rgba(15, 23, 42, 0.84);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   padding: 3px 8px;
   font-size: 11px;
   font-weight: 600;
+  letter-spacing: -0.01em;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  transition: opacity 0.2s ease;
 }
 
-.district-label-badge {
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(6px);
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  padding: 5px 12px;
-  font-size: 13px;
+.zone-label-badge {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-weight: 700;
   white-space: nowrap;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+.status-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 /* Custom scrollbar */

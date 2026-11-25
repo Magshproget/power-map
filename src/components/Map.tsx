@@ -15,6 +15,25 @@ interface MapProps {
   onZoomChange: (zoom: number) => void;
 }
 
+const CORE_DISTRICT_IDS = new Set([
+  'halitskiy',
+  'zaliznichniy',
+  'lychakivskiy',
+  'sykhivskiy',
+  'frankivskiy',
+  'shevchenkivskiy',
+]);
+
+const MAJOR_SUBURB_IDS = new Set([
+  'vynnyky',
+  'briukhovychi',
+  'rudne',
+  'dublyany',
+  'sokilnyky',
+  'zymna_voda',
+  'pustomyty',
+]);
+
 export const Map: React.FC<MapProps> = ({
   layerMode,
   selectedHour,
@@ -99,6 +118,10 @@ export const Map: React.FC<MapProps> = ({
     const group = L.layerGroup().addTo(map);
     activeGroupRef.current = group;
 
+    map.on('zoomstart', () => {
+      map.closeTooltip();
+    });
+
     map.on('zoomend', () => {
       const z = map.getZoom();
       setCurrentZoom(z);
@@ -123,8 +146,9 @@ export const Map: React.FC<MapProps> = ({
     const group = activeGroupRef.current;
     if (!map || !group) return;
 
-    // Clear previous layers
+    // Clear previous layers and close tooltips
     group.clearLayers();
+    map.closeTooltip();
 
     // Determine what to show
     let showDistricts = false;
@@ -179,7 +203,7 @@ export const Map: React.FC<MapProps> = ({
                 status === 'on' ? 'text-emerald-400' : status === 'off' ? 'text-rose-400' : 'text-amber-400'
               } font-semibold">${statusText}</span>
             </div>`,
-            { className: 'custom-tooltip', sticky: true }
+            { className: 'custom-tooltip', sticky: false, direction: 'auto' }
           );
 
           layer.on({
@@ -188,8 +212,10 @@ export const Map: React.FC<MapProps> = ({
             },
             mouseout: (e) => {
               dLayer.resetStyle(e.target);
+              map.closeTooltip();
             },
             click: () => {
+              map.closeTooltip();
               onSelectFeature({
                 type: 'district',
                 id: feature.id as string,
@@ -201,16 +227,26 @@ export const Map: React.FC<MapProps> = ({
             },
           });
 
-          // Add clean center label badge for district
-          if (dProps.center) {
+          // Show labels adaptively to avoid collisions at low zoom
+          let shouldShowLabel = false;
+          if (currentZoom >= 12.3) {
+            shouldShowLabel = true;
+          } else if (currentZoom >= 11.6) {
+            shouldShowLabel = CORE_DISTRICT_IDS.has(feature.id as string) || MAJOR_SUBURB_IDS.has(feature.id as string);
+          } else {
+            shouldShowLabel = CORE_DISTRICT_IDS.has(feature.id as string);
+          }
+
+          if (dProps.center && shouldShowLabel) {
             const statusColor = status === 'on' ? '#10b981' : status === 'off' ? '#ef4444' : '#f59e0b';
             const labelIcon = L.divIcon({
               className: 'custom-div-icon',
-              html: `<div class="district-label-badge" style="border-left: 4px solid ${statusColor};">
-                ${dProps.name}
+              html: `<div class="district-label-badge">
+                <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
+                <span>${dProps.name}</span>
               </div>`,
-              iconSize: [120, 28],
-              iconAnchor: [60, 14],
+              iconSize: [0, 0],
+              iconAnchor: [0, 0],
             });
             const marker = L.marker([dProps.center[0], dProps.center[1]], {
               icon: labelIcon,
@@ -251,7 +287,7 @@ export const Map: React.FC<MapProps> = ({
               <span class="text-amber-400 font-mono font-semibold">Черга ${zProps.group}</span> • 
               <span class="${status === 'on' ? 'text-emerald-400' : 'text-rose-400'} font-bold">${statusText}</span>
             </div>`,
-            { className: 'custom-tooltip', sticky: true }
+            { className: 'custom-tooltip', sticky: false, direction: 'auto' }
           );
 
           layer.on({
@@ -260,8 +296,10 @@ export const Map: React.FC<MapProps> = ({
             },
             mouseout: (e) => {
               zLayer.resetStyle(e.target);
+              map.closeTooltip();
             },
             click: () => {
+              map.closeTooltip();
               onSelectFeature({
                 type: 'zone',
                 id: feature.id as string,
@@ -274,16 +312,17 @@ export const Map: React.FC<MapProps> = ({
             },
           });
 
-          // Add clean zone label badge
-          if (zProps.center && currentZoom >= 12.5) {
+          // Add clean zone label badge at appropriate zoom
+          if (zProps.center && currentZoom >= 13.2) {
             const statusColor = status === 'on' ? '#10b981' : '#ef4444';
             const labelIcon = L.divIcon({
               className: 'custom-div-icon',
-              html: `<div class="zone-label-badge" style="border-left: 3px solid ${statusColor};">
-                Черга ${zProps.group}
+              html: `<div class="zone-label-badge">
+                <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
+                <span>Черга ${zProps.group}</span>
               </div>`,
-              iconSize: [70, 22],
-              iconAnchor: [35, 11],
+              iconSize: [0, 0],
+              iconAnchor: [0, 0],
             });
             const marker = L.marker([zProps.center[0], zProps.center[1]], {
               icon: labelIcon,
@@ -328,6 +367,7 @@ export const Map: React.FC<MapProps> = ({
         );
 
         marker.on('click', () => {
+          map.closeTooltip();
           onSelectFeature({
             type: 'street',
             id: st.id,

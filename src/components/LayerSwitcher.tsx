@@ -24,7 +24,7 @@ export const LayerSwitcher: React.FC<LayerSwitcherProps> = ({
       id: 'districts',
       label: 'Райони',
       icon: <Shield className="w-4 h-4" />,
-      desc: '6 адміністративних районів',
+      desc: '27 районів та громад',
     },
     {
       id: 'zones',
