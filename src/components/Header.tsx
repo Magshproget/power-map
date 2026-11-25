@@ -13,6 +13,7 @@ interface HeaderProps {
   layerMode?: LayerMode;
   onChangeLayerMode?: (mode: LayerMode) => void;
   currentZoom?: number;
+  onSearchFocusChange?: (isSearching: boolean) => void;
 }
 
 const STOP_WORDS = new Set([
@@ -128,10 +129,30 @@ export const Header: React.FC<HeaderProps> = ({
   layerMode = 'auto',
   onChangeLayerMode,
   currentZoom = 12,
+  onSearchFocusChange,
 }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isMobileLayersOpen, setIsMobileLayersOpen] = useState(false);
+
+  const resetScroll = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+  };
+
+  const handleOpenSearch = () => {
+    setIsFocused(true);
+    onSearchFocusChange?.(true);
+  };
+
+  const handleCloseSearch = () => {
+    setIsFocused(false);
+    onSearchFocusChange?.(false);
+    resetScroll();
+  };
 
   const layerOptions: { id: LayerMode; label: string; icon: React.ReactNode; desc: string }[] = [
     {
@@ -208,16 +229,16 @@ export const Header: React.FC<HeaderProps> = ({
   const renderDropdown = () => (
     <>
       <div
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs pointer-events-auto md:bg-transparent"
-        onClick={() => setIsFocused(false)}
+        className="fixed inset-0 z-[1300] bg-black/50 backdrop-blur-xs pointer-events-auto md:bg-transparent"
+        onClick={handleCloseSearch}
       />
-      <div className="fixed inset-x-2 top-11 md:absolute md:inset-x-auto md:top-full md:left-0 md:w-full md:mt-2 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[65vh] md:max-h-96 overflow-y-auto pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="fixed inset-x-2 top-11 bottom-3 md:bottom-auto md:absolute md:inset-x-auto md:top-full md:left-0 md:w-full md:mt-2 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-[1350] md:max-h-96 flex flex-col pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
         {!hasResults ? (
           <div className="p-4 text-center text-sm text-slate-400">
             Нічого не знайдено за запитом "{query}"
           </div>
         ) : (
-          <div className="py-2">
+          <div className="py-2 pb-24 md:pb-4 overflow-y-auto flex-1">
             {filteredDistricts.length > 0 && (
               <div className="px-3 py-1">
                 <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
@@ -235,7 +256,7 @@ export const Header: React.FC<HeaderProps> = ({
                         streets: d.properties.keyStreets,
                         center: d.properties.center as [number, number],
                       });
-                      setIsFocused(false);
+                      handleCloseSearch();
                       setQuery('');
                     }}
                     className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
@@ -270,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                         streets: z.properties.streets,
                         center: z.properties.center as [number, number],
                       });
-                      setIsFocused(false);
+                      handleCloseSearch();
                       setQuery('');
                     }}
                     className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
@@ -308,7 +329,7 @@ export const Header: React.FC<HeaderProps> = ({
                           center: [s.lat, s.lon],
                           buildings: s.buildings,
                         });
-                        setIsFocused(false);
+                        handleCloseSearch();
                         setQuery('');
                       }}
                       className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors gap-2"
@@ -340,7 +361,7 @@ export const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <header className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 z-[1000] pointer-events-none">
+    <header className="fixed top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 z-[1200] pointer-events-none">
       {/* MOBILE UNIFIED TOP BAR (< md): ultra-compact single-row */}
       <div className="flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
         {/* Compact Logo Badge */}
@@ -359,13 +380,17 @@ export const Header: React.FC<HeaderProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setIsFocused(true)}
+              onFocus={handleOpenSearch}
+              onBlur={() => setTimeout(resetScroll, 120)}
               placeholder="Пошук вулиці..."
               className="w-full bg-transparent text-[16px] md:text-xs text-white placeholder-slate-400 outline-none truncate"
             />
             {query && (
               <button
-                onClick={() => setQuery('')}
+                onClick={() => {
+                  setQuery('');
+                  handleCloseSearch();
+                }}
                 className="text-slate-400 hover:text-white p-0.5"
               >
                 <X className="w-3 h-3" />
@@ -500,13 +525,17 @@ export const Header: React.FC<HeaderProps> = ({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setIsFocused(true)}
+              onFocus={handleOpenSearch}
+              onBlur={() => setTimeout(resetScroll, 120)}
               placeholder="Введіть вулицю або мікрорайон..."
               className="w-full bg-transparent text-sm text-white placeholder-slate-400 outline-none"
             />
             {query && (
               <button
-                onClick={() => setQuery('')}
+                onClick={() => {
+                  setQuery('');
+                  handleCloseSearch();
+                }}
                 className="text-slate-400 hover:text-white p-1 rounded-lg"
               >
                 <X className="w-3.5 h-3.5" />

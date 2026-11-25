@@ -10,6 +10,7 @@ interface SavedLocationsBarProps {
   onSelectLocation: (feature: SelectedFeature) => void;
   onRemoveLocation: (id: string, e: React.MouseEvent) => void;
   onOpenSearch?: () => void;
+  isSearching?: boolean;
 }
 
 export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
@@ -19,6 +20,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   selectedFeatureId,
   onSelectLocation,
   onRemoveLocation,
+  isSearching,
 }) => {
   const hourSlot = Math.floor(selectedHour) % 24;
 
@@ -51,7 +53,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
 
   if (savedLocations.length === 0) {
     return (
-      <div className="hidden md:block absolute top-20 left-4 z-[990] pointer-events-auto">
+      <div className="hidden md:block fixed top-20 left-4 z-[990] pointer-events-auto">
         <div className="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400">
           <Bookmark className="w-3.5 h-3.5 text-amber-400/80" />
           <span>Зберігайте адреси (дім, робота) через «★ В обране» для швидкого моніторингу</span>
@@ -62,8 +64,8 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
 
   return (
     <div
-      className={`absolute top-11 md:top-20 left-2 md:left-4 right-2 md:right-4 z-[990] items-center gap-1.5 md:gap-2 pointer-events-none overflow-hidden ${
-        selectedFeatureId ? 'hidden md:flex' : 'flex'
+      className={`fixed top-11 md:top-20 left-2 md:left-4 right-2 md:right-4 z-[990] items-center gap-1.5 md:gap-2 pointer-events-none overflow-hidden ${
+        selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
       <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">

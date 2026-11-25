@@ -9,6 +9,7 @@ interface TimeControllerProps {
   schedule: ScheduleData | null;
   selectedFeature?: SelectedFeature | null;
   onClearSelectedFeature?: () => void;
+  isSearching?: boolean;
 }
 
 export const TimeController: React.FC<TimeControllerProps> = ({
@@ -18,6 +19,7 @@ export const TimeController: React.FC<TimeControllerProps> = ({
   schedule,
   selectedFeature,
   onClearSelectedFeature,
+  isSearching,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -82,8 +84,8 @@ export const TimeController: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`absolute bottom-2 md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1 md:gap-3 pointer-events-auto ${
-        selectedFeature ? 'hidden md:flex' : 'flex'
+      className={`fixed bottom-2 md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 backdrop-blur-xl p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1 md:gap-3 pointer-events-auto ${
+        selectedFeature || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
       {/* Top row: Controls, Context name, Clock */}

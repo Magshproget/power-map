@@ -36,6 +36,7 @@ export function App() {
   const [currentZoom, setCurrentZoom] = useState<number>(12);
   const [selectedFeature, setSelectedFeature] = useState<SelectedFeature | null>(null);
   const [savedLocations, setSavedLocations] = useState<SavedLocation[]>(loadSavedFromStorage);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Save to localStorage on change
   useEffect(() => {
@@ -131,6 +132,7 @@ export function App() {
         layerMode={layerMode}
         onChangeLayerMode={setLayerMode}
         currentZoom={currentZoom}
+        onSearchFocusChange={setIsSearching}
       />
 
       {/* Quick Saved Locations Status Bar */}
@@ -141,6 +143,7 @@ export function App() {
         selectedFeatureId={selectedFeature?.id}
         onSelectLocation={setSelectedFeature}
         onRemoveLocation={handleRemoveSaved}
+        isSearching={isSearching}
       />
 
       {/* Layer Switcher */}
@@ -182,6 +185,7 @@ export function App() {
         schedule={schedule}
         selectedFeature={selectedFeature}
         onClearSelectedFeature={() => setSelectedFeature(null)}
+        isSearching={isSearching}
       />
     </div>
   );
