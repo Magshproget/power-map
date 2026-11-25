@@ -51,6 +51,7 @@ export interface StreetItem {
   buildings: string;
   cityId?: number;
   cityName?: string;
+  polyline?: [number, number][][];
 }
 
 export interface SelectedFeature {
@@ -64,6 +65,7 @@ export interface SelectedFeature {
   streets?: string[];
   center?: [number, number];
   buildings?: string;
+  polyline?: [number, number][][];
 }
 
 export interface SavedLocation {

@@ -5,6 +5,7 @@ import { LayerMode, SelectedFeature, ScheduleData, PowerStatus } from '../types'
 import districtsGeoJson from '../data/districts.json';
 import zonesGeoJson from '../data/zones.json';
 import streetsData from '../data/streets.json';
+import { fetchStreetGeometry } from '../services/streetGeometry';
 
 interface MapProps {
   layerMode: LayerMode;
@@ -59,6 +60,7 @@ export const Map: React.FC<MapProps> = ({
   const activeGroupRef = useRef<L.LayerGroup | null>(null);
   const [currentZoom, setCurrentZoom] = useState(12);
   const [mapViewportVer, setMapViewportVer] = useState(0);
+  const [streetGeometry, setStreetGeometry] = useState<[number, number][][] | null>(null);
 
   const hourSlot = Math.floor(selectedHour) % 24;
 
@@ -446,7 +448,7 @@ export const Map: React.FC<MapProps> = ({
       });
     }
 
-    // 5. Pin on Demand: Prominent glowing pin card for searched or selected street
+    // 5. Street Highlight & Pin on Demand: Prominent glowing polyline geometry + pin card
     if (selectedFeature?.type === 'street' && selectedFeature.center) {
       const st = selectedFeature;
       const center = selectedFeature.center;
@@ -454,6 +456,43 @@ export const Map: React.FC<MapProps> = ({
       const statusColor = status === 'on' ? '#10b981' : status === 'off' ? '#ef4444' : '#f59e0b';
       const statusText = status === 'on' ? 'Світло є' : status === 'off' ? 'Немає світла' : 'Можливо';
 
+      // 5a. Render glowing street polyline if geometry is resolved
+      if (streetGeometry && streetGeometry.length > 0) {
+        // Outer neon glow
+        const glowHalo = L.polyline(streetGeometry as any, {
+          color: statusColor,
+          weight: 10,
+          opacity: 0.38,
+          lineCap: 'round',
+          lineJoin: 'round',
+          interactive: false,
+        });
+        group.addLayer(glowHalo);
+
+        // Dark contrast casing for razor-sharp visibility over map tiles
+        const contrastCasing = L.polyline(streetGeometry as any, {
+          color: '#0f172a',
+          weight: 6,
+          opacity: 0.85,
+          lineCap: 'round',
+          lineJoin: 'round',
+          interactive: false,
+        });
+        group.addLayer(contrastCasing);
+
+        // Core bright neon stroke matching power status
+        const coreStroke = L.polyline(streetGeometry as any, {
+          color: statusColor,
+          weight: 3.5,
+          opacity: 1,
+          lineCap: 'round',
+          lineJoin: 'round',
+          interactive: false,
+        });
+        group.addLayer(coreStroke);
+      }
+
+      // 5b. Prominent pin card badge
       const pinIcon = L.divIcon({
         className: 'custom-div-icon',
         html: `<div class="relative flex items-center justify-center pointer-events-none">
@@ -478,17 +517,47 @@ export const Map: React.FC<MapProps> = ({
 
       group.addLayer(pinMarker);
     }
-  }, [layerMode, currentZoom, schedule, selectedHour, selectedFeature, mapViewportVer]);
+  }, [layerMode, currentZoom, schedule, selectedHour, selectedFeature, streetGeometry, mapViewportVer]);
 
-  // Pan to selected feature
+  // Resolve street geometry whenever selected street changes
+  useEffect(() => {
+    let isCancelled = false;
+
+    if (selectedFeature?.type === 'street') {
+      fetchStreetGeometry(selectedFeature).then((lines) => {
+        if (!isCancelled) {
+          setStreetGeometry(lines);
+        }
+      });
+    } else {
+      setStreetGeometry(null);
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedFeature?.id, selectedFeature?.name]);
+
+  // Pan / Fit Bounds to selected feature
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedFeature?.center) return;
 
+    if (selectedFeature.type === 'street' && streetGeometry && streetGeometry.length > 0) {
+      const allPts = streetGeometry.flat();
+      if (allPts.length >= 2) {
+        const bounds = L.latLngBounds(allPts as any);
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [65, 65], maxZoom: 16.5 });
+          return;
+        }
+      }
+    }
+
     const [lat, lon] = selectedFeature.center;
     const targetZoom = selectedFeature.type === 'district' ? 13 : selectedFeature.type === 'zone' ? 14 : 16;
     map.flyTo([lat, lon], targetZoom, { duration: 1.2 });
-  }, [selectedFeature]);
+  }, [selectedFeature?.id, streetGeometry]);
 
   return <div ref={mapContainerRef} className="w-full h-full relative" />;
 };
