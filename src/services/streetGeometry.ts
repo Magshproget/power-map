@@ -15,6 +15,39 @@ try {
   console.warn('Failed to parse preseeded geometries:', e);
 }
 
+let fullDatasetPromise: Promise<Record<string, [number, number][][]> | null> | null = null;
+
+export function loadFullGeometries(): Promise<Record<string, [number, number][][]> | null> {
+  if (!fullDatasetPromise) {
+    const basePath = (import.meta as any).env?.BASE_URL || '/';
+    const jsonUrl = `${basePath.replace(/\/$/, '')}/data/streetGeometries.json`;
+    fullDatasetPromise = fetch(jsonUrl)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && typeof data === 'object') {
+          Object.entries(data).forEach(([id, val]) => {
+            if (Array.isArray(val) && val.length > 0) {
+              memoryCache.set(id, val as [number, number][][]);
+            }
+          });
+          return data;
+        }
+        return null;
+      })
+      .catch(() => null);
+  }
+  return fullDatasetPromise;
+}
+
+// Lazy pre-fetch in browser idle time
+if (typeof window !== 'undefined') {
+  if ('requestIdleCallback' in window) {
+    (window as any).requestIdleCallback(() => loadFullGeometries());
+  } else {
+    setTimeout(() => loadFullGeometries(), 1200);
+  }
+}
+
 const getCacheKey = (id: string, name: string, locality?: string) => {
   return `${id || ''}_${name}_${locality || ''}`;
 };
@@ -85,7 +118,15 @@ export async function fetchStreetGeometry(street: {
     }
   } catch {}
 
-  // 4. Fetch dynamically from Nominatim OpenStreetMap
+  // 4. Try loading full dataset if not yet loaded
+  try {
+    await loadFullGeometries();
+    if (id && memoryCache.has(id)) {
+      return memoryCache.get(id)!;
+    }
+  } catch {}
+
+  // 5. Fetch dynamically from Nominatim OpenStreetMap fallback
   try {
     const cleanName = street.name
       .replace(/^(вул\.|просп\.|пл\.|вулиця|проспект|площа)\s*/i, '')
@@ -121,7 +162,6 @@ export async function fetchStreetGeometry(street: {
       const lines = parseGeoJsonToLines(item.geojson);
       for (const line of lines) {
         if (line.length >= 2) {
-          // Verify point proximity to street.center if available (within ~6 km)
           if (street.center) {
             const [cLat, cLon] = street.center;
             const mid = line[Math.floor(line.length / 2)];
@@ -129,7 +169,6 @@ export async function fetchStreetGeometry(street: {
             const dLon = mid[1] - cLon;
             const distSq = dLat * dLat + dLon * dLon;
             if (distSq > 0.0036) {
-              // > ~6.5 km away, likely a different town
               continue;
             }
           }
