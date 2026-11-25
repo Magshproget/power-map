@@ -58,6 +58,7 @@ export const Map: React.FC<MapProps> = ({
   const mapInstanceRef = useRef<L.Map | null>(null);
 
   const activeGroupRef = useRef<L.LayerGroup | null>(null);
+  const lastRenderedKeyRef = useRef<string>('');
   const [currentZoom, setCurrentZoom] = useState(12);
   const [mapViewportVer, setMapViewportVer] = useState(0);
   const [streetGeometry, setStreetGeometry] = useState<[number, number][][] | null>(null);
@@ -118,11 +119,16 @@ export const Map: React.FC<MapProps> = ({
       zoomControl: false,
     });
 
-    // Add standard OpenStreetMap tiles (free, reliable, complete Ukrainian streets & landmarks)
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Add high-performance OpenStreetMap tiles with domain sharding and tile buffering
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: ['a', 'b', 'c'],
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
+      keepBuffer: 8,
+      updateWhenZooming: true,
+      updateWhenIdle: false,
+      updateInterval: 100,
     }).addTo(map);
 
     // Zoom control in bottom right
@@ -135,6 +141,17 @@ export const Map: React.FC<MapProps> = ({
       closeMapTooltips(map);
     });
 
+    let zoomRaf: number | null = null;
+    const handleZoomUpdate = () => {
+      if (zoomRaf) cancelAnimationFrame(zoomRaf);
+      zoomRaf = requestAnimationFrame(() => {
+        const z = map.getZoom();
+        setCurrentZoom(z);
+        onZoomChange(z);
+      });
+    };
+
+    map.on('zoom', handleZoomUpdate);
     map.on('zoomend', () => {
       const z = map.getZoom();
       setCurrentZoom(z);
@@ -148,6 +165,7 @@ export const Map: React.FC<MapProps> = ({
     mapInstanceRef.current = map;
 
     return () => {
+      if (zoomRaf) cancelAnimationFrame(zoomRaf);
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -159,6 +177,39 @@ export const Map: React.FC<MapProps> = ({
     const group = activeGroupRef.current;
     if (!map || !group) return;
 
+    // Determine target tier
+    const activeTier: 'districts' | 'zones' | 'streets' = (() => {
+      if (layerMode === 'districts') return 'districts';
+      if (layerMode === 'zones') return 'zones';
+      if (layerMode === 'streets') return 'streets';
+      if (currentZoom < 13) return 'districts';
+      if (currentZoom < 16.5) return 'zones';
+      return 'streets';
+    })();
+
+    const labelTier =
+      activeTier === 'districts'
+        ? currentZoom >= 12.3
+          ? '2'
+          : currentZoom >= 11.6
+          ? '1'
+          : '0'
+        : activeTier === 'zones'
+        ? currentZoom >= 13.2
+          ? '1'
+          : '0'
+        : '';
+
+    const renderKey = `${activeTier}-${hourSlot}-${selectedFeature?.id || ''}-${Boolean(
+      streetGeometry
+    )}-${labelTier}-${activeTier === 'streets' ? mapViewportVer : ''}`;
+
+    // Skip heavy DOM teardown and recreation if layer tier and styling parameters haven't changed
+    if (renderKey === lastRenderedKeyRef.current) {
+      return;
+    }
+    lastRenderedKeyRef.current = renderKey;
+
     // Clear previous layers and close tooltips
     group.clearLayers();
     closeMapTooltips(map);
@@ -168,26 +219,13 @@ export const Map: React.FC<MapProps> = ({
     let showZones = false;
     let showStreets = false;
 
-    if (layerMode === 'districts') {
+    if (activeTier === 'districts') {
       showDistricts = true;
-    } else if (layerMode === 'zones') {
+    } else if (activeTier === 'zones') {
       showZones = true;
-    } else if (layerMode === 'streets') {
+    } else if (activeTier === 'streets') {
       showZones = true;
       showStreets = true;
-    } else {
-      // Auto mode based on zoom:
-      // zoom < 13: Clean district polygons
-      // 13 <= zoom < 16.5: Clean outage zone polygons
-      // zoom >= 16.5: Street-level markers in view
-      if (currentZoom < 13) {
-        showDistricts = true;
-      } else if (currentZoom < 16.5) {
-        showZones = true;
-      } else {
-        showZones = true;
-        showStreets = true;
-      }
     }
 
     // 1. Render Districts Layer
