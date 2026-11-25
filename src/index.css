@@ -9,31 +9,56 @@ html, body, #root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
-/* Leaflet dark theme map tweaks */
 .leaflet-container {
-  background-color: #0f172a !important;
+  background-color: #f1f5f9 !important;
   font-family: inherit;
   width: 100%;
   height: 100%;
 }
 
-.leaflet-tile {
-  filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
-}
-
+/* Custom interactive tooltips */
 .custom-tooltip {
-  background: rgba(15, 23, 42, 0.92) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: #f1f5f9 !important;
+  background: rgba(15, 23, 42, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #f8fafc !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
-  padding: 6px 12px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6) !important;
+  padding: 7px 14px !important;
 }
 
 .custom-tooltip::before {
-  border-top-color: rgba(15, 23, 42, 0.92) !important;
+  border-top-color: rgba(15, 23, 42, 0.94) !important;
+}
+
+/* Permanent map labels */
+.zone-label-badge {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.district-label-badge {
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
 }
 
 /* Custom scrollbar */
