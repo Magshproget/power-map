@@ -34,6 +34,17 @@ const MAJOR_SUBURB_IDS = new Set([
   'pustomyty',
 ]);
 
+const closeMapTooltips = (map: L.Map | null) => {
+  if (!map) return;
+  try {
+    map.eachLayer((layer: any) => {
+      if (layer && typeof layer.closeTooltip === 'function') {
+        layer.closeTooltip();
+      }
+    });
+  } catch {}
+};
+
 export const Map: React.FC<MapProps> = ({
   layerMode,
   selectedHour,
@@ -119,7 +130,7 @@ export const Map: React.FC<MapProps> = ({
     activeGroupRef.current = group;
 
     map.on('zoomstart', () => {
-      map.closeTooltip();
+      closeMapTooltips(map);
     });
 
     map.on('zoomend', () => {
@@ -148,7 +159,7 @@ export const Map: React.FC<MapProps> = ({
 
     // Clear previous layers and close tooltips
     group.clearLayers();
-    map.closeTooltip();
+    closeMapTooltips(map);
 
     // Determine what to show
     let showDistricts = false;
@@ -212,10 +223,10 @@ export const Map: React.FC<MapProps> = ({
             },
             mouseout: (e) => {
               dLayer.resetStyle(e.target);
-              map.closeTooltip();
+              layer.closeTooltip();
             },
             click: () => {
-              map.closeTooltip();
+              closeMapTooltips(map);
               onSelectFeature({
                 type: 'district',
                 id: feature.id as string,
@@ -296,10 +307,10 @@ export const Map: React.FC<MapProps> = ({
             },
             mouseout: (e) => {
               zLayer.resetStyle(e.target);
-              map.closeTooltip();
+              layer.closeTooltip();
             },
             click: () => {
-              map.closeTooltip();
+              closeMapTooltips(map);
               onSelectFeature({
                 type: 'zone',
                 id: feature.id as string,
@@ -367,7 +378,7 @@ export const Map: React.FC<MapProps> = ({
         );
 
         marker.on('click', () => {
-          map.closeTooltip();
+          closeMapTooltips(map);
           onSelectFeature({
             type: 'street',
             id: st.id,
