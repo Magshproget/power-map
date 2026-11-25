@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin, Star } from 'lucide-react';
 import { SelectedFeature, ScheduleData, PowerStatus } from '../types';
 
@@ -23,7 +23,45 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   savedCustomLabel,
   onToggleSaved,
 }) => {
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartYRef = useRef(0);
+  const touchStartXRef = useRef(0);
+  const panelRef = useRef<HTMLDivElement>(null);
+
   if (!feature) return null;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (panelRef.current && panelRef.current.scrollTop > 0) return;
+    touchStartYRef.current = e.touches[0].clientY;
+    touchStartXRef.current = e.touches[0].clientX;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentY = e.touches[0].clientY;
+    const currentX = e.touches[0].clientX;
+    const deltaY = currentY - touchStartYRef.current;
+    const deltaX = Math.abs(currentX - touchStartXRef.current);
+
+    if (deltaX > Math.abs(deltaY) && dragY === 0) return;
+
+    if (deltaY > 0) {
+      setDragY(deltaY);
+    } else {
+      setDragY(0);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (dragY > 65) {
+      onClose();
+    }
+    setDragY(0);
+  };
 
   const hourSlot = Math.floor(selectedHour) % 24;
 
@@ -83,9 +121,21 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   }[status];
 
   return (
-    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+    <div
+      ref={panelRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{
+        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+        transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+      }}
+      className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+    >
       {/* Mobile Drawer Grab Bar */}
-      <div className="w-8 h-1 bg-slate-600/70 rounded-full mx-auto -mt-1 mb-0.5 md:hidden shrink-0" />
+      <div className="w-full flex justify-center py-1.5 -mt-2 -mb-1 md:hidden shrink-0 cursor-grab active:cursor-grabbing">
+        <div className="w-12 h-1.5 bg-slate-500/80 rounded-full" />
+      </div>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
@@ -118,26 +168,27 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {onToggleSaved && (
             <button
               onClick={() => onToggleSaved(feature)}
               title={isSaved ? 'Видалити з обраного' : 'Зберегти в обране'}
-              className={`p-1.5 md:p-2 rounded-lg md:rounded-xl transition-all ${
+              className={`p-2 md:p-2 rounded-xl transition-all active:scale-95 ${
                 isSaved
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  ? 'bg-amber-500/25 text-amber-400 border border-amber-500/50 hover:bg-amber-500/35'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800 bg-slate-800/40 border border-slate-700/50'
               }`}
             >
-              <Star className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+              <Star className={`w-5 h-5 md:w-4.5 md:h-4.5 ${isSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
             </button>
           )}
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg md:rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            title="Закрити"
+            className="p-2 md:p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 bg-slate-800/40 border border-slate-700/50 transition-all active:scale-95"
           >
-            <X className="w-3.5 h-3.5 md:w-4 md:h-4" />
+            <X className="w-5 h-5 md:w-4.5 md:h-4.5" />
           </button>
         </div>
       </div>
