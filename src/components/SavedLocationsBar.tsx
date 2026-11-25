@@ -61,7 +61,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   }
 
   return (
-    <div className="absolute top-[102px] md:top-20 left-3 md:left-4 right-3 md:right-4 z-[990] flex items-center gap-2 pointer-events-none overflow-hidden">
+    <div className="absolute top-[58px] md:top-20 left-3 md:left-4 right-3 md:right-4 z-[990] flex items-center gap-2 pointer-events-none overflow-hidden">
       <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
         <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-lg text-xs font-semibold text-slate-300 shrink-0">
           <Bookmark className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />

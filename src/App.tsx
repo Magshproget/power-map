@@ -128,6 +128,9 @@ export function App() {
         onRefresh={loadScheduleData}
         isLoading={isLoading}
         onSelectFeature={setSelectedFeature}
+        layerMode={layerMode}
+        onChangeLayerMode={setLayerMode}
+        currentZoom={currentZoom}
       />
 
       {/* Quick Saved Locations Status Bar */}
