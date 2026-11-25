@@ -3,6 +3,7 @@ const path = require('path');
 
 const rawDistricts = JSON.parse(fs.readFileSync('/tmp/lviv_districts_raw.json', 'utf8'));
 const rawSuburbs = JSON.parse(fs.readFileSync('/tmp/greater_lviv_suburbs.json', 'utf8'));
+const rawOuter = JSON.parse(fs.readFileSync('/tmp/outer_ring_suburbs.json', 'utf8'));
 
 // District primary groups and metadata
 const districtMeta = {
@@ -45,8 +46,9 @@ const districtMeta = {
 };
 
 const allFeatures = [];
+const seenIds = new Set();
 
-// 1. Add 6 core districts with clean official boundaries
+// 1. Add 6 central districts
 for (const f of rawDistricts.features) {
   const meta = districtMeta[f.properties.id];
   if (!meta) continue;
@@ -64,10 +66,14 @@ for (const f of rawDistricts.features) {
     },
     geometry: f.geometry
   });
+  seenIds.add(f.properties.id);
 }
 
-// 2. Add 9 outer suburbs / Greater Lviv areas
-for (const sub of rawSuburbs) {
+// 2. Add suburban rings (inner and outer)
+for (const sub of [...rawSuburbs, ...rawOuter]) {
+  if (seenIds.has(sub.id)) continue;
+  seenIds.add(sub.id);
+
   allFeatures.push({
     type: 'Feature',
     id: sub.id,
@@ -75,8 +81,8 @@ for (const sub of rawSuburbs) {
       id: sub.id,
       name: sub.properties.name,
       center: sub.properties.center,
-      primaryGroups: sub.properties.primaryGroups,
-      keyStreets: sub.properties.keyStreets,
+      primaryGroups: sub.properties.primaryGroups || ['1.1'],
+      keyStreets: sub.properties.keyStreets || [`вул. Центральна (${sub.properties.name})`],
       isSubdistrict: true
     },
     geometry: sub.geometry
@@ -94,4 +100,31 @@ fs.writeFileSync(
   'utf8'
 );
 
-console.log(`Generated districts.json with ${allFeatures.length} real districts and suburbs.`);
+// Also generate clean zones.json matching these 27 areas
+const zones = allFeatures.map(f => {
+  const p = f.properties;
+  const mainGroup = p.primaryGroups[0] || '1.1';
+  return {
+    type: 'Feature',
+    id: `zone-${p.id}`,
+    properties: {
+      id: `zone-${p.id}`,
+      name: `${p.name} (Черга ${mainGroup})`,
+      districtId: p.id,
+      districtName: p.name,
+      group: mainGroup,
+      groups: p.primaryGroups,
+      streets: p.keyStreets,
+      center: p.center
+    },
+    geometry: f.geometry
+  };
+});
+
+fs.writeFileSync(
+  path.join(__dirname, '../src/data/zones.json'),
+  JSON.stringify({ type: 'FeatureCollection', features: zones }, null, 2),
+  'utf8'
+);
+
+console.log(`Generated ${allFeatures.length} districts and ${zones.length} zones across Greater Lviv.`);
