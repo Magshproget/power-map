@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Zap, Clock, RefreshCw, X } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Zap, Clock, RefreshCw, X, MapPin } from 'lucide-react';
 import { ScheduleData, StreetItem, SelectedFeature } from '../types';
 import streetsData from '../data/streets.json';
 import districtsData from '../data/districts.json';
@@ -10,6 +10,111 @@ interface HeaderProps {
   onRefresh: () => void;
   isLoading: boolean;
   onSelectFeature: (feature: SelectedFeature) => void;
+}
+
+const STOP_WORDS = new Set([
+  'вул', 'вулиця', 'вулиці', 'просп', 'проспект', 'пл', 'площа', 'пров',
+  'провулок', 'проїзд', 'бульв', 'бульвар', 'тракт', 'смт', 'с', 'село',
+  'м', 'місто', 'район', 'р-н', 'рн'
+]);
+
+const TITLE_EXPANSIONS: Record<string, string> = {
+  'гетьм': 'гетьмана',
+  'акад': 'академіка',
+  'ген': 'генерала',
+  'кн': 'князя',
+  'митр': 'митрополита',
+  'проф': 'професора',
+  'полк': 'полковника',
+  'арх': 'архітектора',
+};
+
+function cleanText(text: string): string {
+  return (text || '')
+    .toLowerCase()
+    .replace(/[’‘`ʼ]/g, "'")
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractWords(text: string): string[] {
+  return cleanText(text)
+    .split(' ')
+    .map((w) => w.trim())
+    .filter((w) => w.length > 0 && !STOP_WORDS.has(w));
+}
+
+function wordsMatch(w1: string, w2: string): number {
+  if (w1 === w2) return 40;
+  if (w1.startsWith(w2) && w2.length >= 2) return 25;
+  if (w2.startsWith(w1) && w1.length >= 2) return 25;
+  if (TITLE_EXPANSIONS[w1] === w2 || TITLE_EXPANSIONS[w2] === w1) return 35;
+  if (w1.includes(w2) && w2.length >= 4) return 15;
+  if (w2.includes(w1) && w1.length >= 4) return 15;
+  if ((w1.length === 1 && w2.startsWith(w1)) || (w2.length === 1 && w1.startsWith(w2))) {
+    return 10;
+  }
+  return 0;
+}
+
+function scoreStreet(street: StreetItem, query: string): number {
+  const qWords = extractWords(query);
+  if (qWords.length === 0) return 0;
+
+  const nameWords = extractWords(street.name);
+  const contextWords = extractWords(`${street.cityName || ''} ${street.district || ''}`);
+
+  let matchedAll = true;
+  let score = 0;
+
+  for (const qw of qWords) {
+    let bestWordMatch = 0;
+    for (const tw of nameWords) {
+      const m = wordsMatch(tw, qw);
+      if (m > bestWordMatch) bestWordMatch = m;
+    }
+    if (bestWordMatch === 0) {
+      for (const cw of contextWords) {
+        const m = wordsMatch(cw, qw);
+        if (m > 0) bestWordMatch = Math.max(bestWordMatch, Math.floor(m * 0.7));
+      }
+    }
+    if (bestWordMatch === 0) {
+      matchedAll = false;
+      break;
+    }
+    score += bestWordMatch;
+  }
+
+  if (!matchedAll) return 0;
+
+  const significantName = nameWords.join(' ');
+  const querySignificant = qWords.join(' ');
+
+  if (significantName === querySignificant) {
+    score += 200;
+  } else if (significantName.startsWith(querySignificant)) {
+    score += 120;
+  } else if (nameWords[0] && qWords[0] && wordsMatch(nameWords[0], qWords[0]) > 0) {
+    score += 60;
+  }
+
+  if (street.name.includes('-') || street.name.includes('/')) {
+    score -= 35;
+  }
+  if (/\d/.test(street.name)) {
+    score -= 30;
+  }
+  if (street.name.toLowerCase().includes('навпроти')) {
+    score -= 40;
+  }
+
+  if (street.cityName === 'Львів' || street.district?.includes('Львів')) {
+    score += 30;
+  }
+
+  return score;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,20 +130,43 @@ export const Header: React.FC<HeaderProps> = ({
   const districts = districtsData.features;
   const zones = zonesData.features;
 
-  const filteredStreets = query.trim().length > 1
-    ? streets.filter((s) => s.name.toLowerCase().includes(query.toLowerCase())).slice(0, 8)
-    : [];
+  const filteredStreets = useMemo(() => {
+    const q = query.trim();
+    if (q.length < 2) return [];
 
-  const filteredDistricts = query.trim().length > 1
-    ? districts.filter((d) => d.properties.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5)
-    : [];
+    return streets
+      .map((s) => ({ s, score: scoreStreet(s, q) }))
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 12)
+      .map((item) => item.s);
+  }, [query, streets]);
 
-  const filteredZones = query.trim().length > 1
-    ? zones.filter((z) =>
-        z.properties.name.toLowerCase().includes(query.toLowerCase()) ||
-        z.properties.group.includes(query)
-      ).slice(0, 5)
-    : [];
+  const filteredDistricts = useMemo(() => {
+    const q = cleanText(query);
+    if (q.length < 2) return [];
+    const qWords = extractWords(query);
+
+    return districts
+      .filter((d) => {
+        const dClean = cleanText(d.properties.name);
+        return qWords.every((qw) => dClean.includes(qw));
+      })
+      .slice(0, 5);
+  }, [query, districts]);
+
+  const filteredZones = useMemo(() => {
+    const q = cleanText(query);
+    if (q.length < 2) return [];
+    const qWords = extractWords(query);
+
+    return zones
+      .filter((z) => {
+        const zClean = cleanText(`${z.properties.name} ${z.properties.districtName} ${z.properties.group}`);
+        return qWords.every((qw) => zClean.includes(qw));
+      })
+      .slice(0, 5);
+  }, [query, zones]);
 
   const hasResults =
     filteredStreets.length > 0 || filteredDistricts.length > 0 || filteredZones.length > 0;
@@ -108,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="fixed inset-0 z-40"
               onClick={() => setIsFocused(false)}
             />
-            <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-96 overflow-y-auto">
               {!hasResults ? (
                 <div className="p-4 text-center text-sm text-slate-400">
                   Нічого не знайдено за запитом "{query}"
@@ -118,7 +246,7 @@ export const Header: React.FC<HeaderProps> = ({
                   {filteredDistricts.length > 0 && (
                     <div className="px-3 py-1">
                       <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                        Райони
+                        Райони та поселення
                       </div>
                       {filteredDistricts.map((d) => (
                         <button
@@ -137,7 +265,10 @@ export const Header: React.FC<HeaderProps> = ({
                           }}
                           className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 flex items-center justify-between text-sm text-slate-200 transition-colors"
                         >
-                          <span className="font-medium">{d.properties.name}</span>
+                          <span className="font-medium flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                            {d.properties.name}
+                          </span>
                           <span className="text-xs text-amber-400 font-mono">
                             {d.properties.primaryGroups.join(', ')}
                           </span>
@@ -183,38 +314,48 @@ export const Header: React.FC<HeaderProps> = ({
 
                   {filteredStreets.length > 0 && (
                     <div className="px-3 py-1 border-t border-slate-800/80 mt-1">
-                      <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                        Вулиці
+                      <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+                        <span>Вулиці ({filteredStreets.length})</span>
                       </div>
-                      {filteredStreets.map((s) => (
-                        <button
-                          key={s.id}
-                          onClick={() => {
-                            onSelectFeature({
-                              type: 'street',
-                              id: s.id,
-                              name: s.name,
-                              districtName: s.district,
-                              group: s.group,
-                              center: [s.lat, s.lon],
-                              buildings: s.buildings,
-                            });
-                            setIsFocused(false);
-                            setQuery('');
-                          }}
-                          className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 flex items-center justify-between text-sm text-slate-200 transition-colors"
-                        >
-                          <div>
-                            <div className="font-medium">{s.name}</div>
-                            <div className="text-xs text-slate-400">
-                              {s.district} • буд. {s.buildings}
+                      {filteredStreets.map((s) => {
+                        const locality = s.cityName && s.cityName !== 'Львів' ? s.cityName : s.district;
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => {
+                              onSelectFeature({
+                                type: 'street',
+                                id: s.id,
+                                name: s.name,
+                                districtName: s.district,
+                                cityName: s.cityName,
+                                group: s.group,
+                                center: [s.lat, s.lon],
+                                buildings: s.buildings,
+                              });
+                              setIsFocused(false);
+                              setQuery('');
+                            }}
+                            className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 flex items-center justify-between text-sm text-slate-200 transition-colors gap-2"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="font-medium truncate text-white">{s.name}</div>
+                              <div className="text-xs text-slate-400 flex items-center gap-1.5 truncate">
+                                <span className="text-slate-300 font-medium">{locality}</span>
+                                {s.buildings && (
+                                  <>
+                                    <span>•</span>
+                                    <span>буд. {s.buildings}</span>
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <span className="px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 font-mono text-xs border border-indigo-500/30">
-                            Черга {s.group}
-                          </span>
-                        </button>
-                      ))}
+                            <span className="shrink-0 px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-xs border border-amber-500/30 font-semibold">
+                              Черга {s.group}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

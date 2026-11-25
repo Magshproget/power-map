@@ -49,6 +49,8 @@ export interface StreetItem {
   lat: number;
   lon: number;
   buildings: string;
+  cityId?: number;
+  cityName?: string;
 }
 
 export interface SelectedFeature {
@@ -56,6 +58,7 @@ export interface SelectedFeature {
   id: string;
   name: string;
   districtName?: string;
+  cityName?: string;
   group?: string;
   groups?: string[];
   streets?: string[];

@@ -28,6 +28,7 @@ export const Map: React.FC<MapProps> = ({
 
   const activeGroupRef = useRef<L.LayerGroup | null>(null);
   const [currentZoom, setCurrentZoom] = useState(12);
+  const [mapViewportVer, setMapViewportVer] = useState(0);
 
   const hourSlot = Math.floor(selectedHour) % 24;
 
@@ -102,6 +103,10 @@ export const Map: React.FC<MapProps> = ({
       const z = map.getZoom();
       setCurrentZoom(z);
       onZoomChange(z);
+    });
+
+    map.on('moveend', () => {
+      setMapViewportVer((v) => v + 1);
     });
 
     mapInstanceRef.current = map;
@@ -294,23 +299,26 @@ export const Map: React.FC<MapProps> = ({
 
     // 3. Render Street Markers Layer
     if (showStreets) {
+      const bounds = map.getBounds().pad(0.15);
       (streetsData as any[]).forEach((st) => {
-        const status = getGroupStatus(st.group);
         const isSelected = selectedFeature?.type === 'street' && selectedFeature.id === st.id;
+        if (!isSelected && !bounds.contains([st.lat, st.lon])) return;
+
+        const status = getGroupStatus(st.group);
         const color = getStatusColor(status, true);
 
         const marker = L.circleMarker([st.lat, st.lon], {
-          radius: isSelected ? 10 : 7,
+          radius: isSelected ? 11 : 6,
           fillColor: color,
           fillOpacity: 0.95,
-          color: '#ffffff',
-          weight: isSelected ? 3 : 1.5,
+          color: isSelected ? '#38bdf8' : '#ffffff',
+          weight: isSelected ? 3.5 : 1.5,
         });
 
         marker.bindTooltip(
           `<div class="text-xs font-sans">
             <strong class="text-white">${st.name}</strong><br/>
-            <span class="text-slate-400">${st.district}</span><br/>
+            <span class="text-slate-400">${st.cityName && st.cityName !== 'Львів' ? st.cityName : st.district}</span><br/>
             <span class="text-amber-400 font-mono">Черга ${st.group}</span> • 
             <span class="${status === 'on' ? 'text-emerald-400' : 'text-rose-400'} font-semibold">${
             status === 'on' ? 'Є світло' : 'Немає'
@@ -325,6 +333,7 @@ export const Map: React.FC<MapProps> = ({
             id: st.id,
             name: st.name,
             districtName: st.district,
+            cityName: st.cityName,
             group: st.group,
             center: [st.lat, st.lon],
             buildings: st.buildings,
@@ -333,8 +342,32 @@ export const Map: React.FC<MapProps> = ({
 
         group.addLayer(marker);
       });
+    } else if (selectedFeature?.type === 'street' && selectedFeature.center) {
+      // Pin selected street marker even when zoomed out
+      const st = selectedFeature;
+      const center = selectedFeature.center;
+      const status = st.group ? getGroupStatus(st.group) : 'on';
+      const color = getStatusColor(status, true);
+
+      const marker = L.circleMarker(center, {
+        radius: 12,
+        fillColor: color,
+        fillOpacity: 1,
+        color: '#38bdf8',
+        weight: 3.5,
+      });
+
+      marker.bindTooltip(
+        `<div class="text-xs font-sans">
+          <strong class="text-white">${st.name}</strong><br/>
+          <span class="text-amber-400 font-mono">Черга ${st.group}</span>
+        </div>`,
+        { className: 'custom-tooltip', permanent: true, direction: 'top' }
+      );
+
+      group.addLayer(marker);
     }
-  }, [layerMode, currentZoom, schedule, selectedHour, selectedFeature]);
+  }, [layerMode, currentZoom, schedule, selectedHour, selectedFeature, mapViewportVer]);
 
   // Pan to selected feature
   useEffect(() => {
