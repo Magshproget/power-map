@@ -97,7 +97,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   const firstLoc = validLocations[0];
   const hasMoreThanOne = validLocations.length > 1;
 
-  const renderChip = (loc: SavedLocation, isMobile = false) => {
+  const renderChip = (loc: SavedLocation) => {
     const status = getStatus(loc.feature) || 'on';
     const isSelected = selectedFeatureId === loc.feature.id;
     const statusBadge = getStatusBadge(status, isSelected);
@@ -108,7 +108,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
         key={loc.id}
         onClick={() => {
           onSelectLocation(loc.feature);
-          if (isMobile) setIsDropdownOpen(false);
+          setIsDropdownOpen(false);
         }}
         className={`group flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl bg-slate-900/90 hover:bg-slate-800/95 backdrop-blur-md border ${statusBadge.border} shadow-lg cursor-pointer transition-all shrink-0 active:scale-95`}
         title={`${loc.feature.name} (${loc.feature.group ? `Черга ${loc.feature.group}` : 'Район'}) — ${statusBadge.text}`}
@@ -117,17 +117,17 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
 
         <div className="flex flex-col text-left">
           <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-xs text-white leading-tight max-w-[130px] sm:max-w-[170px] truncate">
+            <span className="font-semibold text-xs md:text-sm text-white leading-tight max-w-[130px] sm:max-w-[200px] truncate">
               {displayName}
             </span>
             {loc.feature.group && (
-              <span className="text-[10px] font-mono px-1 rounded bg-slate-800 text-amber-300/90 border border-slate-700/50">
+              <span className="text-[10px] md:text-xs font-mono px-1 rounded bg-slate-800 text-amber-300/90 border border-slate-700/50">
                 Ч.{loc.feature.group}
               </span>
             )}
           </div>
           {loc.customLabel && (
-            <span className="text-[10px] text-slate-400 truncate max-w-[130px] sm:max-w-[170px]">
+            <span className="text-[10px] md:text-xs text-slate-400 truncate max-w-[130px] sm:max-w-[200px]">
               {loc.feature.name}
             </span>
           )}
@@ -136,7 +136,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
         {/* Status indicator */}
         <div className="flex items-center gap-1 ml-1 pl-1.5 border-l border-slate-700/60">
           <span className={`w-2 h-2 rounded-full ${statusBadge.dot}`} />
-          <span className={`text-[11px] font-medium hidden sm:inline ${statusBadge.textColor}`}>
+          <span className={`text-[11px] md:text-xs font-medium hidden sm:inline ${statusBadge.textColor}`}>
             {statusBadge.text}
           </span>
         </div>
@@ -150,7 +150,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           title="Видалити з обраного"
           className="opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-white transition-opacity ml-0.5"
         >
-          <X className="w-3 h-3" />
+          <X className="w-3 h-3 md:w-3.5 md:h-3.5" />
         </button>
       </div>
     );
@@ -163,52 +163,42 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
         }`}
       >
-        {/* MOBILE VIEW (< md): 1st address + "+N" Dropdown button */}
-        <div className="flex md:hidden items-center justify-center gap-1.5 pointer-events-auto max-w-full">
-          <div className="flex items-center gap-1 px-1.5 py-1 bg-slate-900/95 backdrop-blur-md rounded-lg border border-slate-700/60 shadow-lg text-[11px] font-semibold text-slate-300 shrink-0">
-            <Bookmark className="w-3 h-3 text-amber-400 fill-amber-400/30" />
+        <div className="flex items-center justify-center gap-1.5 md:gap-2 pointer-events-auto max-w-full">
+          <div className="flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-2.5 md:py-1.5 bg-slate-900/95 backdrop-blur-md rounded-lg md:rounded-xl border border-slate-700/60 shadow-lg text-[11px] md:text-xs font-semibold text-slate-300 shrink-0">
+            <Bookmark className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400 fill-amber-400/30" />
+            <span className="hidden sm:inline">Мої адреси:</span>
           </div>
 
           {/* First Saved Address Chip */}
-          {firstLoc && renderChip(firstLoc, true)}
+          {firstLoc && renderChip(firstLoc)}
 
           {/* More Addresses Dropdown Trigger */}
           {hasMoreThanOne && (
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              title="Інші збережені адреси"
-              className={`flex items-center gap-1 px-2 py-1 rounded-lg backdrop-blur-md border shadow-lg text-[11px] font-bold transition-all active:scale-95 shrink-0 ${
+              title="Всі збережені адреси"
+              className={`flex items-center gap-1 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg md:rounded-xl backdrop-blur-md border shadow-lg text-[11px] md:text-xs font-bold transition-all active:scale-95 shrink-0 cursor-pointer ${
                 isDropdownOpen
                   ? 'bg-amber-500 text-slate-950 border-amber-400'
                   : 'bg-slate-900/95 hover:bg-slate-800 text-amber-400 border-slate-700/70'
               }`}
             >
               <span>+{validLocations.length - 1}</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3 h-3 md:w-3.5 md:h-3.5 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
           )}
         </div>
-
-        {/* DESKTOP VIEW (>= md): Full horizontal chips row */}
-        <div className="hidden md:flex items-center justify-center gap-2 overflow-x-auto py-1 scrollbar-none pointer-events-auto max-w-full">
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/60 shadow-lg text-xs font-semibold text-slate-300 shrink-0">
-            <Bookmark className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
-            <span>Мої адреси:</span>
-          </div>
-
-          {validLocations.map((loc) => renderChip(loc))}
-        </div>
       </div>
 
-      {/* MOBILE POPUP DROPDOWN MODAL */}
+      {/* POPUP DROPDOWN MODAL (Mobile + Desktop) */}
       {isDropdownOpen && hasMoreThanOne && (
         <>
           <div
-            className="fixed inset-0 z-[1250] bg-black/50 pointer-events-auto md:hidden"
+            className="fixed inset-0 z-[1250] bg-black/40 backdrop-blur-xs pointer-events-auto"
             onClick={() => setIsDropdownOpen(false)}
           />
-          <div className="fixed top-24 left-2 right-2 max-w-sm mx-auto bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2 z-[1300] flex flex-col gap-1 pointer-events-auto md:hidden animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto">
-            <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+          <div className="fixed top-24 md:top-[130px] left-2 right-2 max-w-sm md:max-w-md mx-auto bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2.5 z-[1300] flex flex-col gap-1 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 max-h-80 md:max-h-96 overflow-y-auto">
+            <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800 text-[11px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
               <span>Мої адреси ({validLocations.length})</span>
               <button
                 onClick={() => setIsDropdownOpen(false)}
