@@ -83,7 +83,7 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   }[status];
 
   return (
-    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-32 md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+    <div className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200">
       {/* Mobile Drawer Grab Bar */}
       <div className="w-8 h-1 bg-slate-600/70 rounded-full mx-auto -mt-1 mb-0.5 md:hidden shrink-0" />
 

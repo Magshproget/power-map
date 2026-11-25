@@ -85,7 +85,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
 
   if (validLocations.length === 0) {
     return (
-      <div className="hidden md:flex fixed top-[76px] left-4 z-[990] pointer-events-none">
+      <div className="hidden md:flex fixed top-[92px] left-4 z-[990] pointer-events-none">
         <div className="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400 pointer-events-auto">
           <Bookmark className="w-3.5 h-3.5 text-amber-400/80" />
           <span>Зберігайте адреси (дім, робота) через «★ В обране» для швидкого моніторингу</span>
@@ -159,7 +159,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   return (
     <>
       <div
-        className={`fixed top-14 md:top-[76px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
+        className={`fixed top-14 md:top-[92px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
           selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
         }`}
       >
@@ -197,7 +197,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
             className="fixed inset-0 z-[1250] bg-black/40 backdrop-blur-xs pointer-events-auto"
             onClick={() => setIsDropdownOpen(false)}
           />
-          <div className="fixed top-24 md:top-[122px] left-2 right-2 md:left-4 md:right-auto max-w-sm md:w-96 md:max-w-none mx-auto md:mx-0 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2.5 z-[1300] flex flex-col gap-1 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 max-h-80 md:max-h-96 overflow-y-auto">
+          <div className="fixed top-24 md:top-[136px] left-2 right-2 md:left-4 md:right-auto max-w-sm md:w-96 md:max-w-none mx-auto md:mx-0 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2.5 z-[1300] flex flex-col gap-1 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 max-h-80 md:max-h-96 overflow-y-auto">
             <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800 text-[11px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
               <span>Мої адреси ({validLocations.length})</span>
               <button
