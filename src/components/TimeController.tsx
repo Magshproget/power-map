@@ -168,7 +168,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`time-controller-card fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[780px] lg:w-[840px] max-w-[calc(100vw-2rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
+      className={`time-controller-card fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 inset-x-0 mx-auto w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] md:w-[780px] lg:w-[840px] max-w-[calc(100vw-1rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
         selectedFeature || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
@@ -198,7 +198,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
             <span>Зараз</span>
           </button>
 
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-750 text-xs text-slate-300 shrink-0">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-750 text-xs text-slate-300 shrink-0">
             <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>
               Вимкнено:{' '}
@@ -239,7 +239,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750 shrink-0">
+            <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750 shrink-0">
               <span>Загальний графік (Львів)</span>
               {schedule?.updatedAt && (
                 <span className="text-amber-400/90 font-mono font-medium">• Оновлено о {schedule.updatedAt}</span>

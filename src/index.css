@@ -172,14 +172,16 @@ html, body, #root {
     left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
   }
 
-  /* Ultra-compact bottom time controller */
+  /* Ultra-compact bottom time controller (centered, no left transform shift) */
   .time-controller-card {
     bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px)) !important;
-    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
-    right: calc(0.5rem + env(safe-area-inset-right, 0px)) !important;
-    max-width: 580px !important;
-    padding: 6px 10px !important;
-    gap: 4px !important;
+    inset-inline: 0 !important;
+    margin-inline: auto !important;
+    transform: none !important;
+    width: calc(100% - 1.5rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
+    max-width: 640px !important;
+    padding: 4px 10px !important;
+    gap: 3px !important;
     border-radius: 14px !important;
   }
   .time-controller-card button {
