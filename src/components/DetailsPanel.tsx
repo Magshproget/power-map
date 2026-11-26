@@ -13,6 +13,7 @@ interface DetailsPanelProps {
   savedCustomLabel?: string;
   onToggleSaved?: (feature: SelectedFeature, customLabel?: string) => void;
   hasSavedLocations?: boolean;
+  isSearching?: boolean;
 }
 
 const MINOR_HOURS = Array.from({ length: 25 }, (_, h) => h).filter((h) => h % 3 !== 0);
@@ -30,6 +31,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   savedCustomLabel,
   onToggleSaved,
   hasSavedLocations,
+  isSearching,
 }) => {
   const touchStartYRef = useRef(0);
   const touchStartXRef = useRef(0);
@@ -192,7 +194,9 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
       onTouchCancel={handleTouchCancel}
       className={`details-panel-drawer fixed inset-x-0 bottom-0 md:bottom-auto ${
         hasSavedLocations ? 'md:top-[148px]' : 'md:top-[88px]'
-      } md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-220px)] overflow-y-auto animate-in slide-in-from-bottom duration-200`}
+      } md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-220px)] overflow-y-auto animate-in slide-in-from-bottom duration-200 ${
+        isSearching ? 'hidden md:flex' : ''
+      }`}
     >
       {/* Mobile Drawer Grab Bar & Drag Header */}
       <div

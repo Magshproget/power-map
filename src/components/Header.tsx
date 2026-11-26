@@ -17,18 +17,28 @@ interface HeaderProps {
 const STOP_WORDS = new Set([
   'вул', 'вулиця', 'вулиці', 'просп', 'проспект', 'пл', 'площа', 'пров',
   'провулок', 'проїзд', 'бульв', 'бульвар', 'тракт', 'смт', 'с', 'село',
-  'м', 'місто', 'район', 'р-н', 'рн'
+  'м', 'місто', 'район', 'р-н', 'рн', 'буд', 'будинок', 'д', 'номер', '№'
 ]);
 
 const TITLE_EXPANSIONS: Record<string, string> = {
   'гетьм': 'гетьмана',
   'акад': 'академіка',
   'ген': 'генерала',
+  'генерал': 'генерала',
+  'генерала': 'ген',
   'кн': 'князя',
   'митр': 'митрополита',
   'проф': 'професора',
   'полк': 'полковника',
   'арх': 'архітектора',
+  'дж': 'джорджа',
+  'джордж': 'джорджа',
+  'джорджа': 'дж',
+  'т': 'тараса',
+  'в': 'володимира',
+  'і': 'івана',
+  'св': 'святого',
+  'ст': 'степана',
 };
 
 function cleanText(text: string): string {
@@ -49,9 +59,9 @@ function extractWords(text: string): string[] {
 
 function wordsMatch(w1: string, w2: string): number {
   if (w1 === w2) return 40;
+  if (TITLE_EXPANSIONS[w1] === w2 || TITLE_EXPANSIONS[w2] === w1) return 38;
   if (w1.startsWith(w2) && w2.length >= 2) return 25;
   if (w2.startsWith(w1) && w1.length >= 2) return 25;
-  if (TITLE_EXPANSIONS[w1] === w2 || TITLE_EXPANSIONS[w2] === w1) return 35;
   if (w1.includes(w2) && w2.length >= 4) return 15;
   if (w2.includes(w1) && w1.length >= 4) return 15;
   if ((w1.length === 1 && w2.startsWith(w1)) || (w2.length === 1 && w1.startsWith(w2))) {
@@ -242,23 +252,40 @@ const HeaderComponent: React.FC<HeaderProps> = ({
   const parsedQuery = useMemo(() => {
     const trimmed = deferredQuery.trim();
     if (trimmed.length < 2) return null;
-    const qWords = extractWords(trimmed);
+
+    // Extract house/building number if entered e.g. "7а", "7-А", "15/2", "буд. 10"
+    const bMatch = trimmed.match(/(?:^|\s)(?:буд\.?|будинок|д\.?|№)?\s*(\d+[-/0-9a-zA-Zа-яА-ЯіїєЇЄ]*)(?:\s|$)/i);
+    const buildingNumber = bMatch && bMatch[1] && bMatch[1].length > 0 ? bMatch[1] : null;
+
+    const allWords = extractWords(trimmed);
+    let streetWords = allWords.filter((w) => !/^\d/.test(w));
+    if (streetWords.length === 0) {
+      streetWords = allWords;
+    }
+
     return {
-      qWords,
-      querySignificant: qWords.join(' '),
+      qWords: streetWords,
+      buildingNumber,
+      querySignificant: streetWords.join(' '),
     };
   }, [deferredQuery]);
 
   const filteredStreets = useMemo(() => {
     if (!parsedQuery || parsedQuery.qWords.length === 0 || indexedStreets.length === 0) return [];
-    const { qWords, querySignificant } = parsedQuery;
-    const matches: { s: StreetItem; score: number }[] = [];
+    const { qWords, querySignificant, buildingNumber } = parsedQuery;
+    const matches: { s: StreetItem & { matchedBuilding?: string }; score: number }[] = [];
 
     for (let i = 0; i < indexedStreets.length; i++) {
       const item = indexedStreets[i];
       const score = scoreIndexedStreet(item, qWords, querySignificant);
       if (score > 0) {
-        matches.push({ s: item.street, score });
+        matches.push({
+          s: {
+            ...item.street,
+            matchedBuilding: buildingNumber || undefined,
+          },
+          score,
+        });
       }
     }
 
@@ -396,7 +423,7 @@ const HeaderComponent: React.FC<HeaderProps> = ({
                           cityName: s.cityName,
                           group: s.group,
                           center: [s.lat, s.lon],
-                          buildings: s.buildings,
+                          buildings: s.matchedBuilding ? s.matchedBuilding : s.buildings,
                         });
                         handleCloseSearch();
                         setQuery('');
@@ -407,12 +434,17 @@ const HeaderComponent: React.FC<HeaderProps> = ({
                         <div className="font-medium truncate text-white text-xs sm:text-sm">{s.name}</div>
                         <div className="text-[11px] text-slate-400 flex items-center gap-1.5 truncate">
                           <span className="text-slate-300 font-medium">{locality}</span>
-                          {s.buildings && (
+                          {s.matchedBuilding ? (
+                            <>
+                              <span>•</span>
+                              <span className="text-amber-300 font-semibold">буд. {s.matchedBuilding}</span>
+                            </>
+                          ) : s.buildings ? (
                             <>
                               <span>•</span>
                               <span>буд. {s.buildings}</span>
                             </>
-                          )}
+                          ) : null}
                         </div>
                       </div>
                       <span className="shrink-0 px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 font-mono text-[11px] sm:text-xs border border-amber-500/30 font-semibold">

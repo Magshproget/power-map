@@ -4595,11 +4595,12 @@
       "id": "zone-lychakivskiy",
       "properties": {
         "id": "zone-lychakivskiy",
-        "name": "Личаківський район (Черга 2.1)",
+        "name": "Личаківський район (Черга 6.1)",
         "districtId": "lychakivskiy",
         "districtName": "Личаківський район",
-        "group": "2.1",
+        "group": "6.1",
         "groups": [
+          "6.1",
           "2.1",
           "4.2",
           "5.2"
@@ -4617,6 +4618,12 @@
         "center": [
           49.835,
           24.085
+        ],
+        "primaryGroups": [
+          "6.1",
+          "2.1",
+          "4.2",
+          "5.2"
         ]
       },
       "geometry": {
