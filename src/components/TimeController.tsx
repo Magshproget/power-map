@@ -168,13 +168,13 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[740px] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
+      className={`fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[780px] lg:w-[840px] max-w-[calc(100vw-2rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
         selectedFeature || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
       {/* Top row: Controls, Context name, Clock */}
       <div className="flex items-center justify-between gap-2 md:gap-3">
-        <div className="flex items-center gap-2 md:gap-2.5">
+        <div className="flex items-center gap-2 md:gap-2.5 shrink-0">
           <button
             type="button"
             onClick={() => setIsPlaying((p) => !p)}
@@ -198,7 +198,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
             <span>Зараз</span>
           </button>
 
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-750 text-xs text-slate-300">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-750 text-xs text-slate-300 shrink-0">
             <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>
               Вимкнено:{' '}
@@ -211,10 +211,10 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
         </div>
 
         {/* Selected target indicator or city badge */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2 min-w-0 shrink">
           {selectedFeature ? (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-300">
-              <span className="truncate max-w-[150px]">
+            <div className="flex items-center gap-1.5 lg:gap-2 px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-300 min-w-0">
+              <span className="truncate max-w-[110px] lg:max-w-[160px]">
                 Графік: <strong>{cleanFeatureName}</strong>
               </span>
               {selectedFeature.group && (
@@ -223,7 +223,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
                 </span>
               )}
               {outageSummaryText && (
-                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 shrink-0">
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 shrink-0 truncate max-w-[180px]">
                   {outageSummaryText === 'Без вимкнень' ? 'Без вимкнень' : `Вимкнення: ${outageSummaryText}`}
                 </span>
               )}
@@ -231,7 +231,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
                 <button
                   type="button"
                   onClick={onClearSelectedFeature}
-                  className="hover:text-white p-0.5 rounded ml-0.5"
+                  className="hover:text-white p-0.5 rounded ml-0.5 shrink-0"
                   title="Повернутися до загального графіка міста"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -239,7 +239,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-xl border border-slate-750 shrink-0">
               <span>Загальний графік (Львів)</span>
               {schedule?.updatedAt && (
                 <span className="text-amber-400/90 font-mono font-medium">• Оновлено о {schedule.updatedAt}</span>
@@ -249,7 +249,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
         </div>
 
         {/* Selected Hour Clock Display */}
-        <div className="flex items-baseline gap-1 bg-slate-800/90 px-2.5 py-1.5 md:px-3.5 md:py-1.5 rounded-xl md:rounded-2xl border border-slate-700/80">
+        <div className="flex items-baseline gap-1 bg-slate-800/90 px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-xl md:rounded-2xl border border-slate-700/80 shrink-0">
           <span className="text-sm md:text-2xl font-bold font-mono text-white tracking-wider">
             {formatTime(displayHour)}
           </span>
@@ -337,6 +337,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
             const timeLabel = `${h.toString().padStart(2, '0')}:00`;
             const isFirst = h === 0;
             const isLast = h === 24;
+            const isMobileVisible = h % 6 === 0;
 
             return (
               <div
@@ -353,7 +354,11 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
                     alignSelf: isFirst ? 'flex-start' : isLast ? 'flex-end' : 'center',
                   }}
                 />
-                <span className="text-[10px] text-slate-400 font-mono leading-none">
+                <span
+                  className={`text-[10px] text-slate-400 font-mono leading-none ${
+                    isMobileVisible ? 'inline' : 'hidden md:inline'
+                  }`}
+                >
                   {timeLabel}
                 </span>
               </div>

@@ -204,6 +204,7 @@ export function App() {
         isSaved={isSelectedSaved}
         savedCustomLabel={savedCustomLabel}
         onToggleSaved={handleToggleSaved}
+        hasSavedLocations={savedLocations.length > 0}
       />
 
       {/* Bottom 24h Time Controller */}

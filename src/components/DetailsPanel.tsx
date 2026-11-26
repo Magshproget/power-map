@@ -12,10 +12,12 @@ interface DetailsPanelProps {
   isSaved?: boolean;
   savedCustomLabel?: string;
   onToggleSaved?: (feature: SelectedFeature, customLabel?: string) => void;
+  hasSavedLocations?: boolean;
 }
 
 const MINOR_HOURS = Array.from({ length: 25 }, (_, h) => h).filter((h) => h % 3 !== 0);
-const MAJOR_HOURS = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+const INTERMEDIATE_HOURS = [3, 9, 15, 21];
+const MAJOR_HOURS = [0, 6, 12, 18, 24];
 
 const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   feature,
@@ -27,6 +29,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   isSaved,
   savedCustomLabel,
   onToggleSaved,
+  hasSavedLocations,
 }) => {
   const touchStartYRef = useRef(0);
   const touchStartXRef = useRef(0);
@@ -187,7 +190,9 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
-      className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+      className={`fixed inset-x-0 bottom-0 md:bottom-auto ${
+        hasSavedLocations ? 'md:top-[148px]' : 'md:top-[88px]'
+      } md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-220px)] overflow-y-auto animate-in slide-in-from-bottom duration-200`}
     >
       {/* Mobile Drawer Grab Bar & Drag Header */}
       <div
@@ -397,6 +402,20 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
             );
           })}
 
+          {INTERMEDIATE_HOURS.map((h) => {
+            const pct = (h / 24) * 100;
+            return (
+              <div
+                key={`dp-inter-${h}`}
+                className="absolute top-0 w-px h-1.5 bg-slate-700 pointer-events-none"
+                style={{
+                  left: `${pct}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              />
+            );
+          })}
+
           {MAJOR_HOURS.map((h) => {
             const pct = (h / 24) * 100;
             const timeLabel = `${h.toString().padStart(2, '0')}:00`;
@@ -413,7 +432,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
                 }}
               >
                 <div
-                  className="w-px h-1.5 bg-slate-600 mb-0.5"
+                  className="w-px h-1.5 bg-slate-500 mb-0.5"
                   style={{
                     alignSelf: isFirst ? 'flex-start' : isLast ? 'flex-end' : 'center',
                   }}
