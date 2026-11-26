@@ -707,58 +707,7 @@ const MapComponent: React.FC<MapProps> = ({
 
     group.clearLayers();
 
-    // 8a. Selected zone key streets
-    if (!showStreets && selectedFeature?.type === 'zone' && selectedFeature.streets?.length && streetsData) {
-      const zoneStreetNames = new Set(
-        selectedFeature.streets.map((s) =>
-          s.toLowerCase().replace(/^(вул\.|просп\.|пл\.)\s*/, '').trim()
-        )
-      );
-
-      for (let i = 0; i < streetsData.length; i++) {
-        const st = streetsData[i];
-        const norm = st.name.toLowerCase().replace(/^(вул\.|просп\.|пл\.)\s*/, '').trim();
-        if (!zoneStreetNames.has(norm)) continue;
-
-        const status = computeGroupStatus(st.group, schedule, hourSlot);
-        const color = getStatusColor(status, true);
-
-        const marker = L.circleMarker([st.lat, st.lon], {
-          renderer,
-          radius: 5,
-          fillColor: color,
-          fillOpacity: 0.95,
-          color: '#ffffff',
-          weight: 1.5,
-        });
-
-        marker.bindTooltip(
-          `<div class="text-xs font-sans">
-            <strong class="text-white">${st.name}</strong><br/>
-            <span class="text-amber-400 font-mono">Черга ${st.group}</span>
-          </div>`,
-          { className: 'custom-tooltip' }
-        );
-
-        marker.on('click', () => {
-          closeOpenTooltip();
-          onSelectFeatureRef.current({
-            type: 'street',
-            id: st.id,
-            name: st.name,
-            districtName: st.district,
-            cityName: st.cityName,
-            group: st.group,
-            center: [st.lat, st.lon],
-            buildings: st.buildings,
-          });
-        });
-
-        group.addLayer(marker);
-      }
-    }
-
-    // 8b. Street Highlight & Pin on Demand
+    // 8. Street Highlight & Pin on Demand (shows only when a street is selected/searched)
     if (selectedFeature?.type === 'street' && selectedFeature.center) {
       const st = selectedFeature;
       const center = selectedFeature.center;
