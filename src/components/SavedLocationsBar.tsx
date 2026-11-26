@@ -160,7 +160,7 @@ const SavedLocationsBarComponent: React.FC<SavedLocationsBarProps> = ({
   return (
     <>
       <div
-        className={`fixed top-[calc(3.75rem+env(safe-area-inset-top,0px))] md:top-[92px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
+        className={`saved-locations-bar fixed top-[calc(3.75rem+env(safe-area-inset-top,0px))] md:top-[92px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
           selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
         }`}
       >

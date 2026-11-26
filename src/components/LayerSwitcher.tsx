@@ -41,7 +41,7 @@ const LayerSwitcherComponent: React.FC<LayerSwitcherProps> = ({
   currentZoom,
 }) => {
   return (
-    <div className="hidden md:flex absolute top-24 right-4 z-[1000] bg-slate-900/95 p-1.5 rounded-2xl border border-slate-700/60 shadow-xl flex-col gap-1 pointer-events-auto">
+    <div className="layer-switcher-panel hidden md:flex absolute top-24 right-4 z-[1000] bg-slate-900/95 p-1.5 rounded-2xl border border-slate-700/60 shadow-xl flex-col gap-1 pointer-events-auto">
       <div className="px-3 py-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
         <span>Шари мапи</span>
         <span className="text-[10px] text-slate-400 font-mono">z{Math.round(currentZoom)}</span>

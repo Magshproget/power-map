@@ -190,7 +190,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
-      className={`fixed inset-x-0 bottom-0 md:bottom-auto ${
+      className={`details-panel-drawer fixed inset-x-0 bottom-0 md:bottom-auto ${
         hasSavedLocations ? 'md:top-[148px]' : 'md:top-[88px]'
       } md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-220px)] overflow-y-auto animate-in slide-in-from-bottom duration-200`}
     >

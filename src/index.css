@@ -145,3 +145,74 @@ html, body, #root {
     display: none !important;
   }
 }
+
+/* Universal Smartphone Landscape / Short Screen (< 520px height) Adaptations */
+@media (max-height: 520px) {
+  /* Force unified compact header respecting notch and Dynamic Island */
+  .desktop-header-bar {
+    display: none !important;
+  }
+  .mobile-header-bar {
+    display: flex !important;
+  }
+  header {
+    top: calc(0.25rem + env(safe-area-inset-top, 0px)) !important;
+    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
+    right: calc(0.5rem + env(safe-area-inset-right, 0px)) !important;
+  }
+
+  /* Hide huge floating desktop layer panel; accessible via header layer button */
+  .layer-switcher-panel {
+    display: none !important;
+  }
+
+  /* Compact saved locations bar */
+  .saved-locations-bar {
+    top: calc(2.75rem + env(safe-area-inset-top, 0px)) !important;
+    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
+  }
+
+  /* Ultra-compact bottom time controller */
+  .time-controller-card {
+    bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px)) !important;
+    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
+    right: calc(0.5rem + env(safe-area-inset-right, 0px)) !important;
+    max-width: 580px !important;
+    padding: 6px 10px !important;
+    gap: 4px !important;
+    border-radius: 14px !important;
+  }
+  .time-controller-card button {
+    min-height: 34px !important;
+  }
+  .time-controller-card .w-11.h-11 {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .time-controller-legend {
+    display: none !important;
+  }
+
+  /* Reposition zoom buttons above compact landscape timeline */
+  .leaflet-bottom.leaflet-right {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(8px + env(safe-area-inset-right, 0px)) !important;
+  }
+  .leaflet-control-zoom a {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    font-size: 16px !important;
+  }
+
+  /* Dock DetailsPanel to left side as compact card instead of covering full vertical height */
+  .details-panel-drawer {
+    inset-inline: auto !important;
+    top: calc(3.25rem + env(safe-area-inset-top, 0px)) !important;
+    bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
+    width: 310px !important;
+    max-height: calc(100dvh - 3.75rem) !important;
+    border-radius: 16px !important;
+  }
+}

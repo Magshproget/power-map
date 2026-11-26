@@ -435,8 +435,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
         isFocused ? 'z-[1400]' : 'z-[1200]'
       }`}
     >
-      {/* MOBILE UNIFIED TOP BAR (< md) */}
-      <div className="flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
+      {/* MOBILE UNIFIED TOP BAR (< md or short landscape) */}
+      <div className="mobile-header-bar flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
         {/* Compact Logo Badge */}
         <div className="flex items-center gap-1 px-2 h-11 rounded-xl bg-slate-900/95 border border-slate-700/70 shadow-md shrink-0">
           <Zap className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -559,8 +559,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* DESKTOP TOP BAR (>= md) */}
-      <div className="hidden md:flex items-center justify-between gap-3 pointer-events-none">
+      {/* DESKTOP TOP BAR (>= md and normal height) */}
+      <div className="desktop-header-bar hidden md:flex items-center justify-between gap-3 pointer-events-none">
         {/* Brand & Status Banner */}
         <div className="flex items-center gap-3 bg-slate-900/95 px-4 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl pointer-events-auto">
           <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">

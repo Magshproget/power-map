@@ -168,7 +168,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[780px] lg:w-[840px] max-w-[calc(100vw-2rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
+      className={`time-controller-card fixed bottom-[calc(0.5rem+env(safe-area-inset-bottom,0px))] md:bottom-6 left-2 right-2 md:left-1/2 md:-translate-x-1/2 md:w-[780px] lg:w-[840px] max-w-[calc(100vw-2rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
         selectedFeature || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
@@ -368,7 +368,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
       </div>
 
       {/* Legend & Hint (desktop only to save mobile height) */}
-      <div className="hidden md:flex flex-wrap items-center justify-between text-[11px] md:text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800">
+      <div className="time-controller-legend hidden md:flex flex-wrap items-center justify-between text-[11px] md:text-xs text-slate-400 gap-2 pt-1 border-t border-slate-800">
         <div className="flex flex-wrap items-center gap-2.5 md:gap-4">
           <div className="flex items-center gap-1.5">
             <span className="w-2 md:w-2.5 h-2 md:h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
