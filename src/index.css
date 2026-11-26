@@ -161,22 +161,35 @@ html, body, #root {
   }
 }
 
+/* Universal Dark Theme for Leaflet Controls across all screens and modes */
+.leaflet-control-zoom {
+  border: 1px solid rgba(51, 65, 85, 0.8) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+.leaflet-control-zoom a {
+  background-color: rgba(15, 23, 42, 0.92) !important;
+  color: #f8fafc !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.leaflet-control-zoom a:hover {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  color: #fbbf24 !important;
+}
+.leaflet-control-zoom a.leaflet-disabled {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  color: #64748b !important;
+}
+
 /* Mobile Leaflet optimizations (Portrait) */
 @media (max-width: 767px) and (min-height: 501px) {
   .leaflet-bottom.leaflet-right {
-    bottom: calc(112px + max(4px, calc(env(safe-area-inset-bottom, 0px) - 24px))) !important;
+    bottom: calc(144px + max(4px, calc(env(safe-area-inset-bottom, 0px) - 24px))) !important;
     right: 8px !important;
   }
-  .leaflet-control-zoom {
-    border: 1px solid rgba(51, 65, 85, 0.8) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-    border-radius: 12px !important;
-    overflow: hidden;
-  }
   .leaflet-control-zoom a {
-    background-color: rgba(15, 23, 42, 0.92) !important;
-    color: #f8fafc !important;
-    border-color: rgba(51, 65, 85, 0.8) !important;
     width: 44px !important;
     height: 44px !important;
     line-height: 44px !important;
@@ -331,20 +344,24 @@ html, body, #root {
 
   /* 5. Leaflet zoom controls: positioned in bottom-right corner with safe areas */
   .leaflet-bottom.leaflet-right {
-    bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
-    right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 0px)) !important;
+    right: max(12px, env(safe-area-inset-right, 0px)) !important;
     z-index: 900 !important;
   }
   .leaflet-control-zoom {
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
     margin: 0 !important;
+    border: 1px solid rgba(51, 65, 85, 0.8) !important;
   }
   .leaflet-control-zoom a {
-    width: 30px !important;
-    height: 30px !important;
-    line-height: 30px !important;
-    font-size: 14px !important;
+    background-color: rgba(15, 23, 42, 0.92) !important;
+    color: #f8fafc !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+    font-size: 16px !important;
   }
   .leaflet-control-attribution {
     display: none !important;
