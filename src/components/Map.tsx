@@ -322,8 +322,33 @@ const MapComponent: React.FC<MapProps> = ({
 
     mapInstanceRef.current = map;
 
+    // Automatically invalidate size whenever container resizes (orientation change, dynamic viewport)
+    // Prevents black gap / unrendered tile areas at screen edges
+    const handleMapResize = () => {
+      map.invalidateSize({ debounceMoveend: true });
+    };
+    window.addEventListener('resize', handleMapResize);
+    window.addEventListener('orientationchange', handleMapResize);
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && mapContainerRef.current) {
+      ro = new ResizeObserver(() => {
+        map.invalidateSize({ debounceMoveend: true });
+      });
+      ro.observe(mapContainerRef.current);
+    }
+
+    // Trigger initial invalidation once layout settles
+    const t1 = setTimeout(handleMapResize, 100);
+    const t2 = setTimeout(handleMapResize, 350);
+
     return () => {
       if (zoomRaf !== null) cancelAnimationFrame(zoomRaf);
+      window.removeEventListener('resize', handleMapResize);
+      window.removeEventListener('orientationchange', handleMapResize);
+      if (ro) ro.disconnect();
+      clearTimeout(t1);
+      clearTimeout(t2);
       districtsLayerRef.current = null;
       zonesLayerRef.current = null;
       labelDotEntriesRef.current = [];

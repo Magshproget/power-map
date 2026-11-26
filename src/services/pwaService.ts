@@ -27,6 +27,11 @@ export function initPWA() {
       .catch((err) => {
         console.warn('[PWA] Registration failed:', err);
       });
+
+    // Auto-reload to immediately activate new version when Service Worker updates
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
   });
 }
 

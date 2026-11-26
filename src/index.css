@@ -138,9 +138,9 @@ html, body, #root {
   will-change: transform;
   z-index: 1000 !important;
 
-  /* Mobile Portrait defaults with immediate rock-solid fallback */
-  bottom: 8px !important;
-  bottom: max(6px, calc(env(safe-area-inset-bottom, 0px) - 14px)) !important;
+  /* Mobile Portrait defaults - snug to screen bottom edge */
+  bottom: 4px !important;
+  bottom: max(4px, calc(env(safe-area-inset-bottom, 0px) - 24px)) !important;
   width: calc(100% - 1rem) !important;
   max-width: calc(100vw - 1rem) !important;
 }
@@ -164,7 +164,7 @@ html, body, #root {
 /* Mobile Leaflet optimizations (Portrait) */
 @media (max-width: 767px) and (min-height: 501px) {
   .leaflet-bottom.leaflet-right {
-    bottom: calc(120px + max(6px, calc(env(safe-area-inset-bottom, 0px) - 14px))) !important;
+    bottom: calc(112px + max(4px, calc(env(safe-area-inset-bottom, 0px) - 24px))) !important;
     right: 8px !important;
   }
   .leaflet-control-zoom {
@@ -248,39 +248,39 @@ html, body, #root {
 
   /* 4. TimeController: sleek, centered, ultra-compact landscape card */
   .time-controller-card {
-    bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    bottom: max(4px, env(safe-area-inset-bottom, 0px)) !important;
     left: 0 !important;
     right: 0 !important;
     margin-left: auto !important;
     margin-right: auto !important;
     width: calc(100% - 150px) !important;
-    max-width: 560px !important;
-    padding: 4px 10px 4px 10px !important;
+    max-width: 530px !important;
+    padding: 3px 10px 3px 10px !important;
     gap: 2px !important;
-    border-radius: 14px !important;
+    border-radius: 12px !important;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75) !important;
   }
 
-  /* Play button: 32x32 */
+  /* Play button: 30x30 */
   .time-controller-card .play-btn {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-    border-radius: 10px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    border-radius: 8px !important;
   }
   .time-controller-card .play-btn svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: 13px !important;
+    height: 13px !important;
   }
 
-  /* Зараз button: compact 28px */
+  /* Зараз button: compact 26px */
   .time-controller-card .now-btn {
-    height: 28px !important;
-    min-height: 28px !important;
-    padding: 2px 8px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    padding: 1px 7px !important;
     font-size: 11px !important;
-    border-radius: 8px !important;
+    border-radius: 7px !important;
   }
 
   /* Hide verbose text / desktop city badge in landscape mobile to give breathing room */
@@ -290,38 +290,38 @@ html, body, #root {
 
   /* Clock display */
   .time-controller-card .clock-display-box {
-    padding: 2px 8px !important;
-    border-radius: 8px !important;
+    padding: 1px 7px !important;
+    border-radius: 7px !important;
   }
   .time-controller-card .clock-display-text {
-    font-size: 13px !important;
+    font-size: 12px !important;
   }
 
   /* Color timeline bar */
   .time-controller-timeline-row {
     padding-top: 1px !important;
     padding-bottom: 1px !important;
-    gap: 2px !important;
+    gap: 1px !important;
   }
   .time-controller-bar-grid {
-    height: 10px !important;
-    border-radius: 4px !important;
+    height: 9px !important;
+    border-radius: 3px !important;
   }
   .time-controller-thumb-indicator {
-    width: 12px !important;
-    height: 18px !important;
+    width: 11px !important;
+    height: 16px !important;
   }
 
   /* Timeline hour ticks: hide 3-hour minor ticks, keep only 6-hour intervals (00, 06, 12, 18, 24) */
   .time-controller-ticks-container {
-    height: 12px !important;
+    height: 11px !important;
     margin-top: 0px !important;
   }
   .time-controller-card .tick-minor-label {
     display: none !important;
   }
   .time-controller-card .tick-major-label {
-    font-size: 9px !important;
+    font-size: 8.5px !important;
   }
 
   /* Hide legend in landscape mobile */
@@ -331,18 +331,20 @@ html, body, #root {
 
   /* 5. Leaflet zoom controls: positioned in bottom-right corner with safe areas */
   .leaflet-bottom.leaflet-right {
-    bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
-    right: max(10px, env(safe-area-inset-right, 0px)) !important;
+    bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    z-index: 900 !important;
   }
   .leaflet-control-zoom {
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
+    margin: 0 !important;
   }
   .leaflet-control-zoom a {
-    width: 32px !important;
-    height: 32px !important;
-    line-height: 32px !important;
-    font-size: 15px !important;
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 14px !important;
   }
   .leaflet-control-attribution {
     display: none !important;
