@@ -1,9 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useDeferredValue, useMemo, useState } from 'react';
 import { Search, Zap, Clock, RefreshCw, X, MapPin, Layers, Shield, Grid, Navigation } from 'lucide-react';
 import { ScheduleData, StreetItem, SelectedFeature, LayerMode } from '../types';
-import streetsData from '../data/streets.json';
-import districtsData from '../data/districts.json';
-import zonesData from '../data/zones.json';
+import { useMapGeoData, useStreetsData } from '../services/geoDataService';
 
 interface HeaderProps {
   schedule: ScheduleData | null;
@@ -62,39 +60,70 @@ function wordsMatch(w1: string, w2: string): number {
   return 0;
 }
 
-function scoreStreet(street: StreetItem, query: string): number {
-  const qWords = extractWords(query);
-  if (qWords.length === 0) return 0;
+interface IndexedStreet {
+  street: StreetItem;
+  nameWords: string[];
+  contextWords: string[];
+  significantName: string;
+  staticAdjustment: number;
+}
 
-  const nameWords = extractWords(street.name);
-  const contextWords = extractWords(`${street.cityName || ''} ${street.district || ''}`);
+function buildStreetIndex(streets: StreetItem[]): IndexedStreet[] {
+  return streets.map((street) => {
+    const nameWords = extractWords(street.name);
+    const contextWords = extractWords(`${street.cityName || ''} ${street.district || ''}`);
+    let staticAdjustment = 0;
+    if (street.name.includes('-') || street.name.includes('/')) {
+      staticAdjustment -= 35;
+    }
+    if (/\d/.test(street.name)) {
+      staticAdjustment -= 30;
+    }
+    if (street.name.toLowerCase().includes('навпроти')) {
+      staticAdjustment -= 40;
+    }
+    if (street.cityName === 'Львів' || street.district?.includes('Львів')) {
+      staticAdjustment += 30;
+    }
+    return {
+      street,
+      nameWords,
+      contextWords,
+      significantName: nameWords.join(' '),
+      staticAdjustment,
+    };
+  });
+}
 
-  let matchedAll = true;
+function scoreIndexedStreet(
+  item: IndexedStreet,
+  qWords: string[],
+  querySignificant: string
+): number {
+  const { nameWords, contextWords, significantName, staticAdjustment } = item;
+
   let score = 0;
-
-  for (const qw of qWords) {
+  for (let i = 0; i < qWords.length; i++) {
+    const qw = qWords[i];
     let bestWordMatch = 0;
-    for (const tw of nameWords) {
-      const m = wordsMatch(tw, qw);
+    for (let j = 0; j < nameWords.length; j++) {
+      const m = wordsMatch(nameWords[j], qw);
       if (m > bestWordMatch) bestWordMatch = m;
     }
     if (bestWordMatch === 0) {
-      for (const cw of contextWords) {
-        const m = wordsMatch(cw, qw);
-        if (m > 0) bestWordMatch = Math.max(bestWordMatch, Math.floor(m * 0.7));
+      for (let j = 0; j < contextWords.length; j++) {
+        const m = wordsMatch(contextWords[j], qw);
+        if (m > 0) {
+          const scaled = Math.floor(m * 0.7);
+          if (scaled > bestWordMatch) bestWordMatch = scaled;
+        }
       }
     }
     if (bestWordMatch === 0) {
-      matchedAll = false;
-      break;
+      return 0;
     }
     score += bestWordMatch;
   }
-
-  if (!matchedAll) return 0;
-
-  const significantName = nameWords.join(' ');
-  const querySignificant = qWords.join(' ');
 
   if (significantName === querySignificant) {
     score += 200;
@@ -104,24 +133,37 @@ function scoreStreet(street: StreetItem, query: string): number {
     score += 60;
   }
 
-  if (street.name.includes('-') || street.name.includes('/')) {
-    score -= 35;
-  }
-  if (/\d/.test(street.name)) {
-    score -= 30;
-  }
-  if (street.name.toLowerCase().includes('навпроти')) {
-    score -= 40;
-  }
-
-  if (street.cityName === 'Львів' || street.district?.includes('Львів')) {
-    score += 30;
-  }
-
-  return score;
+  return score + staticAdjustment;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+const LAYER_OPTIONS: { id: LayerMode; label: string; icon: React.ReactNode; desc: string }[] = [
+  {
+    id: 'auto',
+    label: 'Авто-зум',
+    icon: <Layers className="w-4 h-4" />,
+    desc: 'Фокус на обраному (швидкий)',
+  },
+  {
+    id: 'districts',
+    label: 'Райони',
+    icon: <Shield className="w-4 h-4" />,
+    desc: '26 районів та громад',
+  },
+  {
+    id: 'zones',
+    label: 'Зони черг',
+    icon: <Grid className="w-4 h-4" />,
+    desc: 'Полігони груп 1.1–6.2',
+  },
+  {
+    id: 'streets',
+    label: 'Вулиці',
+    icon: <Navigation className="w-4 h-4" />,
+    desc: 'Точкові маркери вулиць',
+  },
+];
+
+const HeaderComponent: React.FC<HeaderProps> = ({
   schedule,
   onRefresh,
   isLoading,
@@ -132,8 +174,35 @@ export const Header: React.FC<HeaderProps> = ({
   onSearchFocusChange,
 }) => {
   const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
   const [isFocused, setIsFocused] = useState(false);
   const [isMobileLayersOpen, setIsMobileLayersOpen] = useState(false);
+
+  const mapGeo = useMapGeoData();
+  const streetsData = useStreetsData(true);
+
+  const indexedStreets = useMemo(
+    () => (streetsData ? buildStreetIndex(streetsData) : []),
+    [streetsData]
+  );
+
+  const indexedDistricts = useMemo(
+    () =>
+      (mapGeo?.districts.features || []).map((d) => ({
+        feature: d,
+        cleanName: cleanText(d.properties.name),
+      })),
+    [mapGeo]
+  );
+
+  const indexedZones = useMemo(
+    () =>
+      (mapGeo?.zones.features || []).map((z) => ({
+        feature: z,
+        cleanName: cleanText(`${z.properties.name} ${z.properties.districtName} ${z.properties.group}`),
+      })),
+    [mapGeo]
+  );
 
   const resetScroll = () => {
     if (typeof window !== 'undefined') {
@@ -170,75 +239,52 @@ export const Header: React.FC<HeaderProps> = ({
     ? `Оновити графік (перевірено о ${syncTimeStr})`
     : 'Оновити графік';
 
-  const layerOptions: { id: LayerMode; label: string; icon: React.ReactNode; desc: string }[] = [
-    {
-      id: 'auto',
-      label: 'Авто-зум',
-      icon: <Layers className="w-4 h-4" />,
-      desc: 'Фокус на обраному (швидкий)',
-    },
-    {
-      id: 'districts',
-      label: 'Райони',
-      icon: <Shield className="w-4 h-4" />,
-      desc: '26 районів та громад',
-    },
-    {
-      id: 'zones',
-      label: 'Зони черг',
-      icon: <Grid className="w-4 h-4" />,
-      desc: 'Полігони груп 1.1–6.2',
-    },
-    {
-      id: 'streets',
-      label: 'Вулиці',
-      icon: <Navigation className="w-4 h-4" />,
-      desc: 'Точкові маркери вулиць',
-    },
-  ];
-
-  const streets = streetsData as StreetItem[];
-  const districts = districtsData.features;
-  const zones = zonesData.features;
+  const parsedQuery = useMemo(() => {
+    const trimmed = deferredQuery.trim();
+    if (trimmed.length < 2) return null;
+    const qWords = extractWords(trimmed);
+    return {
+      qWords,
+      querySignificant: qWords.join(' '),
+    };
+  }, [deferredQuery]);
 
   const filteredStreets = useMemo(() => {
-    const q = query.trim();
-    if (q.length < 2) return [];
+    if (!parsedQuery || parsedQuery.qWords.length === 0 || indexedStreets.length === 0) return [];
+    const { qWords, querySignificant } = parsedQuery;
+    const matches: { s: StreetItem; score: number }[] = [];
 
-    return streets
-      .map((s) => ({ s, score: scoreStreet(s, q) }))
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 12)
-      .map((item) => item.s);
-  }, [query, streets]);
+    for (let i = 0; i < indexedStreets.length; i++) {
+      const item = indexedStreets[i];
+      const score = scoreIndexedStreet(item, qWords, querySignificant);
+      if (score > 0) {
+        matches.push({ s: item.street, score });
+      }
+    }
+
+    matches.sort((a, b) => b.score - a.score);
+    return matches.slice(0, 12).map((m) => m.s);
+  }, [parsedQuery, indexedStreets]);
 
   const filteredDistricts = useMemo(() => {
-    const q = cleanText(query);
-    if (q.length < 2) return [];
-    const qWords = extractWords(query);
-
-    return districts
-      .filter((d) => {
-        const dClean = cleanText(d.properties.name);
-        return qWords.every((qw) => dClean.includes(qw));
-      })
-      .slice(0, 5);
-  }, [query, districts]);
+    if (!parsedQuery || parsedQuery.qWords.length === 0) return [];
+    const { qWords } = parsedQuery;
+    return indexedDistricts
+      .filter((d) => qWords.every((qw) => d.cleanName.includes(qw)))
+      .slice(0, 5)
+      .map((d) => d.feature);
+  }, [parsedQuery, indexedDistricts]);
 
   const filteredZones = useMemo(() => {
-    const q = cleanText(query);
-    if (q.length < 2) return [];
-    const qWords = extractWords(query);
+    if (!parsedQuery || parsedQuery.qWords.length === 0) return [];
+    const { qWords } = parsedQuery;
+    return indexedZones
+      .filter((z) => qWords.every((qw) => z.cleanName.includes(qw)))
+      .slice(0, 5)
+      .map((z) => z.feature);
+  }, [parsedQuery, indexedZones]);
 
-    return zones
-      .filter((z) => {
-        const zClean = cleanText(`${z.properties.name} ${z.properties.districtName} ${z.properties.group}`);
-        return qWords.every((qw) => zClean.includes(qw));
-      })
-      .slice(0, 5);
-  }, [query, zones]);
-
+  const isSearchPending = query !== deferredQuery;
   const hasResults =
     filteredStreets.length > 0 || filteredDistricts.length > 0 || filteredZones.length > 0;
 
@@ -248,10 +294,14 @@ export const Header: React.FC<HeaderProps> = ({
         className="fixed inset-0 z-[1300] bg-black/60 pointer-events-auto md:bg-transparent"
         onClick={handleCloseSearch}
       />
-      <div className="fixed inset-x-2 top-11 bottom-3 md:bottom-auto md:absolute md:inset-x-auto md:top-full md:left-0 md:w-full md:mt-2 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-[1350] md:max-h-96 flex flex-col pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
+      <div className="fixed inset-x-2 top-14 bottom-3 md:bottom-auto md:absolute md:inset-x-auto md:top-full md:left-0 md:w-full md:mt-2 bg-slate-900/98 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-[1350] md:max-h-96 flex flex-col pointer-events-auto animate-in fade-in zoom-in-95 duration-150">
         {!hasResults ? (
           <div className="p-4 text-center text-sm text-slate-400">
-            Нічого не знайдено за запитом "{query}"
+            {streetsData === null
+              ? 'Завантаження бази вулиць...'
+              : isSearchPending
+              ? 'Пошук...'
+              : `Нічого не знайдено за запитом "${query}"`}
           </div>
         ) : (
           <div className="py-2 pb-24 md:pb-4 overflow-y-auto flex-1">
@@ -262,6 +312,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
                 {filteredDistricts.map((d) => (
                   <button
+                    type="button"
                     key={d.id}
                     onClick={() => {
                       onSelectFeature({
@@ -275,7 +326,7 @@ export const Header: React.FC<HeaderProps> = ({
                       handleCloseSearch();
                       setQuery('');
                     }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
                   >
                     <span className="font-medium flex items-center gap-1.5">
                       <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -296,6 +347,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
                 {filteredZones.map((z) => (
                   <button
+                    type="button"
                     key={z.id}
                     onClick={() => {
                       onSelectFeature({
@@ -310,7 +362,7 @@ export const Header: React.FC<HeaderProps> = ({
                       handleCloseSearch();
                       setQuery('');
                     }}
-                    className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
+                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-800 active:bg-slate-750 flex items-center justify-between text-sm text-slate-200 transition-colors"
                   >
                     <div>
                       <div className="font-medium">{z.properties.name}</div>
@@ -333,6 +385,7 @@ export const Header: React.FC<HeaderProps> = ({
                   const locality = s.cityName && s.cityName !== 'Львів' ? s.cityName : s.district;
                   return (
                     <button
+                      type="button"
                       key={s.id}
                       onClick={() => {
                         onSelectFeature({
@@ -377,11 +430,15 @@ export const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <header className={`fixed top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 pointer-events-none transition-all ${isFocused ? 'z-[1400]' : 'z-[1200]'}`}>
-      {/* MOBILE UNIFIED TOP BAR (< md): ultra-compact single-row */}
+    <header
+      className={`fixed top-[calc(0.5rem+env(safe-area-inset-top,0px))] left-2 right-2 md:top-4 md:left-4 md:right-4 pointer-events-none ${
+        isFocused ? 'z-[1400]' : 'z-[1200]'
+      }`}
+    >
+      {/* MOBILE UNIFIED TOP BAR (< md) */}
       <div className="flex md:hidden items-center gap-1.5 w-full pointer-events-auto">
         {/* Compact Logo Badge */}
-        <div className="flex items-center gap-1 px-2 py-1.5 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-md shrink-0">
+        <div className="flex items-center gap-1 px-2 h-11 rounded-xl bg-slate-900/95 border border-slate-700/70 shadow-md shrink-0">
           <Zap className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
           <span className="font-bold text-[11px] text-white tracking-wide">
             Світло<span className="text-amber-400">Мапа</span>
@@ -390,8 +447,8 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Search Bar Input */}
         <div className={`relative flex-1 min-w-0 ${isFocused ? 'z-[1400]' : ''}`}>
-          <div className="relative z-[1400] flex items-center bg-slate-900/98 px-2 py-1.5 rounded-lg border border-slate-700/70 shadow-md focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
-            <Search className="w-3.5 h-3.5 text-slate-400 shrink-0 mr-1.5" />
+          <div className="relative z-[1400] flex items-center h-11 bg-slate-900/98 px-2.5 rounded-xl border border-slate-700/70 shadow-md focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20">
+            <Search className="w-4 h-4 text-slate-400 shrink-0 mr-1.5" />
             <input
               type="text"
               value={query}
@@ -403,13 +460,14 @@ export const Header: React.FC<HeaderProps> = ({
             />
             {query && (
               <button
+                type="button"
                 onClick={() => {
                   setQuery('');
                   handleCloseSearch();
                 }}
-                className="text-slate-400 hover:text-white p-0.5"
+                className="text-slate-400 hover:text-white p-1.5 -mr-1"
               >
-                <X className="w-3 h-3" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -418,59 +476,63 @@ export const Header: React.FC<HeaderProps> = ({
           {isFocused && query.trim().length > 1 && renderDropdown()}
         </div>
 
-        {/* Mobile Layers Button */}
+        {/* Mobile Layers Button (>= 44x44 tap target) */}
         {onChangeLayerMode && (
           <button
-            onClick={() => setIsMobileLayersOpen(!isMobileLayersOpen)}
+            type="button"
+            onClick={() => setIsMobileLayersOpen((v) => !v)}
             title="Шари мапи"
-            className={`p-1.5 rounded-lg backdrop-blur-md border shadow-md shrink-0 transition-all active:scale-95 ${
+            className={`w-11 h-11 flex items-center justify-center rounded-xl border shadow-md shrink-0 transition-colors active:scale-95 ${
               layerMode !== 'auto'
                 ? 'bg-amber-500 text-slate-950 border-amber-400 font-semibold'
                 : 'bg-slate-900/95 text-amber-400 border-slate-700/70 hover:bg-slate-800'
             }`}
           >
-            <Layers className="w-4 h-4" />
+            <Layers className="w-4.5 h-4.5" />
           </button>
         )}
 
-        {/* Mobile Refresh Button */}
+        {/* Mobile Refresh Button (>= 44x44 tap target) */}
         <button
+          type="button"
           onClick={onRefresh}
           disabled={isLoading}
           title={refreshTooltip}
-          className="p-1.5 rounded-lg bg-slate-900/95 backdrop-blur-md border border-slate-700/70 shadow-md text-slate-400 hover:text-white active:scale-95 disabled:opacity-50 shrink-0"
+          className="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-900/95 border border-slate-700/70 shadow-md text-slate-400 hover:text-white active:scale-95 disabled:opacity-50 shrink-0 transition-colors"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
         </button>
 
         {/* Mobile Layers Modal Dropdown */}
         {isMobileLayersOpen && onChangeLayerMode && (
           <>
             <div
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs"
+              className="fixed inset-0 z-40 bg-black/45"
               onClick={() => setIsMobileLayersOpen(false)}
             />
-            <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900/98 backdrop-blur-2xl p-2 rounded-2xl border border-slate-700/80 shadow-2xl z-50 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900/98 p-2 rounded-2xl border border-slate-700/80 shadow-2xl z-50 flex flex-col gap-1 animate-in fade-in zoom-in-95 duration-150">
               <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between border-b border-slate-800 pb-2 mb-1">
                 <span>Шари мапи (z{Math.round(currentZoom)})</span>
                 <button
+                  type="button"
                   onClick={() => setIsMobileLayersOpen(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-white"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {layerOptions.map((opt) => {
+              {LAYER_OPTIONS.map((opt) => {
                 const isActive = layerMode === opt.id;
                 return (
                   <button
+                    type="button"
                     key={opt.id}
                     onClick={() => {
                       onChangeLayerMode(opt.id);
                       setIsMobileLayersOpen(false);
                     }}
-                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all ${
+                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-colors ${
                       isActive
                         ? 'bg-amber-500 text-slate-950 font-semibold shadow-md'
                         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -500,7 +562,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* DESKTOP TOP BAR (>= md) */}
       <div className="hidden md:flex items-center justify-between gap-3 pointer-events-none">
         {/* Brand & Status Banner */}
-        <div className="flex items-center gap-3 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl pointer-events-auto">
+        <div className="flex items-center gap-3 bg-slate-900/95 px-4 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl pointer-events-auto">
           <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
             <Zap className="w-5 h-5 fill-amber-400 text-amber-400" />
           </div>
@@ -509,36 +571,39 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="font-bold text-base text-white tracking-wide">
                 СвітлоМапа <span className="text-amber-400 font-semibold text-sm">Львів</span>
               </h1>
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${
-                schedule?.isLive
-                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                  : 'bg-slate-800 text-slate-300 border-slate-700'
-              }`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${schedule?.isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'}`} />
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium border ${
+                  schedule?.isLive
+                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                    : 'bg-slate-800 text-slate-300 border-slate-700'
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    schedule?.isLive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
+                  }`}
+                />
                 {schedule?.isLive ? 'LIVE' : 'Автономно'}
               </span>
             </div>
             <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
               <Clock className="w-3 h-3 text-slate-500 shrink-0" />
-              <span>{schedule?.date ? `Графік на ${schedule.date}` : (schedule?.title || 'Графік відключень')}</span>
+              <span>{schedule?.date ? `Графік на ${schedule.date}` : schedule?.title || 'Графік відключень'}</span>
               {schedule?.updatedAt && (
-                <span className="text-amber-400 font-medium">
-                  • Оновлено о {schedule.updatedAt}
-                </span>
+                <span className="text-amber-400 font-medium">• Оновлено о {schedule.updatedAt}</span>
               )}
               {syncTimeStr && (
-                <span className="text-slate-500 text-[10px]">
-                  (перевірено {syncTimeStr})
-                </span>
+                <span className="text-slate-500 text-[10px]">(перевірено {syncTimeStr})</span>
               )}
             </p>
           </div>
 
           <button
+            type="button"
             onClick={onRefresh}
             disabled={isLoading}
             title={refreshTooltip}
-            className="ml-2 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all active:scale-95 disabled:opacity-50"
+            className="ml-2 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors active:scale-95 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-amber-400' : ''}`} />
           </button>
@@ -546,7 +611,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Desktop Search Bar */}
         <div className={`relative w-96 pointer-events-auto ${isFocused ? 'z-[1400]' : ''}`}>
-          <div className="relative z-[1400] flex items-center bg-slate-900/95 px-3.5 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-all">
+          <div className="relative z-[1400] flex items-center bg-slate-900/95 px-3.5 py-2.5 rounded-2xl border border-slate-700/60 shadow-xl focus-within:border-amber-500/60 focus-within:ring-2 focus-within:ring-amber-500/20 transition-colors">
             <Search className="w-4 h-4 text-slate-400 shrink-0 mr-2.5" />
             <input
               type="text"
@@ -559,6 +624,7 @@ export const Header: React.FC<HeaderProps> = ({
             />
             {query && (
               <button
+                type="button"
                 onClick={() => {
                   setQuery('');
                   handleCloseSearch();
@@ -577,3 +643,5 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
+export const Header = React.memo(HeaderComponent);

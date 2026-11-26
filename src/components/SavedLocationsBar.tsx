@@ -13,7 +13,7 @@ interface SavedLocationsBarProps {
   isSearching?: boolean;
 }
 
-export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
+const SavedLocationsBarComponent: React.FC<SavedLocationsBarProps> = ({
   savedLocations,
   schedule,
   selectedHour,
@@ -86,9 +86,9 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   if (validLocations.length === 0) {
     return (
       <div className="hidden md:flex fixed top-[92px] left-4 z-[990] pointer-events-none">
-        <div className="flex items-center gap-2 bg-slate-900/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400 pointer-events-auto">
+        <div className="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-700/50 shadow-lg text-xs text-slate-400 pointer-events-auto">
           <Bookmark className="w-3.5 h-3.5 text-amber-400/80" />
-          <span>Зберігайте адреси (дім, робота) через «★ В обране» для швидкого моніторингу</span>
+          <span>Зберігайте адреси (дім, робота) через «★ В обране» для швидкого моніторигу</span>
         </div>
       </div>
     );
@@ -110,7 +110,7 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           onSelectLocation(loc.feature);
           setIsDropdownOpen(false);
         }}
-        className={`group flex items-center gap-1.5 md:gap-2 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl bg-slate-900/90 hover:bg-slate-800/95 backdrop-blur-md border ${statusBadge.border} shadow-lg cursor-pointer transition-all shrink-0 active:scale-95`}
+        className={`group flex items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-lg md:rounded-xl bg-slate-900/95 hover:bg-slate-800/95 border ${statusBadge.border} shadow-lg cursor-pointer transition-colors shrink-0 active:scale-95`}
         title={`${loc.feature.name} (${loc.feature.group ? `Черга ${loc.feature.group}` : 'Район'}) — ${statusBadge.text}`}
       >
         {getLabelIcon(loc.customLabel)}
@@ -141,16 +141,17 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           </span>
         </div>
 
-        {/* Remove button */}
+        {/* Remove button (visible on touch, hover-revealed on desktop) */}
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onRemoveLocation(loc.id, e);
           }}
           title="Видалити з обраного"
-          className="opacity-0 group-hover:opacity-100 p-0.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-white transition-opacity ml-0.5"
+          className="opacity-80 md:opacity-0 md:group-hover:opacity-100 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 -mr-1.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-white transition-opacity ml-0.5"
         >
-          <X className="w-3 h-3 md:w-3.5 md:h-3.5" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
     );
@@ -159,13 +160,13 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
   return (
     <>
       <div
-        className={`fixed top-14 md:top-[92px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
+        className={`fixed top-[calc(3.75rem+env(safe-area-inset-top,0px))] md:top-[92px] left-0 md:left-4 right-0 md:right-auto z-[990] flex justify-center md:justify-start items-center pointer-events-none px-2 md:px-0 ${
           selectedFeatureId || isSearching ? 'hidden md:flex' : 'flex'
         }`}
       >
         <div className="flex items-center justify-center md:justify-start gap-1.5 md:gap-2 pointer-events-auto max-w-full">
-          <div className="flex items-center gap-1 md:gap-1.5 px-2 py-1 md:px-2.5 md:py-1.5 bg-slate-900/95 backdrop-blur-md rounded-lg md:rounded-xl border border-slate-700/60 shadow-lg text-[11px] md:text-xs font-semibold text-slate-300 shrink-0">
-            <Bookmark className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400 fill-amber-400/30" />
+          <div className="flex items-center gap-1 md:gap-1.5 px-2 py-1.5 md:px-2.5 md:py-1.5 bg-slate-900/95 rounded-lg md:rounded-xl border border-slate-700/60 shadow-lg text-[11px] md:text-xs font-semibold text-slate-300 shrink-0">
+            <Bookmark className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
             <span className="hidden sm:inline">Мої адреси:</span>
           </div>
 
@@ -175,36 +176,38 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
           {/* More Addresses Dropdown Trigger */}
           {hasMoreThanOne && (
             <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              type="button"
+              onClick={() => setIsDropdownOpen((v) => !v)}
               title="Всі збережені адреси"
-              className={`flex items-center gap-1 px-2 py-1 md:px-2.5 md:py-1.5 rounded-lg md:rounded-xl backdrop-blur-md border shadow-lg text-[11px] md:text-xs font-bold transition-all active:scale-95 shrink-0 cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1.5 md:px-2.5 md:py-1.5 rounded-lg md:rounded-xl border shadow-lg text-[11px] md:text-xs font-bold transition-colors active:scale-95 shrink-0 cursor-pointer ${
                 isDropdownOpen
                   ? 'bg-amber-500 text-slate-950 border-amber-400'
                   : 'bg-slate-900/95 hover:bg-slate-800 text-amber-400 border-slate-700/70'
               }`}
             >
               <span>+{validLocations.length - 1}</span>
-              <ChevronDown className={`w-3 h-3 md:w-3.5 md:h-3.5 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
           )}
         </div>
       </div>
 
-      {/* POPUP DROPDOWN MODAL (Mobile: Center Modal, Desktop: Docked Dropdown Under Header) */}
+      {/* POPUP DROPDOWN MODAL */}
       {isDropdownOpen && hasMoreThanOne && (
         <>
           <div
-            className="fixed inset-0 z-[1250] bg-black/40 backdrop-blur-xs pointer-events-auto"
+            className="fixed inset-0 z-[1250] bg-black/45 pointer-events-auto"
             onClick={() => setIsDropdownOpen(false)}
           />
-          <div className="fixed top-24 md:top-[136px] left-2 right-2 md:left-4 md:right-auto max-w-sm md:w-96 md:max-w-none mx-auto md:mx-0 bg-slate-900/98 backdrop-blur-2xl border border-slate-700/80 rounded-2xl shadow-2xl p-2.5 z-[1300] flex flex-col gap-1 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 max-h-80 md:max-h-96 overflow-y-auto">
+          <div className="fixed top-24 md:top-[136px] left-2 right-2 md:left-4 md:right-auto max-w-sm md:w-96 md:max-w-none mx-auto md:mx-0 bg-slate-900/98 border border-slate-700/80 rounded-2xl shadow-2xl p-2.5 z-[1300] flex flex-col gap-1 pointer-events-auto animate-in fade-in zoom-in-95 duration-150 max-h-80 md:max-h-96 overflow-y-auto">
             <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-800 text-[11px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
               <span>Мої адреси ({validLocations.length})</span>
               <button
+                type="button"
                 onClick={() => setIsDropdownOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -257,14 +260,15 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
                     </div>
 
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         onRemoveLocation(loc.id, e);
                       }}
                       title="Видалити"
-                      className="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -276,3 +280,5 @@ export const SavedLocationsBar: React.FC<SavedLocationsBarProps> = ({
     </>
   );
 };
+
+export const SavedLocationsBar = React.memo(SavedLocationsBarComponent);

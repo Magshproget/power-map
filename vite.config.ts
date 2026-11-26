@@ -9,6 +9,17 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'leaflet-vendor': ['leaflet'],
+          'lucide-vendor': ['lucide-react'],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

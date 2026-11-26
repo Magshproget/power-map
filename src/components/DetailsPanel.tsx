@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin, Star } from 'lucide-react';
 import { SelectedFeature, ScheduleData, PowerStatus } from '../types';
 
@@ -13,7 +13,10 @@ interface DetailsPanelProps {
   onToggleSaved?: (feature: SelectedFeature, customLabel?: string) => void;
 }
 
-export const DetailsPanel: React.FC<DetailsPanelProps> = ({
+const MINOR_HOURS = Array.from({ length: 25 }, (_, h) => h).filter((h) => h % 3 !== 0);
+const MAJOR_HOURS = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+
+const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   feature,
   onClose,
   selectedHour,
@@ -23,81 +26,136 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
   savedCustomLabel,
   onToggleSaved,
 }) => {
-  const [dragY, setDragY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const touchStartYRef = useRef(0);
   const touchStartXRef = useRef(0);
+  const dragYRef = useRef(0);
+  const isDraggingRef = useRef(false);
+  const startedOnHandleRef = useRef(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dragYRef.current = 0;
+    isDraggingRef.current = false;
+    startedOnHandleRef.current = false;
+    if (panelRef.current) {
+      panelRef.current.style.transform = '';
+      panelRef.current.style.transition = '';
+    }
+  }, [feature?.id]);
+
+  const hourSlot = Math.floor(selectedHour) % 24;
+
+  const { status, intervalsSummary, hourlyBars, groupDesc } = useMemo(() => {
+    let computedStatus: PowerStatus = 'on';
+    let computedIntervals: string[] = [];
+    let computedBars: PowerStatus[] = new Array(24).fill('on');
+    let computedDesc = '';
+
+    if (feature?.group && schedule?.groups[feature.group]) {
+      const gData = schedule.groups[feature.group];
+      computedStatus = gData.hourly[hourSlot];
+      computedBars = gData.hourly;
+      computedDesc = gData.desc;
+      computedIntervals = gData.intervals.map((i) => `${i.start} – ${i.end}`);
+    } else if (feature?.groups && schedule?.groups) {
+      const activeGroups = feature.groups.map((g) => schedule.groups[g]).filter(Boolean);
+      const offCount = activeGroups.filter((g) => g.hourly[hourSlot] === 'off').length;
+
+      if (offCount === 0) {
+        computedStatus = 'on';
+      } else if (offCount === activeGroups.length) {
+        computedStatus = 'off';
+      } else {
+        computedStatus = 'maybe';
+      }
+
+      computedBars = Array.from({ length: 24 }, (_, h) => {
+        const offs = activeGroups.filter((g) => g.hourly[h] === 'off').length;
+        if (offs === 0) return 'on';
+        if (offs === activeGroups.length) return 'off';
+        return 'maybe';
+      });
+    }
+
+    return {
+      status: computedStatus,
+      intervalsSummary: computedIntervals,
+      hourlyBars: computedBars,
+      groupDesc: computedDesc,
+    };
+  }, [feature, schedule, hourSlot]);
 
   if (!feature) return null;
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (panelRef.current && panelRef.current.scrollTop > 0) return;
+    const startedOnHandle = Boolean(
+      (e.target as HTMLElement | null)?.closest('[data-sheet-drag-handle="true"]')
+    );
+    if (panelRef.current && panelRef.current.scrollTop > 0 && !startedOnHandle) return;
     touchStartYRef.current = e.touches[0].clientY;
     touchStartXRef.current = e.touches[0].clientX;
-    setIsDragging(true);
+    dragYRef.current = 0;
+    startedOnHandleRef.current = startedOnHandle;
+    isDraggingRef.current = true;
+    if (panelRef.current) {
+      panelRef.current.style.transition = 'none';
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
+    if (!isDraggingRef.current || !panelRef.current) return;
     const currentY = e.touches[0].clientY;
     const currentX = e.touches[0].clientX;
     const deltaY = currentY - touchStartYRef.current;
     const deltaX = Math.abs(currentX - touchStartXRef.current);
 
-    if (deltaX > Math.abs(deltaY) && dragY === 0) return;
-
-    if (deltaY > 0) {
-      setDragY(deltaY);
-    } else {
-      setDragY(0);
+    if (panelRef.current.scrollTop > 0 || (!startedOnHandleRef.current && deltaY < -4)) {
+      isDraggingRef.current = false;
+      dragYRef.current = 0;
+      panelRef.current.style.transform = '';
+      panelRef.current.style.transition = '';
+      return;
     }
+
+    if (deltaX > Math.abs(deltaY) && dragYRef.current === 0) {
+      isDraggingRef.current = false;
+      dragYRef.current = 0;
+      panelRef.current.style.transform = '';
+      panelRef.current.style.transition = '';
+      return;
+    }
+
+    const clamped = deltaY > 0 ? deltaY : 0;
+    dragYRef.current = clamped;
+    panelRef.current.style.transform = `translate3d(0, ${clamped}px, 0)`;
   };
 
   const handleTouchEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    if (dragY > 65) {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    startedOnHandleRef.current = false;
+    const finalY = dragYRef.current;
+    dragYRef.current = 0;
+
+    if (panelRef.current) {
+      panelRef.current.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+      panelRef.current.style.transform = 'translate3d(0, 0, 0)';
+    }
+
+    if (finalY > 65) {
       onClose();
     }
-    setDragY(0);
   };
 
-  const hourSlot = Math.floor(selectedHour) % 24;
-
-  // Compute status for the selected hour
-  let status: PowerStatus = 'on';
-  let intervalsSummary: string[] = [];
-  let hourlyBars: PowerStatus[] = new Array(24).fill('on');
-  let groupDesc = '';
-
-  if (feature.group && schedule?.groups[feature.group]) {
-    const gData = schedule.groups[feature.group];
-    status = gData.hourly[hourSlot];
-    hourlyBars = gData.hourly;
-    groupDesc = gData.desc;
-    intervalsSummary = gData.intervals.map((i) => `${i.start} – ${i.end}`);
-  } else if (feature.groups && schedule?.groups) {
-    // For districts with multiple groups
-    const activeGroups = feature.groups.map((g) => schedule.groups[g]).filter(Boolean);
-    const offCount = activeGroups.filter((g) => g.hourly[hourSlot] === 'off').length;
-
-    if (offCount === 0) {
-      status = 'on';
-    } else if (offCount === activeGroups.length) {
-      status = 'off';
-    } else {
-      status = 'maybe';
+  const handleTouchCancel = () => {
+    isDraggingRef.current = false;
+    startedOnHandleRef.current = false;
+    dragYRef.current = 0;
+    if (panelRef.current) {
+      panelRef.current.style.transition = '';
+      panelRef.current.style.transform = '';
     }
-
-    // Composite 24h bar
-    hourlyBars = Array.from({ length: 24 }, (_, h) => {
-      const offs = activeGroups.filter((g) => g.hourly[h] === 'off').length;
-      if (offs === 0) return 'on';
-      if (offs === activeGroups.length) return 'off';
-      return 'maybe';
-    });
-  }
+  };
 
   const statusConfig = {
     on: {
@@ -126,19 +184,22 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{
-        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
-        transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-      }}
-      className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 md:bg-slate-900/95 backdrop-blur-2xl p-3 md:p-5 pb-4 md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[38vh] md:max-h-[calc(100vh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+      onTouchCancel={handleTouchCancel}
+      className="fixed inset-x-0 bottom-0 md:bottom-auto md:top-[136px] md:left-4 z-[1200] md:z-[1000] w-full md:w-96 bg-slate-900/98 p-3 md:p-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:pb-5 rounded-t-2xl md:rounded-3xl border-t md:border border-slate-700/80 shadow-[0_-8px_30px_rgba(0,0,0,0.85)] md:shadow-2xl flex flex-col gap-2 md:gap-4 pointer-events-auto max-h-[42dvh] md:max-h-[calc(100dvh-210px)] overflow-y-auto animate-in slide-in-from-bottom duration-200"
     >
-      {/* Mobile Drawer Grab Bar */}
-      <div className="w-full flex justify-center py-1.5 -mt-2 -mb-1 md:hidden shrink-0 cursor-grab active:cursor-grabbing">
+      {/* Mobile Drawer Grab Bar & Drag Header */}
+      <div
+        data-sheet-drag-handle="true"
+        className="w-full flex justify-center py-2 -mt-2 -mb-1 md:hidden shrink-0 cursor-grab active:cursor-grabbing touch-none"
+      >
         <div className="w-12 h-1.5 bg-slate-500/80 rounded-full" />
       </div>
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-2">
+      <div
+        data-sheet-drag-handle="true"
+        className="flex items-start justify-between gap-2 touch-none md:touch-auto"
+      >
         <div className="flex items-center gap-2 min-w-0">
           <div className="p-1.5 md:p-2.5 rounded-lg md:rounded-2xl bg-slate-800 border border-slate-700 text-amber-400 shrink-0">
             {feature.type === 'district' ? (
@@ -171,9 +232,10 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
         <div className="flex items-center gap-1.5 shrink-0">
           {onToggleSaved && (
             <button
+              type="button"
               onClick={() => onToggleSaved(feature)}
               title={isSaved ? 'Видалити з обраного' : 'Зберегти в обране'}
-              className={`p-2 md:p-2 rounded-xl transition-all active:scale-95 ${
+              className={`min-w-[44px] min-h-[44px] md:min-w-[40px] md:min-h-[40px] flex items-center justify-center rounded-xl transition-colors active:scale-95 ${
                 isSaved
                   ? 'bg-amber-500/25 text-amber-400 border border-amber-500/50 hover:bg-amber-500/35'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800 bg-slate-800/40 border border-slate-700/50'
@@ -184,9 +246,10 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
           )}
 
           <button
+            type="button"
             onClick={onClose}
             title="Закрити"
-            className="p-2 md:p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 bg-slate-800/40 border border-slate-700/50 transition-all active:scale-95"
+            className="min-w-[44px] min-h-[44px] md:min-w-[40px] md:min-h-[40px] flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 bg-slate-800/40 border border-slate-700/50 transition-colors active:scale-95"
           >
             <X className="w-5 h-5 md:w-4.5 md:h-4.5" />
           </button>
@@ -201,9 +264,10 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
             const isTagActive = savedCustomLabel === tag;
             return (
               <button
+                type="button"
                 key={tag}
                 onClick={() => onToggleSaved(feature, isTagActive ? undefined : tag)}
-                className={`text-[10px] md:text-xs px-2 py-0.5 rounded-md md:rounded-lg border transition-all ${
+                className={`min-h-[36px] text-[11px] md:text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
                   isTagActive
                     ? 'bg-amber-500/25 border-amber-500/50 text-amber-300 font-semibold shadow-sm'
                     : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white hover:border-slate-600'
@@ -233,7 +297,7 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
 
           <div className="text-right shrink-0">
             <span className="text-[10px] md:text-xs font-mono font-semibold text-white bg-slate-900/70 px-1.5 py-0.5 md:py-1 rounded-md md:rounded-lg border border-slate-700/70">
-              {Math.floor(selectedHour).toString().padStart(2, '0')}:00
+              {hourSlot.toString().padStart(2, '0')}:00
             </span>
           </div>
         </div>
@@ -248,9 +312,7 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-slate-200 leading-tight">
-              {groupDesc}
-            </p>
+            <p className="text-slate-200 leading-tight">{groupDesc}</p>
           </div>
         )}
       </div>
@@ -280,18 +342,17 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
                 title={`${h}:00 – ${h + 1}:00: ${
                   slotStatus === 'on' ? 'Є світло' : slotStatus === 'off' ? 'Немає світла' : 'Частково'
                 }`}
-                className={`h-full rounded-xs ${bgClass} transition-all ${
-                  isCurrent ? 'ring-2 ring-white scale-110 z-10' : 'opacity-85 hover:opacity-100'
+                className={`h-full rounded-xs ${bgClass} ${
+                  isCurrent ? 'ring-2 ring-white z-10' : 'opacity-85'
                 }`}
               />
             );
           })}
         </div>
+
         {/* Precision Ruler Ticks */}
         <div className="relative w-full h-5 select-none mt-1">
-          {/* Minor 1-hour ticks */}
-          {Array.from({ length: 25 }, (_, h) => {
-            if (h % 3 === 0) return null;
+          {MINOR_HOURS.map((h) => {
             const pct = (h / 24) * 100;
             return (
               <div
@@ -305,8 +366,7 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
             );
           })}
 
-          {/* Major 3-hour ticks with numbers */}
-          {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => {
+          {MAJOR_HOURS.map((h) => {
             const pct = (h / 24) * 100;
             const timeLabel = `${h.toString().padStart(2, '0')}:00`;
             const isFirst = h === 0;
@@ -343,9 +403,10 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
           <div className="flex flex-wrap gap-1.5">
             {feature.streets.map((st) => (
               <button
+                type="button"
                 key={st}
                 onClick={() => onSelectStreet && onSelectStreet(st)}
-                className="text-xs px-2.5 py-1 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors"
+                className="min-h-[36px] text-xs px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors"
               >
                 {st}
               </button>
@@ -356,3 +417,5 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
     </div>
   );
 };
+
+export const DetailsPanel = React.memo(DetailsPanelComponent);

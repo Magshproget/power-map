@@ -1,6 +1,7 @@
 // Service for resolving and caching street polylines (OpenStreetMap geometry)
 import preseededGeometries from '../data/preseededGeometries.json';
 
+const GEOMETRY_CACHE_NAME = 'power-map-geodata-v1';
 const memoryCache = new Map<string, [number, number][][]>();
 
 // Initialize memory cache with preseeded geometries
@@ -17,12 +18,38 @@ try {
 
 let fullDatasetPromise: Promise<Record<string, [number, number][][]> | null> | null = null;
 
+async function fetchWithCacheApi(url: string): Promise<Record<string, [number, number][][]> | null> {
+  if (typeof caches !== 'undefined') {
+    try {
+      const cache = await caches.open(GEOMETRY_CACHE_NAME);
+      const cachedRes = await cache.match(url);
+      if (cachedRes && cachedRes.ok) {
+        return await cachedRes.json();
+      }
+      const networkRes = await fetch(url);
+      if (!networkRes.ok) return null;
+      try {
+        await cache.put(url, networkRes.clone());
+      } catch {
+        // Ignore cache write errors (e.g. quota exceeded or private mode)
+      }
+      return await networkRes.json();
+    } catch {
+      // Fallback to direct fetch if Cache API fails
+    }
+  }
+
+  const res = await fetch(url);
+  return res.ok ? await res.json() : null;
+}
+
 export function loadFullGeometries(): Promise<Record<string, [number, number][][]> | null> {
   if (!fullDatasetPromise) {
     const basePath = (import.meta as any).env?.BASE_URL || '/';
-    const jsonUrl = `${basePath.replace(/\/$/, '')}/data/streetGeometries.json`;
-    fullDatasetPromise = fetch(jsonUrl)
-      .then((res) => (res.ok ? res.json() : null))
+    const cleanBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
+    const jsonUrl = `${cleanBase}data/streetGeometries.json`;
+
+    fullDatasetPromise = fetchWithCacheApi(jsonUrl)
       .then((data) => {
         if (data && typeof data === 'object') {
           Object.entries(data).forEach(([id, val]) => {
@@ -34,18 +61,12 @@ export function loadFullGeometries(): Promise<Record<string, [number, number][][
         }
         return null;
       })
-      .catch(() => null);
+      .catch(() => {
+        fullDatasetPromise = null;
+        return null;
+      });
   }
   return fullDatasetPromise;
-}
-
-// Lazy pre-fetch in browser idle time
-if (typeof window !== 'undefined') {
-  if ('requestIdleCallback' in window) {
-    (window as any).requestIdleCallback(() => loadFullGeometries());
-  } else {
-    setTimeout(() => loadFullGeometries(), 1200);
-  }
 }
 
 const getCacheKey = (id: string, name: string, locality?: string) => {
@@ -118,7 +139,7 @@ export async function fetchStreetGeometry(street: {
     }
   } catch {}
 
-  // 4. Try loading full dataset if not yet loaded
+  // 4. Lazy-load full dataset on first uncached street geometry request (persisted via Cache API)
   try {
     await loadFullGeometries();
     if (id && memoryCache.has(id)) {
@@ -143,14 +164,17 @@ export async function fetchStreetGeometry(street: {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 4000);
 
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        Accept: 'application/json',
-      },
-    });
-
-    clearTimeout(timeout);
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) return null;
     const items = await response.json();
@@ -185,7 +209,7 @@ export async function fetchStreetGeometry(street: {
       } catch {}
       return collectedLines;
     }
-  } catch (err) {
+  } catch {
     // Network or abort error, fail silently to fallback pin marker
   }
 
