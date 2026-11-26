@@ -146,6 +146,17 @@ html, body, #root {
   }
 }
 
+/* Orientation Lock: active only on smartphones rotated to landscape */
+#orientation-blocker {
+  display: none !important;
+}
+
+@media screen and (orientation: landscape) and (max-height: 520px) and (max-width: 1024px) {
+  #orientation-blocker {
+    display: flex !important;
+  }
+}
+
 /* Universal Smartphone Landscape / Short Screen (< 520px height) Adaptations */
 @media (max-height: 520px) {
   /* Force unified compact header respecting notch and Dynamic Island */
