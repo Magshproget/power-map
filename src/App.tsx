@@ -198,6 +198,7 @@ export function App() {
         feature={selectedFeature}
         onClose={handleCloseDetails}
         selectedHour={selectedHour}
+        onChangeHour={setSelectedHour}
         schedule={schedule}
         onSelectStreet={handleSelectStreetByName}
         isSaved={isSelectedSaved}

@@ -73,6 +73,22 @@ const getCacheKey = (id: string, name: string, locality?: string) => {
   return `${id || ''}_${name}_${locality || ''}`;
 };
 
+export function getSynchronousCachedGeometry(street: {
+  id?: string;
+  name: string;
+  cityName?: string;
+  districtName?: string;
+  polyline?: [number, number][][];
+}): [number, number][][] | null {
+  if (street.polyline && street.polyline.length > 0) return street.polyline;
+  const id = street.id || '';
+  if (id && memoryCache.has(id)) return memoryCache.get(id)!;
+  const locality = street.cityName || street.districtName || 'Львів';
+  const key = getCacheKey(id, street.name, locality);
+  if (memoryCache.has(key)) return memoryCache.get(key)!;
+  return null;
+}
+
 const parseGeoJsonToLines = (geo: any): [number, number][][] => {
   if (!geo) return [];
   const gtype = geo.type;

@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { LayerMode, PowerStatus, ScheduleData, SelectedFeature, StreetItem } from '../types';
 import { useMapGeoData, useStreetsData } from '../services/geoDataService';
-import { fetchStreetGeometry } from '../services/streetGeometry';
+import { fetchStreetGeometry, getSynchronousCachedGeometry } from '../services/streetGeometry';
 
 interface MapProps {
   layerMode: LayerMode;
@@ -845,15 +845,22 @@ const MapComponent: React.FC<MapProps> = ({
   // 9. Resolve street geometry lazily on demand whenever selected street changes
   useEffect(() => {
     let isCancelled = false;
-    setStreetGeometry(null);
 
     if (selectedFeature?.type === 'street' && selectedFeature.id) {
       const targetId = selectedFeature.id;
-      fetchStreetGeometry(selectedFeature).then((lines) => {
-        if (!isCancelled && lines && lines.length > 0) {
-          setStreetGeometry({ streetId: targetId, lines });
-        }
-      });
+      const cached = getSynchronousCachedGeometry(selectedFeature);
+      if (cached && cached.length > 0) {
+        setStreetGeometry({ streetId: targetId, lines: cached });
+      } else {
+        setStreetGeometry(null);
+        fetchStreetGeometry(selectedFeature).then((lines) => {
+          if (!isCancelled && lines && lines.length > 0) {
+            setStreetGeometry({ streetId: targetId, lines });
+          }
+        });
+      }
+    } else {
+      setStreetGeometry(null);
     }
 
     return () => {
@@ -861,11 +868,14 @@ const MapComponent: React.FC<MapProps> = ({
     };
   }, [selectedFeature?.id, selectedFeature?.name]);
 
-  // 10. Pan / Fit Bounds to selected feature
+  // 10. Pan / Fit Bounds to selected feature without double-jumping
+  const lastCenteredFeatureRef = useRef<string>('');
+
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || !selectedFeature?.center) return;
 
+    const featureKey = `${selectedFeature.type}_${selectedFeature.id}`;
     const currentStreetLines =
       selectedFeature.type === 'street' && streetGeometry?.streetId === selectedFeature.id
         ? streetGeometry.lines
@@ -876,11 +886,16 @@ const MapComponent: React.FC<MapProps> = ({
       if (allPts.length >= 2) {
         const bounds = L.latLngBounds(allPts as any);
         if (bounds.isValid()) {
+          lastCenteredFeatureRef.current = featureKey;
           map.fitBounds(bounds, { padding: [65, 65], maxZoom: 16.5 });
           return;
         }
       }
     }
+
+    // Only flyTo if not already centered on this feature
+    if (lastCenteredFeatureRef.current === featureKey) return;
+    lastCenteredFeatureRef.current = featureKey;
 
     const [lat, lon] = selectedFeature.center;
     const targetZoom =

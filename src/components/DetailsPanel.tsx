@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin, Star } from 'lucide-react';
+import { X, Zap, Shield, Grid, Navigation, AlertTriangle, CheckCircle2, MapPin, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SelectedFeature, ScheduleData, PowerStatus } from '../types';
 
 interface DetailsPanelProps {
   feature: SelectedFeature | null;
   onClose: () => void;
   selectedHour: number;
+  onChangeHour?: (hour: number) => void;
   schedule: ScheduleData | null;
   onSelectStreet?: (streetName: string) => void;
   isSaved?: boolean;
@@ -20,6 +21,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   feature,
   onClose,
   selectedHour,
+  onChangeHour,
   schedule,
   onSelectStreet,
   isSaved,
@@ -295,10 +297,36 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
             </div>
           </div>
 
-          <div className="text-right shrink-0">
-            <span className="text-[10px] md:text-xs font-mono font-semibold text-white bg-slate-900/70 px-1.5 py-0.5 md:py-1 rounded-md md:rounded-lg border border-slate-700/70">
-              {hourSlot.toString().padStart(2, '0')}:00
-            </span>
+          <div className="flex items-center gap-1 shrink-0">
+            {onChangeHour ? (
+              <div className="flex items-center bg-slate-900/80 rounded-lg border border-slate-700/80 p-0.5">
+                <button
+                  type="button"
+                  onClick={() => onChangeHour((hourSlot - 1 + 24) % 24)}
+                  className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white rounded active:scale-95 transition-colors"
+                  title="Попередня година"
+                  aria-label="Попередня година"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] md:text-xs font-mono font-semibold text-white px-1">
+                  {hourSlot.toString().padStart(2, '0')}:00
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onChangeHour((hourSlot + 1) % 24)}
+                  className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-white rounded active:scale-95 transition-colors"
+                  title="Наступна година"
+                  aria-label="Наступна година"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <span className="text-[10px] md:text-xs font-mono font-semibold text-white bg-slate-900/70 px-1.5 py-0.5 md:py-1 rounded-md md:rounded-lg border border-slate-700/70">
+                {hourSlot.toString().padStart(2, '0')}:00
+              </span>
+            )}
           </div>
         </div>
 
@@ -326,7 +354,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 h-4 md:h-6 rounded-md md:rounded-lg overflow-hidden bg-slate-950/80 p-0.5 border border-slate-800">
+        <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 h-6 md:h-7 rounded-md md:rounded-lg overflow-hidden bg-slate-950/80 p-0.5 border border-slate-800">
           {hourlyBars.map((slotStatus, h) => {
             const isCurrent = h === hourSlot;
             const bgClass =
@@ -337,13 +365,16 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
                 : 'bg-amber-500';
 
             return (
-              <div
+              <button
+                type="button"
                 key={h}
+                onClick={() => onChangeHour?.(h)}
                 title={`${h}:00 – ${h + 1}:00: ${
                   slotStatus === 'on' ? 'Є світло' : slotStatus === 'off' ? 'Немає світла' : 'Частково'
                 }`}
-                className={`h-full rounded-xs ${bgClass} ${
-                  isCurrent ? 'ring-2 ring-white z-10' : 'opacity-85'
+                aria-label={`Година ${h}:00`}
+                className={`h-full rounded-xs ${bgClass} transition-transform active:scale-95 ${
+                  isCurrent ? 'ring-2 ring-white z-10 scale-105' : 'opacity-85 hover:opacity-100'
                 }`}
               />
             );
