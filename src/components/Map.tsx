@@ -213,8 +213,8 @@ const MapComponent: React.FC<MapProps> = ({
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const greaterLvivBounds = L.latLngBounds(
-      [49.64, 23.68],
-      [49.98, 24.32]
+      [49.58, 23.60],
+      [50.04, 24.38]
     );
 
     const canvasRenderer = L.canvas({
@@ -226,7 +226,7 @@ const MapComponent: React.FC<MapProps> = ({
     const map = L.map(mapContainerRef.current, {
       center: [49.8397, 24.0297],
       zoom: INITIAL_ZOOM,
-      minZoom: 11.0,
+      minZoom: 10.2,
       maxZoom: 18,
       maxBounds: greaterLvivBounds,
       maxBoundsViscosity: 0.75,

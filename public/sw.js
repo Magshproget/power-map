@@ -1,4 +1,4 @@
-const CACHE_NAME = 'power-map-v3';
+const CACHE_NAME = 'power-map-v4';
 
 // Static assets to precache immediately on install
 const PRECACHE_ASSETS = [

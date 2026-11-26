@@ -147,7 +147,7 @@ const LAYER_OPTIONS: { id: LayerMode; label: string; icon: React.ReactNode; desc
     id: 'districts',
     label: 'Райони',
     icon: <Shield className="w-4 h-4" />,
-    desc: '26 районів та громад',
+    desc: '45 районів та громад',
   },
   {
     id: 'zones',
