@@ -40,18 +40,6 @@
   <body class="bg-slate-900 text-slate-100 min-h-screen min-h-[100dvh] antialiased overflow-hidden">
     <div id="root"></div>
 
-    <!-- Mobile orientation lock screen (active only on phones turned to landscape) -->
-    <div id="orientation-blocker" class="fixed inset-0 z-[99999] bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 text-center select-none" style="display: none;">
-      <div class="w-16 h-16 mb-4 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-xl">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
-          <path d="M12 18h.01"/>
-        </svg>
-      </div>
-      <h2 class="text-base font-bold text-white mb-1.5 tracking-wide">Поверніть пристрій вертикально</h2>
-      <p class="text-xs text-slate-400 max-w-xs leading-relaxed">СвітлоМапа оптимізована для портретного режиму для зручного перегляду карти та розкладу</p>
-    </div>
-
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

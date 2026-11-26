@@ -120,10 +120,51 @@ html, body, #root {
   background: rgba(148, 163, 184, 0.8);
 }
 
-/* Mobile Leaflet optimizations */
-@media (max-width: 768px) {
+/* ==========================================================================
+   Mobile & Responsive Layout Optimization
+   ========================================================================== */
+
+/* Universal TimeController positioning across all devices and screen sizes */
+.time-controller-card {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  transform: translate3d(0, 0, 0) !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  z-index: 1000 !important;
+
+  /* Mobile Portrait defaults with immediate rock-solid fallback */
+  bottom: 8px !important;
+  bottom: max(6px, calc(env(safe-area-inset-bottom, 0px) - 14px)) !important;
+  width: calc(100% - 1rem) !important;
+  max-width: calc(100vw - 1rem) !important;
+}
+
+/* Tablet & Desktop positioning (width >= 768px AND normal height > 500px) */
+@media screen and (min-width: 768px) and (min-height: 501px) {
+  .time-controller-card {
+    bottom: 20px !important;
+    width: 780px !important;
+    max-width: 780px !important;
+  }
+}
+
+@media screen and (min-width: 1024px) and (min-height: 501px) {
+  .time-controller-card {
+    width: 840px !important;
+    max-width: 840px !important;
+  }
+}
+
+/* Mobile Leaflet optimizations (Portrait) */
+@media (max-width: 767px) and (min-height: 501px) {
   .leaflet-bottom.leaflet-right {
-    bottom: calc(124px + max(6px, calc(env(safe-area-inset-bottom, 0px) - 16px))) !important;
+    bottom: calc(120px + max(6px, calc(env(safe-area-inset-bottom, 0px) - 14px))) !important;
     right: 8px !important;
   }
   .leaflet-control-zoom {
@@ -146,86 +187,179 @@ html, body, #root {
   }
 }
 
-/* Orientation Lock: active only on smartphones rotated to landscape */
-#orientation-blocker {
-  display: none !important;
-}
-
-@media screen and (orientation: landscape) and (max-height: 520px) and (max-width: 1024px) {
-  #orientation-blocker {
-    display: flex !important;
-  }
-}
-
-/* Universal Smartphone Landscape / Short Screen (< 520px height) Adaptations */
-@media (max-height: 520px) {
-  /* Force unified compact header respecting notch and Dynamic Island */
+/* ==========================================================================
+   Dedicated Smartphone Landscape Redesign
+   Targets ONLY mobile phones rotated horizontally (height <= 500px).
+   Leaves standard portrait mode and desktop/laptop websites completely untouched.
+   ========================================================================== */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  /* 1. Header: ultra-compact 36px height, safe-area-aware */
   .desktop-header-bar {
     display: none !important;
   }
   .mobile-header-bar {
     display: flex !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    gap: 6px !important;
   }
   header {
-    top: calc(0.25rem + env(safe-area-inset-top, 0px)) !important;
-    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
-    right: calc(0.5rem + env(safe-area-inset-right, 0px)) !important;
+    top: max(4px, env(safe-area-inset-top, 0px)) !important;
+    left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    right: max(8px, env(safe-area-inset-right, 0px)) !important;
+  }
+  .mobile-header-bar .w-11.h-11 {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    border-radius: 10px !important;
+  }
+  .mobile-header-bar input {
+    height: 34px !important;
+    font-size: 13px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
   }
 
-  /* Hide huge floating desktop layer panel; accessible via header layer button */
+  /* 2. Hide floating desktop layers panel (accessible via header layer button) */
   .layer-switcher-panel {
     display: none !important;
   }
 
-  /* Compact saved locations bar */
+  /* 3. Saved locations: sleek compact pill under header */
   .saved-locations-bar {
-    top: calc(2.75rem + env(safe-area-inset-top, 0px)) !important;
-    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
+    top: calc(42px + max(4px, env(safe-area-inset-top, 0px))) !important;
+    left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    right: auto !important;
+    justify-content: flex-start !important;
+    max-width: calc(100vw - 120px) !important;
+  }
+  .saved-locations-bar > div {
+    gap: 4px !important;
+  }
+  .saved-locations-bar button,
+  .saved-locations-bar .bg-slate-900\/95 {
+    padding: 2px 8px !important;
+    height: 28px !important;
+    border-radius: 10px !important;
+    font-size: 11px !important;
   }
 
-  /* Ultra-compact bottom time controller (centered, no left transform shift) */
+  /* 4. TimeController: sleek, centered, ultra-compact landscape card */
   .time-controller-card {
-    bottom: max(4px, calc(env(safe-area-inset-bottom, 0px) - 14px)) !important;
-    inset-inline: 0 !important;
-    margin-inline: auto !important;
-    transform: none !important;
-    width: calc(100% - 1.5rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
-    max-width: 640px !important;
-    padding: 4px 10px !important;
-    gap: 3px !important;
+    bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: calc(100% - 150px) !important;
+    max-width: 560px !important;
+    padding: 4px 10px 4px 10px !important;
+    gap: 2px !important;
     border-radius: 14px !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75) !important;
   }
-  .time-controller-card button {
-    min-height: 34px !important;
+
+  /* Play button: 32x32 */
+  .time-controller-card .play-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    border-radius: 10px !important;
   }
-  .time-controller-card .w-11.h-11 {
-    width: 34px !important;
-    height: 34px !important;
+  .time-controller-card .play-btn svg {
+    width: 14px !important;
+    height: 14px !important;
   }
+
+  /* Зараз button: compact 28px */
+  .time-controller-card .now-btn {
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Hide verbose text / desktop city badge in landscape mobile to give breathing room */
+  .time-controller-card .city-badge-landscape-hide {
+    display: none !important;
+  }
+
+  /* Clock display */
+  .time-controller-card .clock-display-box {
+    padding: 2px 8px !important;
+    border-radius: 8px !important;
+  }
+  .time-controller-card .clock-display-text {
+    font-size: 13px !important;
+  }
+
+  /* Color timeline bar */
+  .time-controller-timeline-row {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    gap: 2px !important;
+  }
+  .time-controller-bar-grid {
+    height: 10px !important;
+    border-radius: 4px !important;
+  }
+  .time-controller-thumb-indicator {
+    width: 12px !important;
+    height: 18px !important;
+  }
+
+  /* Timeline hour ticks: hide 3-hour minor ticks, keep only 6-hour intervals (00, 06, 12, 18, 24) */
+  .time-controller-ticks-container {
+    height: 12px !important;
+    margin-top: 0px !important;
+  }
+  .time-controller-card .tick-minor-label {
+    display: none !important;
+  }
+  .time-controller-card .tick-major-label {
+    font-size: 9px !important;
+  }
+
+  /* Hide legend in landscape mobile */
   .time-controller-legend {
     display: none !important;
   }
 
-  /* Reposition zoom buttons above compact landscape timeline */
+  /* 5. Leaflet zoom controls: positioned in bottom-right corner with safe areas */
   .leaflet-bottom.leaflet-right {
-    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
-    right: calc(8px + env(safe-area-inset-right, 0px)) !important;
+    bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
+    right: max(10px, env(safe-area-inset-right, 0px)) !important;
+  }
+  .leaflet-control-zoom {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6) !important;
   }
   .leaflet-control-zoom a {
-    width: 36px !important;
-    height: 36px !important;
-    line-height: 36px !important;
-    font-size: 16px !important;
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    font-size: 15px !important;
+  }
+  .leaflet-control-attribution {
+    display: none !important;
   }
 
-  /* Dock DetailsPanel to left side as compact card instead of covering full vertical height */
+  /* 6. DetailsPanel: docks on the left side as an elegant side panel */
   .details-panel-drawer {
     inset-inline: auto !important;
-    top: calc(3.25rem + env(safe-area-inset-top, 0px)) !important;
-    bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
-    left: calc(0.5rem + env(safe-area-inset-left, 0px)) !important;
-    width: 310px !important;
-    max-height: calc(100dvh - 3.75rem) !important;
+    top: calc(42px + max(4px, env(safe-area-inset-top, 0px))) !important;
+    bottom: max(8px, env(safe-area-inset-bottom, 0px)) !important;
+    left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    width: 320px !important;
+    max-height: calc(100dvh - 54px) !important;
     border-radius: 16px !important;
+    border: 1px solid rgba(51, 65, 85, 0.8) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85) !important;
+    padding: 10px !important;
+    padding-bottom: 12px !important;
   }
 }

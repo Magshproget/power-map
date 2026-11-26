@@ -168,7 +168,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
 
   return (
     <div
-      className={`time-controller-card fixed bottom-[max(6px,calc(env(safe-area-inset-bottom,0px)-16px))] md:bottom-5 inset-x-0 mx-auto w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] md:w-[780px] lg:w-[840px] max-w-[calc(100vw-1rem)] z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex-col gap-1.5 md:gap-3 pointer-events-auto ${
+      className={`time-controller-card fixed inset-x-0 mx-auto z-[1000] bg-slate-900/95 p-2 md:p-4 rounded-xl md:rounded-3xl border border-slate-700/80 shadow-2xl flex flex-col gap-1.5 md:gap-3 pointer-events-auto ${
         selectedFeature || isSearching ? 'hidden md:flex' : 'flex'
       }`}
     >
@@ -178,7 +178,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
           <button
             type="button"
             onClick={() => setIsPlaying((p) => !p)}
-            className="flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-colors shadow-md font-semibold shrink-0"
+            className="play-btn flex items-center justify-center w-11 h-11 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-amber-500 text-slate-950 hover:bg-amber-400 active:scale-95 transition-colors shadow-md font-semibold shrink-0"
             title={isPlaying ? 'Пауза' : 'Анімувати добу'}
           >
             {isPlaying ? (
@@ -191,14 +191,14 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
           <button
             type="button"
             onClick={onSetNow}
-            className="flex items-center justify-center gap-1.5 min-h-[44px] px-3 md:min-h-0 md:px-3 md:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-colors shrink-0"
+            className="now-btn flex items-center justify-center gap-1.5 min-h-[44px] px-3 md:min-h-0 md:px-3 md:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 active:scale-95 transition-colors shrink-0"
             title="Перейти на поточний час"
           >
             <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
             <span>Зараз</span>
           </button>
 
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-750 text-xs text-slate-300 shrink-0">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/60 border border-slate-755 text-xs text-slate-300 shrink-0">
             <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>
               Вимкнено:{' '}
@@ -211,7 +211,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
         </div>
 
         {/* Selected target indicator or city badge */}
-        <div className="hidden md:flex items-center gap-2 min-w-0 shrink">
+        <div className="city-badge-landscape-hide hidden md:flex items-center gap-2 min-w-0 shrink">
           {selectedFeature ? (
             <div className="flex items-center gap-1.5 lg:gap-2 px-2.5 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-300 min-w-0">
               <span className="truncate max-w-[110px] lg:max-w-[160px]">
@@ -249,19 +249,19 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
         </div>
 
         {/* Selected Hour Clock Display */}
-        <div className="flex items-baseline gap-1 bg-slate-800/90 px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-xl md:rounded-2xl border border-slate-700/80 shrink-0">
-          <span className="text-sm md:text-2xl font-bold font-mono text-white tracking-wider">
+        <div className="clock-display-box flex items-baseline gap-1 bg-slate-800/90 px-2.5 py-1.5 md:px-3 md:py-1.5 rounded-xl md:rounded-2xl border border-slate-700/80 shrink-0">
+          <span className="clock-display-text text-sm md:text-2xl font-bold font-mono text-white tracking-wider">
             {formatTime(displayHour)}
           </span>
-          <span className="text-[9px] md:text-[11px] font-medium text-slate-400 uppercase">сьогодні</span>
+          <span className="clock-display-sub text-[9px] md:text-[11px] font-medium text-slate-400 uppercase">сьогодні</span>
         </div>
       </div>
 
       {/* 24-Hour Color Timeline Bar + Slider overlay */}
-      <div className="flex flex-col gap-1.5 px-1">
+      <div className="time-controller-timeline-row flex flex-col gap-1.5 px-1">
         <div className="relative w-full py-2 md:py-1">
           {/* Segmented Color Bar (24 hours) */}
-          <div className="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 h-4 md:h-3.5 rounded-lg overflow-hidden bg-slate-800/90 p-0.5 border border-slate-700/70 shadow-inner pointer-events-none">
+          <div className="time-controller-bar-grid grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 h-4 md:h-3.5 rounded-lg overflow-hidden bg-slate-800/90 p-0.5 border border-slate-700/70 shadow-inner pointer-events-none">
             {timelineSlots.map((slot, h) => {
               const isHourActive = currentSlot === h;
               const bgClass =
@@ -310,14 +310,14 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
               willChange: 'transform',
             }}
           >
-            <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-6 bg-amber-400 rounded-full border-2 border-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.9)] flex items-center justify-center">
+            <div className="time-controller-thumb-indicator absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-6 bg-amber-400 rounded-full border-2 border-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.9)] flex items-center justify-center">
               <div className="w-0.5 h-3 bg-slate-950/80 rounded-full" />
             </div>
           </div>
         </div>
 
         {/* Precision Ruler Ticks & Exact Hour Marks */}
-        <div className="relative w-full h-5 select-none mt-0.5">
+        <div className="time-controller-ticks-container relative w-full h-5 select-none mt-0.5">
           {MINOR_HOURS.map((h) => {
             const pct = (h / 24) * 100;
             return (
@@ -337,7 +337,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
             const timeLabel = `${h.toString().padStart(2, '0')}:00`;
             const isFirst = h === 0;
             const isLast = h === 24;
-            const isMobileVisible = h % 6 === 0;
+            const isMajorSixHour = h % 6 === 0;
 
             return (
               <div
@@ -356,7 +356,7 @@ const TimeControllerComponent: React.FC<TimeControllerProps> = ({
                 />
                 <span
                   className={`text-[10px] text-slate-400 font-mono leading-none ${
-                    isMobileVisible ? 'inline' : 'hidden md:inline'
+                    isMajorSixHour ? 'tick-major-label inline' : 'tick-minor-label hidden md:inline'
                   }`}
                 >
                   {timeLabel}
