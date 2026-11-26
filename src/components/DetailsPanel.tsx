@@ -287,12 +287,52 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({
             );
           })}
         </div>
-        <div className="flex justify-between text-[9px] md:text-[10px] text-slate-400 font-mono px-0.5">
-          <span>00:00</span>
-          <span>06:00</span>
-          <span>12:00</span>
-          <span>18:00</span>
-          <span>24:00</span>
+        {/* Precision Ruler Ticks */}
+        <div className="relative w-full h-5 select-none mt-1">
+          {/* Minor 1-hour ticks */}
+          {Array.from({ length: 25 }, (_, h) => {
+            if (h % 3 === 0) return null;
+            const pct = (h / 24) * 100;
+            return (
+              <div
+                key={`dp-tick-${h}`}
+                className="absolute top-0 w-px h-1 bg-slate-800 pointer-events-none"
+                style={{
+                  left: `${pct}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              />
+            );
+          })}
+
+          {/* Major 3-hour ticks with numbers */}
+          {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => {
+            const pct = (h / 24) * 100;
+            const timeLabel = `${h.toString().padStart(2, '0')}:00`;
+            const isFirst = h === 0;
+            const isLast = h === 24;
+
+            return (
+              <div
+                key={`dp-major-${h}`}
+                className="absolute top-0 flex flex-col items-center pointer-events-none"
+                style={{
+                  left: `${pct}%`,
+                  transform: isFirst ? 'translateX(0%)' : isLast ? 'translateX(-100%)' : 'translateX(-50%)',
+                }}
+              >
+                <div
+                  className="w-px h-1.5 bg-slate-600 mb-0.5"
+                  style={{
+                    alignSelf: isFirst ? 'flex-start' : isLast ? 'flex-end' : 'center',
+                  }}
+                />
+                <span className="text-[9px] md:text-[10px] text-slate-400 font-mono leading-none">
+                  {timeLabel}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

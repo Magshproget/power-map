@@ -42,6 +42,23 @@ export const TimeController: React.FC<TimeControllerProps> = ({
   const groupsList = schedule?.groups ? Object.values(schedule.groups) : [];
   const totalGroups = groupsList.length || 12;
 
+  const selectedGroupSchedule =
+    selectedFeature?.group && schedule?.groups
+      ? schedule.groups[selectedFeature.group]
+      : null;
+
+  const outageIntervals = selectedGroupSchedule?.intervals || [];
+  const outageSummaryText =
+    outageIntervals.length > 0
+      ? outageIntervals.map((i) => `${i.start}–${i.end}`).join(', ')
+      : selectedGroupSchedule?.desc?.includes('є')
+      ? 'Без вимкнень'
+      : null;
+
+  const cleanFeatureName = selectedFeature?.name
+    ? selectedFeature.name.replace(/\s*\(Черга\s+[^)]+\)/gi, '').trim()
+    : '';
+
   const timelineSlots: { status: PowerStatus; tooltip: string }[] = Array.from({ length: 24 }, (_, h) => {
     if (selectedFeature?.group && schedule?.groups[selectedFeature.group]) {
       const g = schedule.groups[selectedFeature.group];
@@ -127,18 +144,27 @@ export const TimeController: React.FC<TimeControllerProps> = ({
         {/* Selected target indicator or city badge */}
         <div className="hidden md:flex items-center gap-2">
           {selectedFeature ? (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-300">
-              <span>Графік: <strong>{selectedFeature.name}</strong></span>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs text-amber-300">
+              <span className="truncate max-w-[150px]">
+                Графік: <strong>{cleanFeatureName}</strong>
+              </span>
               {selectedFeature.group && (
-                <span className="font-mono text-amber-400">({selectedFeature.group})</span>
+                <span className="font-mono text-amber-300 font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700/60 shrink-0">
+                  Ч.{selectedFeature.group}
+                </span>
+              )}
+              {outageSummaryText && (
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 shrink-0">
+                  {outageSummaryText === 'Без вимкнень' ? 'Без вимкнень' : `Вимкнення: ${outageSummaryText}`}
+                </span>
               )}
               {onClearSelectedFeature && (
                 <button
                   onClick={onClearSelectedFeature}
-                  className="hover:text-white p-0.5 rounded ml-1"
+                  className="hover:text-white p-0.5 rounded ml-0.5"
                   title="Повернутися до загального графіка міста"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -204,24 +230,62 @@ export const TimeController: React.FC<TimeControllerProps> = ({
           <div
             className="absolute top-1/2 -translate-y-1/2 pointer-events-none transition-all z-30"
             style={{
-              left: `calc(${(currentHour / 24) * 100}% - 7px)`,
+              left: `${(currentHour / 24) * 100}%`,
+              transform: 'translate(-50%, -50%)',
             }}
           >
-            <div className="w-3.5 h-5 bg-amber-400 rounded-full border-2 border-slate-950 shadow-[0_0_10px_rgba(251,191,36,0.8)]" />
+            <div className="w-4 h-6 bg-amber-400 rounded-full border-2 border-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.9)] flex items-center justify-center">
+              <div className="w-0.5 h-3 bg-slate-950/80 rounded-full" />
+            </div>
           </div>
         </div>
 
-        {/* Hours ticks */}
-        <div className="flex justify-between text-[10px] text-slate-400 font-mono px-0.5 select-none pt-0.5">
-          <span>00:00</span>
-          <span>03:00</span>
-          <span>06:00</span>
-          <span>09:00</span>
-          <span>12:00</span>
-          <span>15:00</span>
-          <span>18:00</span>
-          <span>21:00</span>
-          <span>24:00</span>
+        {/* Precision Ruler Ticks & Exact Hour Marks */}
+        <div className="relative w-full h-5 select-none mt-1">
+          {/* Minor 1-hour ticks */}
+          {Array.from({ length: 25 }, (_, h) => {
+            if (h % 3 === 0) return null;
+            const pct = (h / 24) * 100;
+            return (
+              <div
+                key={`tick-${h}`}
+                className="absolute top-0 w-px h-1 bg-slate-700/80 pointer-events-none"
+                style={{
+                  left: `${pct}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              />
+            );
+          })}
+
+          {/* Major 3-hour ticks with numbers */}
+          {[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => {
+            const pct = (h / 24) * 100;
+            const timeLabel = `${h.toString().padStart(2, '0')}:00`;
+            const isFirst = h === 0;
+            const isLast = h === 24;
+
+            return (
+              <div
+                key={`major-${h}`}
+                className="absolute top-0 flex flex-col items-center pointer-events-none"
+                style={{
+                  left: `${pct}%`,
+                  transform: isFirst ? 'translateX(0%)' : isLast ? 'translateX(-100%)' : 'translateX(-50%)',
+                }}
+              >
+                <div
+                  className="w-px h-1.5 bg-slate-500 mb-0.5"
+                  style={{
+                    alignSelf: isFirst ? 'flex-start' : isLast ? 'flex-end' : 'center',
+                  }}
+                />
+                <span className="text-[10px] text-slate-400 font-mono leading-none">
+                  {timeLabel}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
