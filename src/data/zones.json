@@ -6,14 +6,15 @@
       "id": "zone-halitskiy",
       "properties": {
         "id": "zone-halitskiy",
-        "name": "Галицький район (Черга 1.2)",
+        "name": "Галицький район (Черга 4.1)",
         "districtId": "halitskiy",
         "districtName": "Галицький район",
-        "group": "1.2",
+        "group": "4.1",
         "groups": [
-          "1.2",
+          "4.1",
           "2.1",
-          "6.2"
+          "6.1",
+          "1.1"
         ],
         "streets": [
           "пл. Ринок",
@@ -2660,8 +2661,9 @@
         "group": "1.1",
         "groups": [
           "1.1",
-          "3.1",
-          "6.1"
+          "2.1",
+          "5.1",
+          "4.1"
         ],
         "streets": [
           "вул. Широка",
@@ -4601,9 +4603,9 @@
         "group": "6.1",
         "groups": [
           "6.1",
-          "2.1",
-          "4.2",
-          "5.2"
+          "4.1",
+          "3.1",
+          "1.1"
         ],
         "streets": [
           "вул. Личаківська",
@@ -7259,15 +7261,15 @@
       "id": "zone-sykhivskiy",
       "properties": {
         "id": "zone-sykhivskiy",
-        "name": "Сихівський район (Черга 3.1)",
+        "name": "Сихівський район (Черга 6.1)",
         "districtId": "sykhivskiy",
         "districtName": "Сихівський район",
-        "group": "3.1",
+        "group": "6.1",
         "groups": [
-          "3.1",
-          "3.2",
-          "1.2",
-          "4.1"
+          "6.1",
+          "4.1",
+          "1.1",
+          "2.1"
         ],
         "streets": [
           "просп. Червоної Калини",
@@ -9481,6 +9483,7 @@
         "groups": [
           "5.1",
           "3.1",
+          "1.1",
           "2.1"
         ],
         "streets": [
@@ -11019,14 +11022,15 @@
       "id": "zone-shevchenkivskiy",
       "properties": {
         "id": "zone-shevchenkivskiy",
-        "name": "Шевченківський район (Черга 1.1)",
+        "name": "Шевченківський район (Черга 4.1)",
         "districtId": "shevchenkivskiy",
         "districtName": "Шевченківський район",
-        "group": "1.1",
+        "group": "4.1",
         "groups": [
+          "4.1",
+          "3.1",
           "1.1",
-          "2.2",
-          "4.1"
+          "2.1"
         ],
         "streets": [
           "просп. В. Чорновола",
@@ -13516,12 +13520,13 @@
       "id": "zone-vynnyky",
       "properties": {
         "id": "zone-vynnyky",
-        "name": "Винники (Черга 2.1)",
+        "name": "Винники (Черга 5.1)",
         "districtId": "vynnyky",
         "districtName": "Винники",
-        "group": "2.1",
+        "group": "5.1",
         "groups": [
-          "2.1",
+          "5.1",
+          "6.1",
           "4.2"
         ],
         "streets": [
@@ -14450,11 +14455,12 @@
       "id": "zone-briukhovychi",
       "properties": {
         "id": "zone-briukhovychi",
-        "name": "Брюховичі (Черга 1.1)",
+        "name": "Брюховичі (Черга 2.1)",
         "districtId": "briukhovychi",
         "districtName": "Брюховичі",
-        "group": "1.1",
+        "group": "2.1",
         "groups": [
+          "2.1",
           "1.1",
           "2.2"
         ],
@@ -15302,7 +15308,9 @@
         "group": "1.1",
         "groups": [
           "1.1",
-          "6.1"
+          "3.1",
+          "1.2",
+          "2.1"
         ],
         "streets": [
           "вул. Центральна (Рудне)",
@@ -15627,7 +15635,10 @@
         "districtName": "Рясне-Руське",
         "group": "4.1",
         "groups": [
-          "4.1"
+          "4.1",
+          "4.2",
+          "2.1",
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Рясне-Руське)",
@@ -16147,13 +16158,13 @@
       "id": "zone-malehiv",
       "properties": {
         "id": "zone-malehiv",
-        "name": "Малехів (Черга 2.2)",
+        "name": "Малехів (Черга 1.1)",
         "districtId": "malehiv",
         "districtName": "Малехів",
-        "group": "2.2",
+        "group": "1.1",
         "groups": [
-          "2.2",
-          "4.1"
+          "1.1",
+          "2.2"
         ],
         "streets": [
           "вул. Центральна (Малехів)",
@@ -16533,13 +16544,15 @@
       "id": "zone-dublyany",
       "properties": {
         "id": "zone-dublyany",
-        "name": "Дубляни (Черга 2.2)",
+        "name": "Дубляни (Черга 1.1)",
         "districtId": "dublyany",
         "districtName": "Дубляни",
-        "group": "2.2",
+        "group": "1.1",
         "groups": [
+          "1.1",
           "2.2",
-          "6.2"
+          "1.2",
+          "5.1"
         ],
         "streets": [
           "вул. Центральна (Дубляни)",
@@ -16809,7 +16822,9 @@
         "group": "3.1",
         "groups": [
           "3.1",
-          "5.1"
+          "4.1",
+          "4.2",
+          "3.2"
         ],
         "streets": [
           "вул. Центральна (Сокільники)",
@@ -17465,13 +17480,15 @@
       "id": "zone-zymna_voda",
       "properties": {
         "id": "zone-zymna_voda",
-        "name": "Зимна Вода (Черга 1.1)",
+        "name": "Зимна Вода (Черга 4.2)",
         "districtId": "zymna_voda",
         "districtName": "Зимна Вода",
-        "group": "1.1",
+        "group": "4.2",
         "groups": [
+          "4.2",
           "1.1",
-          "6.1"
+          "4.1",
+          "3.2"
         ],
         "streets": [
           "вул. Центральна (Зимна Вода)",
@@ -17975,13 +17992,14 @@
       "id": "zone-zubra",
       "properties": {
         "id": "zone-zubra",
-        "name": "Зубра (Черга 3.1)",
+        "name": "Зубра (Черга 4.1)",
         "districtId": "zubra",
         "districtName": "Зубра",
-        "group": "3.1",
+        "group": "4.1",
         "groups": [
-          "3.1",
-          "1.2"
+          "4.1",
+          "3.2",
+          "5.1"
         ],
         "streets": [
           "вул. Центральна (Зубра)",
@@ -18561,13 +18579,15 @@
       "id": "zone-solonka",
       "properties": {
         "id": "zone-solonka",
-        "name": "Солонка (Черга 3.1)",
+        "name": "Солонка (Черга 4.1)",
         "districtId": "solonka",
         "districtName": "Солонка",
-        "group": "3.1",
+        "group": "4.1",
         "groups": [
+          "4.1",
+          "3.2",
           "3.1",
-          "5.1"
+          "6.1"
         ],
         "streets": [
           "вул. Центральна (Солонка)"
@@ -19254,13 +19274,15 @@
       "id": "zone-pasiky_zubrytski",
       "properties": {
         "id": "zone-pasiky_zubrytski",
-        "name": "Пасіки-Зубрицькі (Черга 3.1)",
+        "name": "Пасіки-Зубрицькі (Черга 5.1)",
         "districtId": "pasiky_zubrytski",
         "districtName": "Пасіки-Зубрицькі",
-        "group": "3.1",
+        "group": "5.1",
         "groups": [
-          "3.1",
-          "1.2"
+          "5.1",
+          "4.1",
+          "1.1",
+          "4.2"
         ],
         "streets": [
           "вул. Центральна (Пасіки-Зубрицькі)"
@@ -19567,13 +19589,14 @@
       "id": "zone-davidiv",
       "properties": {
         "id": "zone-davidiv",
-        "name": "Давидів (Черга 1.2)",
+        "name": "Давидів (Черга 2.1)",
         "districtId": "davidiv",
         "districtName": "Давидів",
-        "group": "1.2",
+        "group": "2.1",
         "groups": [
-          "1.2",
-          "4.2"
+          "2.1",
+          "5.1",
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Давидів)"
@@ -19904,13 +19927,13 @@
       "id": "zone-lapayivka",
       "properties": {
         "id": "zone-lapayivka",
-        "name": "Лапаївка (Черга 1.1)",
+        "name": "Лапаївка (Черга 4.2)",
         "districtId": "lapayivka",
         "districtName": "Лапаївка",
-        "group": "1.1",
+        "group": "4.2",
         "groups": [
-          "1.1",
-          "6.1"
+          "4.2",
+          "3.2"
         ],
         "streets": [
           "вул. Центральна (Лапаївка)"
@@ -20449,13 +20472,12 @@
       "id": "zone-kholodnovidka",
       "properties": {
         "id": "zone-kholodnovidka",
-        "name": "Холодновідка (Черга 1.1)",
+        "name": "Холодновідка (Черга 4.2)",
         "districtId": "kholodnovidka",
         "districtName": "Холодновідка",
-        "group": "1.1",
+        "group": "4.2",
         "groups": [
-          "1.1",
-          "6.1"
+          "4.2"
         ],
         "streets": [
           "вул. Центральна (Холодновідка)"
@@ -21018,13 +21040,15 @@
       "id": "zone-sukhovolia",
       "properties": {
         "id": "zone-sukhovolia",
-        "name": "Суховоля (Черга 1.1)",
+        "name": "Суховоля (Черга 3.2)",
         "districtId": "sukhovolia",
         "districtName": "Суховоля",
-        "group": "1.1",
+        "group": "3.2",
         "groups": [
+          "3.2",
+          "4.2",
           "1.1",
-          "6.1"
+          "2.1"
         ],
         "streets": [
           "вул. Центральна (Суховоля)"
@@ -21619,13 +21643,15 @@
       "id": "zone-lysynychi",
       "properties": {
         "id": "zone-lysynychi",
-        "name": "Лисиничі (Черга 4.2)",
+        "name": "Лисиничі (Черга 5.1)",
         "districtId": "lysynychi",
         "districtName": "Лисиничі",
-        "group": "4.2",
+        "group": "5.1",
         "groups": [
+          "5.1",
+          "6.1",
           "4.2",
-          "2.1"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Лисиничі)"
@@ -22092,12 +22118,15 @@
       "id": "zone-pidbirtsi",
       "properties": {
         "id": "zone-pidbirtsi",
-        "name": "Підбірці (Черга 4.2)",
+        "name": "Підбірці (Черга 5.1)",
         "districtId": "pidbirtsi",
         "districtName": "Підбірці",
-        "group": "4.2",
+        "group": "5.1",
         "groups": [
-          "4.2"
+          "5.1",
+          "2.1",
+          "6.1",
+          "4.1"
         ],
         "streets": [
           "вул. Центральна (Підбірці)"
@@ -22368,13 +22397,15 @@
       "id": "zone-murovane",
       "properties": {
         "id": "zone-murovane",
-        "name": "Муроване (Черга 2.2)",
+        "name": "Муроване (Черга 6.1)",
         "districtId": "murovane",
         "districtName": "Муроване",
-        "group": "2.2",
+        "group": "6.1",
         "groups": [
-          "2.2",
-          "4.1"
+          "6.1",
+          "2.1",
+          "1.1",
+          "4.2"
         ],
         "streets": [
           "вул. Центральна (Муроване)"
@@ -22797,12 +22828,11 @@
       "id": "zone-hrybovychi",
       "properties": {
         "id": "zone-hrybovychi",
-        "name": "Великі Грибовичі (Черга 2.2)",
+        "name": "Великі Грибовичі (Черга 1.1)",
         "districtId": "hrybovychi",
         "districtName": "Великі Грибовичі",
-        "group": "2.2",
+        "group": "1.1",
         "groups": [
-          "2.2",
           "1.1"
         ],
         "streets": [
@@ -23050,13 +23080,15 @@
       "id": "zone-pustomyty",
       "properties": {
         "id": "zone-pustomyty",
-        "name": "Пустомити (Черга 3.1)",
+        "name": "Пустомити (Черга 6.1)",
         "districtId": "pustomyty",
         "districtName": "Пустомити",
-        "group": "3.1",
+        "group": "6.1",
         "groups": [
-          "3.1",
-          "5.1"
+          "6.1",
+          "5.2",
+          "4.2",
+          "3.1"
         ],
         "streets": [
           "вул. Центральна (Пустомити)"
@@ -23928,8 +23960,7 @@
         "districtName": "Оброшине",
         "group": "3.2",
         "groups": [
-          "3.2",
-          "5.1"
+          "3.2"
         ],
         "streets": [
           "вул. Центральна (Оброшине)",
@@ -24380,8 +24411,7 @@
         "districtName": "Конопниця",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "6.1"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Конопниця)",
@@ -24734,8 +24764,7 @@
         "districtName": "Бартатів",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "6.1"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Бартатів)",
@@ -25136,8 +25165,7 @@
         "districtName": "Ставчани",
         "group": "3.2",
         "groups": [
-          "3.2",
-          "5.1"
+          "3.2"
         ],
         "streets": [
           "вул. Центральна (Ставчани)",
@@ -25909,13 +25937,13 @@
       "id": "zone-navariya",
       "properties": {
         "id": "zone-navariya",
-        "name": "Наварія (Черга 3.1)",
+        "name": "Наварія (Черга 6.1)",
         "districtId": "navariya",
         "districtName": "Наварія",
-        "group": "3.1",
+        "group": "6.1",
         "groups": [
-          "3.1",
-          "5.1"
+          "6.1",
+          "3.1"
         ],
         "streets": [
           "вул. Центральна (Наварія)",
@@ -26366,8 +26394,7 @@
         "districtName": "Малечковичі",
         "group": "3.1",
         "groups": [
-          "3.1",
-          "5.1"
+          "3.1"
         ],
         "streets": [
           "вул. Центральна (Малечковичі)",
@@ -26724,8 +26751,7 @@
         "districtName": "Щирець",
         "group": "3.1",
         "groups": [
-          "3.1",
-          "5.2"
+          "3.1"
         ],
         "streets": [
           "вул. Центральна (Щирець)",
@@ -27190,8 +27216,7 @@
         "districtName": "Ков’ярі",
         "group": "1.2",
         "groups": [
-          "1.2",
-          "3.1"
+          "1.2"
         ],
         "streets": [
           "вул. Центральна (Ков’ярі)",
@@ -27336,8 +27361,7 @@
         "districtName": "Чишки",
         "group": "2.1",
         "groups": [
-          "2.1",
-          "4.2"
+          "2.1"
         ],
         "streets": [
           "вул. Центральна (Чишки)",
@@ -27842,8 +27866,7 @@
         "districtName": "Виннички",
         "group": "2.1",
         "groups": [
-          "2.1",
-          "4.2"
+          "2.1"
         ],
         "streets": [
           "вул. Центральна (Виннички)",
@@ -28159,13 +28182,15 @@
       "id": "zone-soroky_lvivski",
       "properties": {
         "id": "zone-soroky_lvivski",
-        "name": "Сороки-Львівські (Черга 2.2)",
+        "name": "Сороки-Львівські (Черга 4.1)",
         "districtId": "soroky_lvivski",
         "districtName": "Сороки-Львівські",
-        "group": "2.2",
+        "group": "4.1",
         "groups": [
-          "2.2",
-          "4.1"
+          "4.1",
+          "6.1",
+          "1.1",
+          "2.1"
         ],
         "streets": [
           "вул. Центральна (Сороки-Львівські)",
@@ -28510,8 +28535,7 @@
         "districtName": "Гамаліївка",
         "group": "2.2",
         "groups": [
-          "2.2",
-          "4.1"
+          "2.2"
         ],
         "streets": [
           "вул. Центральна (Гамаліївка)",
@@ -28644,8 +28668,7 @@
         "districtName": "Запитів",
         "group": "2.2",
         "groups": [
-          "2.2",
-          "6.2"
+          "2.2"
         ],
         "streets": [
           "вул. Центральна (Запитів)",
@@ -28898,8 +28921,7 @@
         "districtName": "Ямпіль",
         "group": "4.2",
         "groups": [
-          "4.2",
-          "6.2"
+          "4.2"
         ],
         "streets": [
           "вул. Центральна (Ямпіль)",
@@ -29152,8 +29174,7 @@
         "districtName": "Збиранка",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "4.1"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Збиранка)",
@@ -29526,8 +29547,7 @@
         "districtName": "Куликів",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "2.2"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Куликів)",
@@ -29896,8 +29916,7 @@
         "districtName": "Бірки",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "2.2"
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Бірки)",
@@ -30243,13 +30262,13 @@
       "id": "zone-sknyliv",
       "properties": {
         "id": "zone-sknyliv",
-        "name": "Скнилів (Черга 1.1)",
+        "name": "Скнилів (Черга 4.2)",
         "districtId": "sknyliv",
         "districtName": "Скнилів",
-        "group": "1.1",
+        "group": "4.2",
         "groups": [
-          "1.1",
-          "5.1"
+          "4.2",
+          "1.1"
         ],
         "streets": [
           "вул. Центральна (Скнилів)",
@@ -30974,8 +30993,7 @@
         "districtName": "Липники",
         "group": "1.2",
         "groups": [
-          "1.2",
-          "3.1"
+          "1.2"
         ],
         "streets": [
           "вул. Стрийська (Липники)",
