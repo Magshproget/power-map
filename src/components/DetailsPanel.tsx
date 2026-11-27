@@ -40,17 +40,23 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
   const startedOnHandleRef = useRef(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const [activeQueueGroup, setActiveQueueGroup] = React.useState<string | null>(null);
+
   useEffect(() => {
     dragYRef.current = 0;
     isDraggingRef.current = false;
     startedOnHandleRef.current = false;
+    setActiveQueueGroup(null);
+
     if (panelRef.current) {
       panelRef.current.style.transform = '';
       panelRef.current.style.transition = '';
     }
-  }, [feature?.id]);
+  }, [feature?.id, feature?.buildings]);
 
   const hourSlot = Math.floor(selectedHour) % 24;
+
+  const effectiveGroup = activeQueueGroup || feature?.group;
 
   const { status, intervalsSummary, hourlyBars, groupDesc } = useMemo(() => {
     let computedStatus: PowerStatus = 'on';
@@ -58,8 +64,8 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
     let computedBars: PowerStatus[] = new Array(24).fill('on');
     let computedDesc = '';
 
-    if (feature?.group && schedule?.groups[feature.group]) {
-      const gData = schedule.groups[feature.group];
+    if (effectiveGroup && schedule?.groups[effectiveGroup]) {
+      const gData = schedule.groups[effectiveGroup];
       computedStatus = gData.hourly[hourSlot];
       computedBars = gData.hourly;
       computedDesc = gData.desc;
@@ -90,7 +96,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
       hourlyBars: computedBars,
       groupDesc: computedDesc,
     };
-  }, [feature, schedule, hourSlot]);
+  }, [feature, effectiveGroup, schedule, hourSlot]);
 
   if (!feature) return null;
 
@@ -300,8 +306,12 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
               <span className={`font-bold text-xs md:text-sm ${statusConfig.color}`}>
                 {statusConfig.label}
               </span>
-              <span className="text-[10px] md:text-xs text-slate-400 font-medium">
-                {feature.group ? `• Черга ${feature.group}` : `• Черги: ${feature.groups?.join(', ')}`}
+              <span className="text-[10px] md:text-xs text-slate-400 font-medium truncate">
+                {activeQueueGroup
+                  ? `• Черга ${activeQueueGroup}`
+                  : feature.group
+                  ? `• Черга ${feature.group}`
+                  : `• Черги: ${feature.groups?.join(', ')}`}
               </span>
             </div>
           </div>
@@ -350,6 +360,19 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
               )}
             </div>
             <p className="text-slate-200 leading-tight">{groupDesc}</p>
+          </div>
+        )}
+
+        {activeQueueGroup && (
+          <div className="flex items-center justify-between px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs mt-1">
+            <span>Обрано окрему <strong>Чергу {activeQueueGroup}</strong></span>
+            <button
+              type="button"
+              onClick={() => setActiveQueueGroup(null)}
+              className="text-[10px] underline text-slate-300 hover:text-white ml-2"
+            >
+              Скинути до району
+            </button>
           </div>
         )}
       </div>
@@ -450,8 +473,100 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
         </div>
       </div>
 
-      {/* Key streets in this zone */}
-      {feature.streets && feature.streets.length > 0 && (
+      {/* Queue Breakdown for District/Area */}
+      {feature.queueBreakdown && feature.queueBreakdown.length > 0 ? (
+        <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-300">
+              Черги в цьому районі ({feature.queueBreakdown.length}):
+            </span>
+            <span className="text-[10px] text-slate-400">
+              Клікніть для вулиць та графіка
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {feature.queueBreakdown.map((item) => {
+              const qStatus = schedule?.groups?.[item.group]?.hourly?.[hourSlot] || 'on';
+              const isQOn = qStatus === 'on';
+              const isQOff = qStatus === 'off';
+              const isSelected = activeQueueGroup === item.group;
+
+              return (
+                <div
+                  key={item.group}
+                  className={`rounded-xl border transition-all ${
+                    isSelected
+                      ? 'bg-slate-800/95 border-amber-500/70 shadow-md ring-1 ring-amber-500/50'
+                      : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700'
+                  } p-2.5 flex flex-col gap-1.5`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveQueueGroup(isSelected ? null : item.group)}
+                    className="flex items-center justify-between w-full text-left"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-400 font-mono text-xs font-bold border border-amber-500/30">
+                        Черга {item.group}
+                      </span>
+                      <span className="text-xs font-medium text-slate-200">
+                        {item.percentage}% ({item.count} {item.count === 1 ? 'вулиця' : item.count < 5 ? 'вулиці' : 'вулиць'})
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-[10px] px-2 py-0.5 rounded-md font-semibold ${
+                          isQOn
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : isQOff
+                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        }`}
+                      >
+                        {isQOn ? 'Світло є' : isQOff ? 'Немає' : 'Частково'}
+                      </span>
+                    </div>
+                  </button>
+
+                  {/* Percentage Bar */}
+                  <div className="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        isQOn ? 'bg-emerald-500' : isQOff ? 'bg-rose-500' : 'bg-amber-500'
+                      }`}
+                      style={{ width: `${Math.max(item.percentage, 4)}%` }}
+                    />
+                  </div>
+
+                  {/* Expandable streets for this specific queue */}
+                  {isSelected && item.streets && item.streets.length > 0 && (
+                    <div className="pt-2 mt-0.5 border-t border-slate-800 flex flex-col gap-1.5 animate-in fade-in duration-150">
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                        <span>Вулиці Черги {item.group}:</span>
+                        <span>(клікніть щоб знайти)</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {item.streets.map((st) => (
+                          <button
+                            type="button"
+                            key={st}
+                            onClick={() => onSelectStreet && onSelectStreet(st)}
+                            className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/80 transition-colors"
+                          >
+                            {st}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : feature.streets && feature.streets.length > 0 ? (
         <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
           <span className="text-xs font-semibold text-slate-300">Вулиці цієї зони:</span>
           <div className="flex flex-wrap gap-1.5">
@@ -467,7 +582,7 @@ const DetailsPanelComponent: React.FC<DetailsPanelProps> = ({
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

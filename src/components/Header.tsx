@@ -347,6 +347,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
                         id: d.id,
                         name: d.properties.name,
                         groups: d.properties.primaryGroups,
+                        dominantGroup: d.properties.dominantGroup,
+                        queueBreakdown: d.properties.queueBreakdown,
                         streets: d.properties.keyStreets,
                         center: d.properties.center as [number, number],
                       });
@@ -383,6 +385,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
                         name: z.properties.name,
                         districtName: z.properties.districtName,
                         group: z.properties.group,
+                        groups: z.properties.groups,
+                        queueBreakdown: z.properties.queueBreakdown,
                         streets: z.properties.streets,
                         center: z.properties.center as [number, number],
                       });

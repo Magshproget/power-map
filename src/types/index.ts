@@ -24,11 +24,20 @@ export interface ScheduleData {
   fetchedAt?: string;
 }
 
+export interface QueueBreakdownItem {
+  group: string;
+  count: number;
+  percentage: number;
+  streets: string[];
+}
+
 export interface DistrictProperties {
   id: string;
   name: string;
   center: [number, number];
+  dominantGroup?: string;
   primaryGroups: string[];
+  queueBreakdown?: QueueBreakdownItem[];
   keyStreets: string[];
 }
 
@@ -38,6 +47,8 @@ export interface ZoneProperties {
   districtId: string;
   districtName: string;
   group: string;
+  groups?: string[];
+  queueBreakdown?: QueueBreakdownItem[];
   streets: string[];
   center: [number, number];
 }
@@ -63,6 +74,8 @@ export interface SelectedFeature {
   cityName?: string;
   group?: string;
   groups?: string[];
+  dominantGroup?: string;
+  queueBreakdown?: QueueBreakdownItem[];
   streets?: string[];
   center?: [number, number];
   buildings?: string;

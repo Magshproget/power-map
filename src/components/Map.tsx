@@ -409,6 +409,8 @@ const MapComponent: React.FC<MapProps> = ({
               id: feature.id as string,
               name: dProps.name,
               groups: dProps.primaryGroups,
+              dominantGroup: dProps.dominantGroup,
+              queueBreakdown: dProps.queueBreakdown,
               streets: dProps.keyStreets,
               center: dProps.center,
             });
@@ -489,6 +491,8 @@ const MapComponent: React.FC<MapProps> = ({
               name: zProps.name,
               districtName: zProps.districtName,
               group: zProps.group,
+              groups: zProps.groups,
+              queueBreakdown: zProps.queueBreakdown,
               streets: zProps.streets,
               center: zProps.center,
             });
