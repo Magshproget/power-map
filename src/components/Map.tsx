@@ -566,16 +566,29 @@ const MapComponent: React.FC<MapProps> = ({
             })
           : mapGeo.zones.features;
 
+        const placedCenters: [number, number][] = [];
         for (const feature of features) {
           const zProps = feature.properties;
           if (!zProps.center) continue;
+
+          // Prevent label collisions: ensure badges don't overlap on lower zoom
+          const curZoom = mapInstanceRef.current?.getZoom() ?? INITIAL_ZOOM;
+          const minDist = curZoom >= 13 ? 0.012 : 0.026;
+          const tooClose = placedCenters.some(
+            ([cLat, cLng]) => Math.hypot(cLat - zProps.center[0], cLng - zProps.center[1]) < minDist
+          );
+          if (tooClose && !isAutoMode) continue;
+          placedCenters.push([zProps.center[0], zProps.center[1]]);
+
           const status = computeGroupStatus(zProps.group, sched, h);
           const statusColor = status === 'on' ? '#10b981' : '#ef4444';
+          const shortName = (zProps.districtName || zProps.name).replace(/\s*\(Черга [^)]+\)/, '');
           const labelIcon = L.divIcon({
             className: 'custom-div-icon',
             html: `<div class="zone-label-badge">
               <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
-              <span>Черга ${zProps.group}</span>
+              <span class="font-medium text-slate-100">${shortName}</span>
+              <span class="text-amber-400 font-mono text-[9px] bg-slate-800/80 px-1 py-0.5 rounded">Ч.${zProps.group}</span>
             </div>`,
             iconSize: [0, 0],
             iconAnchor: [0, 0],
@@ -595,7 +608,7 @@ const MapComponent: React.FC<MapProps> = ({
     }
 
     labelDotEntriesRef.current = newEntries;
-  }, [showDistricts, showZones, labelTier, showZoneBadges, layerMode, zonesScopeKey, mapGeo]);
+  }, [showDistricts, showZones, labelTier, showZoneBadges, layerMode, zonesScopeKey, mapGeo, mapViewportVer]);
 
   // 5. Recolor GeoJSON polygons & existing label dots IN PLACE on hour/schedule/selection change
   useEffect(() => {
