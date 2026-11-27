@@ -587,8 +587,8 @@ const MapComponent: React.FC<MapProps> = ({
             className: 'custom-div-icon',
             html: `<div class="zone-label-badge">
               <span class="status-indicator-dot" style="background-color: ${statusColor};"></span>
+              <span class="font-bold text-amber-400 font-mono text-[10px] bg-slate-800/90 px-1 py-0.5 rounded">Ч.${zProps.group}</span>
               <span class="font-medium text-slate-100">${shortName}</span>
-              <span class="text-amber-400 font-mono text-[9px] bg-slate-800/80 px-1 py-0.5 rounded">Ч.${zProps.group}</span>
             </div>`,
             iconSize: [0, 0],
             iconAnchor: [0, 0],

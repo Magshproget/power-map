@@ -6,38 +6,20 @@
       "id": "zone-hal-center",
       "properties": {
         "id": "zone-hal-center",
-        "name": "Старе Місто / Центр (Черга 4.1)",
-        "districtId": "halitskiy",
+        "name": "Черга 1.1 (Старе Місто / Центр)",
+        "areaName": "Старе Місто / Центр",
+        "districtId": "zone-hal-center",
         "districtName": "Старе Місто / Центр",
-        "group": "4.1",
+        "group": "1.1",
         "groups": [
-          "4.1",
-          "2.1",
-          "1.2",
           "1.1"
         ],
-        "streets": [
-          "вул. Банківська",
-          "вул. Дорошенка П.",
-          "вул. Словацького Ю.",
-          "вул. Краківська",
-          "вул. Жижки Яна",
-          "вул. Січових Стрільців",
-          "вул. Шопена Ф.",
-          "вул. Щепкіна М.",
-          "вул. Фредра О.",
-          "вул. Князя Романа",
-          "вул. Галицька",
-          "вул. Тиха",
-          "вул. Стефаника В.",
-          "вул. Фурманська",
-          "вул. Валова"
-        ],
+        "streets": [],
         "center": [
           49.844165000000004,
           24.02696
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -1148,38 +1130,20 @@
       "id": "zone-hal-south",
       "properties": {
         "id": "zone-hal-south",
-        "name": "Цитадель / Снопків (Черга 6.1)",
-        "districtId": "halitskiy",
+        "name": "Черга 1.1 (Цитадель / Снопків)",
+        "areaName": "Цитадель / Снопків",
+        "districtId": "zone-hal-south",
         "districtName": "Цитадель / Снопків",
-        "group": "6.1",
+        "group": "1.1",
         "groups": [
-          "6.1",
-          "2.1",
-          "4.1",
           "1.1"
         ],
-        "streets": [
-          "вул. Опільського Ю.",
-          "вул. Веделя А.",
-          "вул. Федьковича Ю.",
-          "вул. Городоцька",
-          "вул. Терлецького О.",
-          "вул. Франка І.",
-          "вул. Літня",
-          "вул. Дзиндри Є.",
-          "вул. Паркова",
-          "вул. Тютюнників",
-          "вул. Дібровна",
-          "вул. Снопківська",
-          "вул. Кубанська",
-          "вул. Зарицьких",
-          "вул. Турецька"
-        ],
+        "streets": [],
         "center": [
           49.825919999999996,
           24.03014888888889
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -2618,38 +2582,20 @@
       "id": "zone-zal-levandivka",
       "properties": {
         "id": "zone-zal-levandivka",
-        "name": "Левандівка / Білогорща (Черга 1.1)",
-        "districtId": "zaliznichniy",
+        "name": "Черга 1.1 (Левандівка / Білогорща)",
+        "areaName": "Левандівка / Білогорща",
+        "districtId": "zone-zal-levandivka",
         "districtName": "Левандівка / Білогорща",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "2.1",
-          "4.1",
-          "6.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Молдавська Бічна",
-          "вул. Пулюя І.",
-          "вул. Волошина А.",
-          "вул. Томашівського С.",
-          "вул. Ярослава Мудрого",
-          "вул. Наливайка С.",
-          "вул. Широка",
-          "вул. Гайова",
-          "вул. Ожинова",
-          "вул. Ряснянська",
-          "вул. Диктова",
-          "вул. Чугайстра",
-          "вул. Агрусова",
-          "вул. Прихильна",
-          "вул. Бузинова"
-        ],
+        "streets": [],
         "center": [
           49.85109,
           23.92059
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -3154,38 +3100,20 @@
       "id": "zone-zal-liubinska",
       "properties": {
         "id": "zone-zal-liubinska",
-        "name": "Любінська / Виговського (Черга 2.1)",
-        "districtId": "zaliznichniy",
+        "name": "Черга 1.1 (Любінська / Виговського)",
+        "areaName": "Любінська / Виговського",
+        "districtId": "zone-zal-liubinska",
         "districtName": "Любінська / Виговського",
-        "group": "2.1",
+        "group": "1.1",
         "groups": [
-          "2.1",
-          "5.1",
-          "1.1",
-          "6.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Білинського М.",
-          "вул. Любінська",
-          "вул. Журавлина",
-          "вул. Житня",
-          "вул. Вільхова",
-          "вул. Голоско СГК \"Мічурінець-природоперетворювач\"",
-          "вул. Галичанка ДК",
-          "вул. ДК \"Відпочинок- Люкс\"",
-          "вул. Щирецька",
-          "вул. Патона Є.",
-          "вул. Ряшівська",
-          "вул. Дозвільна",
-          "вул. Дрогобицька",
-          "вул. Дальня",
-          "вул. Корсунська"
-        ],
+        "streets": [],
         "center": [
           49.81709731707317,
           23.93153724137931
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -3674,38 +3602,20 @@
       "id": "zone-zal-pryvokzalna",
       "properties": {
         "id": "zone-zal-pryvokzalna",
-        "name": "Привокзальна / Городоцька (Черга 1.1)",
-        "districtId": "zaliznichniy",
+        "name": "Черга 1.1 (Привокзальна / Городоцька)",
+        "areaName": "Привокзальна / Городоцька",
+        "districtId": "zone-zal-pryvokzalna",
         "districtName": "Привокзальна / Городоцька",
         "group": "1.1",
         "groups": [
-          "1.1",
-          "4.1",
-          "5.1",
-          "6.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Молдавська",
-          "вул. Горської А.",
-          "вул. Горбачевського І.",
-          "вул. Житомирська",
-          "вул. Васильківського С.",
-          "вул. Кравченко У.",
-          "вул. Листопадового Чину",
-          "вул. Самчука У.",
-          "вул. Севери І.",
-          "вул. Митрополита Андрея",
-          "вул. Руданського С.",
-          "вул. Котлярська",
-          "вул. Куліша П.",
-          "вул. Технічна",
-          "вул. Матейка Я."
-        ],
+        "streets": [],
         "center": [
           49.82379,
           23.98934
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -4710,38 +4620,20 @@
       "id": "zone-lych-pasichna",
       "properties": {
         "id": "zone-lych-pasichna",
-        "name": "Пасічна / Вашингтона (Черга 6.1)",
-        "districtId": "lychakivskiy",
+        "name": "Черга 1.1 (Пасічна / Вашингтона)",
+        "areaName": "Пасічна / Вашингтона",
+        "districtId": "zone-lych-pasichna",
         "districtName": "Пасічна / Вашингтона",
-        "group": "6.1",
+        "group": "1.1",
         "groups": [
-          "6.1",
-          "4.1",
-          "2.1",
           "1.1"
         ],
-        "streets": [
-          "вул. Бандери С.",
-          "вул. Кримська",
-          "вул. Лесі Українки",
-          "вул. Просвіти",
-          "вул. Букова",
-          "вул. Івасюка В.",
-          "вул. Коротка",
-          "вул. Під Лісом СК",
-          "вул. Будівельник-Сад",
-          "вул. СГК \"Квітка\"",
-          "вул. Медової Печери",
-          "вул. Пасічна",
-          "вул. Лисеницька",
-          "вул. Таджицька",
-          "вул. Голубця М."
-        ],
+        "streets": [],
         "center": [
           49.81698,
           24.102365
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -5713,36 +5605,18 @@
     },
     {
       "type": "Feature",
-      "id": "zone-lych-pohulyanka",
+      "id": "zone-q4-1-pohulyanka",
       "properties": {
-        "id": "zone-lych-pohulyanka",
-        "name": "Погулянка / Личаківська (Черга 4.1)",
-        "districtId": "lychakivskiy",
+        "id": "zone-q4-1-pohulyanka",
+        "name": "Черга 4.1 (Погулянка / Личаківська)",
+        "areaName": "Погулянка / Личаківська",
+        "districtId": "zone-lych-pohulyanka",
         "districtName": "Погулянка / Личаківська",
         "group": "4.1",
         "groups": [
-          "4.1",
-          "2.1",
-          "1.1",
-          "3.1"
+          "4.1"
         ],
-        "streets": [
-          "вул. Левинського І.",
-          "вул. Старицького М.",
-          "вул. Гайворонського М.",
-          "вул. Зерова М.",
-          "вул. Смаль-Стоцького С.",
-          "вул. Драй-Хмари М.",
-          "вул. Сулими І.",
-          "вул. Грабовського П.",
-          "вул. Гребінки Є.",
-          "вул. Мушака Ю.",
-          "вул. Скельна",
-          "вул. Вітовського Д.",
-          "вул. Саксаганського П.",
-          "вул. Нижанківського О.",
-          "вул. Біласа В."
-        ],
+        "streets": [],
         "center": [
           49.8406304974271,
           24.03942
@@ -6680,38 +6554,20 @@
       "id": "zone-lych-trakt",
       "properties": {
         "id": "zone-lych-trakt",
-        "name": "Тракт Глинянський / Кривчиці (Черга 3.1)",
-        "districtId": "lychakivskiy",
+        "name": "Черга 1.1 (Тракт Глинянський / Кривчиці)",
+        "areaName": "Тракт Глинянський / Кривчиці",
+        "districtId": "zone-lych-trakt",
         "districtName": "Тракт Глинянський / Кривчиці",
-        "group": "3.1",
+        "group": "1.1",
         "groups": [
-          "3.1",
-          "1.1",
-          "4.1",
-          "6.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Личаківська",
-          "вул. Мурована",
-          "вул. Піскова",
-          "вул. Польова",
-          "вул. Грушева",
-          "вул. Нафтова",
-          "вул. Горіхова",
-          "вул. Автобусник КСТ",
-          "вул. Галич СК",
-          "вул. Польова Ромашка СК",
-          "вул. Таращанська",
-          "вул. Розкіш",
-          "вул. Балкова",
-          "вул. Старознесенська",
-          "вул. Казахська"
-        ],
+        "streets": [],
         "center": [
           49.856835000000004,
           24.08173
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -7466,38 +7322,20 @@
       "id": "zone-sykh-center",
       "properties": {
         "id": "zone-sykh-center",
-        "name": "Сихів-Центр / Червоної Калини (Черга 6.1)",
-        "districtId": "sykhivskiy",
+        "name": "Черга 1.1 (Сихів-Центр / Червоної Калини)",
+        "areaName": "Сихів-Центр / Червоної Калини",
+        "districtId": "zone-sykh-center",
         "districtName": "Сихів-Центр / Червоної Калини",
-        "group": "6.1",
+        "group": "1.1",
         "groups": [
-          "6.1",
-          "4.1",
-          "2.1",
           "1.1"
         ],
-        "streets": [
-          "вул. Богуна І.",
-          "вул. Грабянки Г.",
-          "вул. Вогник-1 КСТ",
-          "вул. Відпочинок КСТ",
-          "вул. Медик-1",
-          "вул. Голоско КСТ “Ветеран”",
-          "вул. СГК \"Львівський\"",
-          "вул. Голоско СК \"Сокіл\"",
-          "вул. \"Червоної калини\" СГТ",
-          "вул. ДК \"Папоротний\"",
-          "вул. Пролісок",
-          "вул. Проектна",
-          "вул. Хуторівка",
-          "вул. Довженка О.",
-          "вул. Чукаріна В."
-        ],
+        "streets": [],
         "center": [
           49.78689,
           24.07876
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -8412,38 +8250,20 @@
       "id": "zone-sykh-khutorivka",
       "properties": {
         "id": "zone-sykh-khutorivka",
-        "name": "Хуторівка / Козельники (Черга 4.1)",
-        "districtId": "sykhivskiy",
+        "name": "Черга 1.1 (Хуторівка / Козельники)",
+        "areaName": "Хуторівка / Козельники",
+        "districtId": "zone-sykh-khutorivka",
         "districtName": "Хуторівка / Козельники",
-        "group": "4.1",
+        "group": "1.1",
         "groups": [
-          "4.1",
-          "1.1",
-          "2.1",
-          "5.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Мельника А.",
-          "вул. Романицького Б.",
-          "вул. Цегельського Л.",
-          "вул. Сімовича В.",
-          "вул. Перфецького Л.",
-          "вул. Ревуцького Л.",
-          "вул. Піддубного І.",
-          "вул. Пастернака Я.",
-          "вул. Беринди П.",
-          "вул. Курбаса Л.",
-          "вул. Глібова Л.",
-          "вул. Ліста Ф.",
-          "вул. Дудаєва Дж.",
-          "вул. Данилишина Д.",
-          "вул. Озаркевича Є."
-        ],
+        "streets": [],
         "center": [
           49.79507529880952,
           24.021985
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -8938,38 +8758,20 @@
       "id": "zone-frank-south",
       "properties": {
         "id": "zone-frank-south",
-        "name": "Наукова / Стрийська (Черга 3.1)",
-        "districtId": "frankivskiy",
+        "name": "Черга 1.1 (Наукова / Стрийська)",
+        "areaName": "Наукова / Стрийська",
+        "districtId": "zone-frank-south",
         "districtName": "Наукова / Стрийська",
-        "group": "3.1",
+        "group": "1.1",
         "groups": [
-          "3.1",
-          "5.1",
-          "2.1",
-          "6.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Стрийська",
-          "вул. Наукова",
-          "вул. Симоненка В.",
-          "вул. Кульпарківська",
-          "вул. Княгині Ольги",
-          "вул. Рубчака І.",
-          "вул. Музики Я.",
-          "вул. Бойчука М.",
-          "вул. Тролейбусна",
-          "вул. Сокільницька",
-          "вул. Трускавецька",
-          "вул. Янева В.",
-          "вул. Грушевського М.",
-          "вул. Червона Рута садовий кооператив урочище Клепарів",
-          "вул. Червона Калина садовий кооператив урочище Клепарів"
-        ],
+        "streets": [],
         "center": [
           49.79936,
           23.99999090909091
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -9536,38 +9338,20 @@
       "id": "zone-frank-center",
       "properties": {
         "id": "zone-frank-center",
-        "name": "Чупринки / Сахарова (Черга 5.1)",
-        "districtId": "frankivskiy",
+        "name": "Черга 1.1 (Чупринки / Сахарова)",
+        "areaName": "Чупринки / Сахарова",
+        "districtId": "zone-frank-center",
         "districtName": "Чупринки / Сахарова",
-        "group": "5.1",
+        "group": "1.1",
         "groups": [
-          "5.1",
-          "6.1",
-          "1.1",
-          "3.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Балтійська",
-          "вул. Куликівська",
-          "вул. Бойківська",
-          "вул. Природна",
-          "вул. Сонячна",
-          "вул. Гіпсова",
-          "вул. Виноградна",
-          "вул. Холодноярська",
-          "вул. Кишинівська",
-          "вул. Маївського Д.",
-          "вул. Шкрібляків",
-          "вул. Урожайна",
-          "вул. Керамічна",
-          "вул. Сарненська",
-          "вул. Мила"
-        ],
+        "streets": [],
         "center": [
           49.821,
           23.999886468354433
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -9810,38 +9594,20 @@
       "id": "zone-frank-north",
       "properties": {
         "id": "zone-frank-north",
-        "name": "Політехніка / Київська (Черга 5.1)",
-        "districtId": "frankivskiy",
+        "name": "Черга 1.1 (Політехніка / Київська)",
+        "areaName": "Політехніка / Київська",
+        "districtId": "zone-frank-north",
         "districtName": "Політехніка / Київська",
-        "group": "5.1",
+        "group": "1.1",
         "groups": [
-          "5.1",
-          "1.1",
-          "4.1",
-          "2.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Київська",
-          "вул. Глибока",
-          "вул. Новий Світ",
-          "вул. Японська",
-          "вул. Проста",
-          "вул. Коновальця Є.",
-          "вул. Кастелівка",
-          "вул. Моршинська",
-          "вул. Метрологічна",
-          "вул. Політехнічна",
-          "вул. Захарієвича Ю.",
-          "вул. Зигзаг",
-          "вул. Рівна",
-          "вул. Перемиська",
-          "вул. Квітнева"
-        ],
+        "streets": [],
         "center": [
           49.83206,
           23.996175
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -10544,38 +10310,20 @@
       "id": "zone-shev-riasne",
       "properties": {
         "id": "zone-shev-riasne",
-        "name": "Рясне-1 та Рясне-2 (Черга 4.1)",
-        "districtId": "shevchenkivskiy",
+        "name": "Черга 1.1 (Рясне-1 та Рясне-2)",
+        "areaName": "Рясне-1 та Рясне-2",
+        "districtId": "zone-shev-riasne",
         "districtName": "Рясне-1 та Рясне-2",
-        "group": "4.1",
+        "group": "1.1",
         "groups": [
-          "4.1",
-          "2.1",
-          "1.1",
-          "4.2"
+          "1.1"
         ],
-        "streets": [
-          "вул. Труша І.",
-          "вул. Медова",
-          "вул. Під Дубом",
-          "вул. Насипна",
-          "вул. Величковського І.",
-          "вул. Локомотивець-1 СК",
-          "вул. Голоско КСТ \"Голоско-фтизіатр\"",
-          "вул. Прилбицька",
-          "вул. Мічурінець СК",
-          "вул. СК \"Під дубом\"",
-          "вул. Над Ставом",
-          "вул. Голоско СТ \"Самоцвіти\"",
-          "вул. Робсона П.",
-          "вул. Зимновідська",
-          "вул. Нафтовик"
-        ],
+        "streets": [],
         "center": [
           49.88711,
           23.929025000000003
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -11074,38 +10822,20 @@
       "id": "zone-shev-chornovola",
       "properties": {
         "id": "zone-shev-chornovola",
-        "name": "Чорновола / Варшавська (Черга 4.1)",
-        "districtId": "shevchenkivskiy",
+        "name": "Черга 1.1 (Чорновола / Варшавська)",
+        "areaName": "Чорновола / Варшавська",
+        "districtId": "zone-shev-chornovola",
         "districtName": "Чорновола / Варшавська",
-        "group": "4.1",
+        "group": "1.1",
         "groups": [
-          "4.1",
-          "3.1",
-          "1.1",
-          "5.1"
+          "1.1"
         ],
-        "streets": [
-          "вул. Боберського І.",
-          "вул. Паращука М.",
-          "вул. Барвінок Г.",
-          "вул. Костюшка Т.",
-          "вул. Менцинського М.",
-          "вул. Шевченка Т.",
-          "вул. Замарстинівська",
-          "вул. Мулярська",
-          "вул. Цехова",
-          "вул. Вагова",
-          "вул. Стара",
-          "вул. Лазнева",
-          "вул. Староміська",
-          "вул. Зернова",
-          "вул. Сянська"
-        ],
+        "streets": [],
         "center": [
           49.885374999999996,
           23.995
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -12340,38 +12070,20 @@
       "id": "zone-shev-topolna",
       "properties": {
         "id": "zone-shev-topolna",
-        "name": "Топольна / Мазепи (Черга 3.1)",
-        "districtId": "shevchenkivskiy",
+        "name": "Черга 1.1 (Топольна / Мазепи)",
+        "areaName": "Топольна / Мазепи",
+        "districtId": "zone-shev-topolna",
         "districtName": "Топольна / Мазепи",
-        "group": "3.1",
+        "group": "1.1",
         "groups": [
-          "3.1",
-          "4.1",
-          "6.1",
           "1.1"
         ],
-        "streets": [
-          "вул. Хмельницького Б.",
-          "вул. Замкова",
-          "вул. Кривоноса М.",
-          "вул. Архипенка О.",
-          "вул. Рутковича І.",
-          "вул. Вічева",
-          "вул. Григоровича І.",
-          "вул. Татарська",
-          "вул. Папарівка",
-          "вул. Княжа",
-          "вул. Мосяжна",
-          "вул. Князя Лева",
-          "вул. Чорноморська",
-          "вул. Ужгородська",
-          "вул. Підгірна"
-        ],
+        "streets": [],
         "center": [
           49.87326254790823,
           24.047985
         ],
-        "isSubdistrict": true
+        "isSubdistrict": false
       },
       "geometry": {
         "type": "Polygon",
@@ -13150,7 +12862,8 @@
       "id": "vynnyky",
       "properties": {
         "id": "vynnyky",
-        "name": "Винники (Черга 5.1)",
+        "name": "Черга 5.1 (Винники)",
+        "areaName": "Винники",
         "districtId": "vynnyky",
         "districtName": "Винники",
         "group": "5.1",
@@ -14099,7 +13812,8 @@
       "id": "briukhovychi",
       "properties": {
         "id": "briukhovychi",
-        "name": "Брюховичі (Черга 2.1)",
+        "name": "Черга 2.1 (Брюховичі)",
+        "areaName": "Брюховичі",
         "districtId": "briukhovychi",
         "districtName": "Брюховичі",
         "group": "2.1",
@@ -14960,7 +14674,8 @@
       "id": "rudne",
       "properties": {
         "id": "rudne",
-        "name": "Рудне (Черга 1.1)",
+        "name": "Черга 1.1 (Рудне)",
+        "areaName": "Рудне",
         "districtId": "rudne",
         "districtName": "Рудне",
         "group": "1.1",
@@ -15302,7 +15017,8 @@
       "id": "ryasne_ruske",
       "properties": {
         "id": "ryasne_ruske",
-        "name": "Рясне-Руське (Черга 4.1)",
+        "name": "Черга 4.1 (Рясне-Руське)",
+        "areaName": "Рясне-Руське",
         "districtId": "ryasne_ruske",
         "districtName": "Рясне-Руське",
         "group": "4.1",
@@ -15844,7 +15560,8 @@
       "id": "malehiv",
       "properties": {
         "id": "malehiv",
-        "name": "Малехів (Черга 1.1)",
+        "name": "Черга 1.1 (Малехів)",
+        "areaName": "Малехів",
         "districtId": "malehiv",
         "districtName": "Малехів",
         "group": "1.1",
@@ -16244,7 +15961,8 @@
       "id": "dublyany",
       "properties": {
         "id": "dublyany",
-        "name": "Дубляни (Черга 1.1)",
+        "name": "Черга 1.1 (Дубляни)",
+        "areaName": "Дубляни",
         "districtId": "dublyany",
         "districtName": "Дубляни",
         "group": "1.1",
@@ -16530,7 +16248,8 @@
       "id": "sokilnyky",
       "properties": {
         "id": "sokilnyky",
-        "name": "Сокільники (Черга 3.1)",
+        "name": "Черга 3.1 (Сокільники)",
+        "areaName": "Сокільники",
         "districtId": "sokilnyky",
         "districtName": "Сокільники",
         "group": "3.1",
@@ -17208,7 +16927,8 @@
       "id": "zymna_voda",
       "properties": {
         "id": "zymna_voda",
-        "name": "Зимна Вода (Черга 4.2)",
+        "name": "Черга 4.2 (Зимна Вода)",
+        "areaName": "Зимна Вода",
         "districtId": "zymna_voda",
         "districtName": "Зимна Вода",
         "group": "4.2",
@@ -17734,7 +17454,8 @@
       "id": "zubra",
       "properties": {
         "id": "zubra",
-        "name": "Зубра (Черга 4.1)",
+        "name": "Черга 4.1 (Зубра)",
+        "areaName": "Зубра",
         "districtId": "zubra",
         "districtName": "Зубра",
         "group": "4.1",
@@ -18335,7 +18056,8 @@
       "id": "solonka",
       "properties": {
         "id": "solonka",
-        "name": "Солонка (Черга 4.1)",
+        "name": "Черга 4.1 (Солонка)",
+        "areaName": "Солонка",
         "districtId": "solonka",
         "districtName": "Солонка",
         "group": "4.1",
@@ -19045,7 +18767,8 @@
       "id": "pasiky_zubrytski",
       "properties": {
         "id": "pasiky_zubrytski",
-        "name": "Пасіки-Зубрицькі (Черга 5.1)",
+        "name": "Черга 5.1 (Пасіки-Зубрицькі)",
+        "areaName": "Пасіки-Зубрицькі",
         "districtId": "pasiky_zubrytski",
         "districtName": "Пасіки-Зубрицькі",
         "group": "5.1",
@@ -19375,7 +19098,8 @@
       "id": "davidiv",
       "properties": {
         "id": "davidiv",
-        "name": "Давидів (Черга 2.1)",
+        "name": "Черга 2.1 (Давидів)",
+        "areaName": "Давидів",
         "districtId": "davidiv",
         "districtName": "Давидів",
         "group": "2.1",
@@ -19718,7 +19442,8 @@
       "id": "lapayivka",
       "properties": {
         "id": "lapayivka",
-        "name": "Лапаївка (Черга 4.2)",
+        "name": "Черга 4.2 (Лапаївка)",
+        "areaName": "Лапаївка",
         "districtId": "lapayivka",
         "districtName": "Лапаївка",
         "group": "4.2",
@@ -20278,7 +20003,8 @@
       "id": "kholodnovidka",
       "properties": {
         "id": "kholodnovidka",
-        "name": "Холодновідка (Черга 4.2)",
+        "name": "Черга 4.2 (Холодновідка)",
+        "areaName": "Холодновідка",
         "districtId": "kholodnovidka",
         "districtName": "Холодновідка",
         "group": "4.2",
@@ -20861,7 +20587,8 @@
       "id": "sukhovolia",
       "properties": {
         "id": "sukhovolia",
-        "name": "Суховоля (Черга 3.2)",
+        "name": "Черга 3.2 (Суховоля)",
+        "areaName": "Суховоля",
         "districtId": "sukhovolia",
         "districtName": "Суховоля",
         "group": "3.2",
@@ -21479,7 +21206,8 @@
       "id": "lysynychi",
       "properties": {
         "id": "lysynychi",
-        "name": "Лисиничі (Черга 5.1)",
+        "name": "Черга 5.1 (Лисиничі)",
+        "areaName": "Лисиничі",
         "districtId": "lysynychi",
         "districtName": "Лисиничі",
         "group": "5.1",
@@ -21969,7 +21697,8 @@
       "id": "pidbirtsi",
       "properties": {
         "id": "pidbirtsi",
-        "name": "Підбірці (Черга 5.1)",
+        "name": "Черга 5.1 (Підбірці)",
+        "areaName": "Підбірці",
         "districtId": "pidbirtsi",
         "districtName": "Підбірці",
         "group": "5.1",
@@ -22263,7 +21992,8 @@
       "id": "murovane",
       "properties": {
         "id": "murovane",
-        "name": "Муроване (Черга 6.1)",
+        "name": "Черга 6.1 (Муроване)",
+        "areaName": "Муроване",
         "districtId": "murovane",
         "districtName": "Муроване",
         "group": "6.1",
@@ -22700,7 +22430,8 @@
       "id": "hrybovychi",
       "properties": {
         "id": "hrybovychi",
-        "name": "Великі Грибовичі (Черга 1.1)",
+        "name": "Черга 1.1 (Великі Грибовичі)",
+        "areaName": "Великі Грибовичі",
         "districtId": "hrybovychi",
         "districtName": "Великі Грибовичі",
         "group": "1.1",
@@ -22953,7 +22684,8 @@
       "id": "pustomyty",
       "properties": {
         "id": "pustomyty",
-        "name": "Пустомити (Черга 6.1)",
+        "name": "Черга 6.1 (Пустомити)",
+        "areaName": "Пустомити",
         "districtId": "pustomyty",
         "districtName": "Пустомити",
         "group": "6.1",
@@ -23843,7 +23575,8 @@
       "id": "obroshyne",
       "properties": {
         "id": "obroshyne",
-        "name": "Оброшине (Черга 3.2)",
+        "name": "Черга 3.2 (Оброшине)",
+        "areaName": "Оброшине",
         "districtId": "obroshyne",
         "districtName": "Оброшине",
         "group": "3.2",
@@ -24300,7 +24033,8 @@
       "id": "konopnytsya",
       "properties": {
         "id": "konopnytsya",
-        "name": "Конопниця (Черга 1.1)",
+        "name": "Черга 1.1 (Конопниця)",
+        "areaName": "Конопниця",
         "districtId": "konopnytsya",
         "districtName": "Конопниця",
         "group": "1.1",
@@ -24657,7 +24391,8 @@
       "id": "bartativ",
       "properties": {
         "id": "bartativ",
-        "name": "Бартатів (Черга 1.1)",
+        "name": "Черга 1.1 (Бартатів)",
+        "areaName": "Бартатів",
         "districtId": "bartativ",
         "districtName": "Бартатів",
         "group": "1.1",
@@ -25062,7 +24797,8 @@
       "id": "stavchany",
       "properties": {
         "id": "stavchany",
-        "name": "Ставчани (Черга 3.2)",
+        "name": "Черга 3.2 (Ставчани)",
+        "areaName": "Ставчани",
         "districtId": "stavchany",
         "districtName": "Ставчани",
         "group": "3.2",
@@ -25843,7 +25579,8 @@
       "id": "navariya",
       "properties": {
         "id": "navariya",
-        "name": "Наварія (Черга 6.1)",
+        "name": "Черга 6.1 (Наварія)",
+        "areaName": "Наварія",
         "districtId": "navariya",
         "districtName": "Наварія",
         "group": "6.1",
@@ -26309,7 +26046,8 @@
       "id": "malechkovychi",
       "properties": {
         "id": "malechkovychi",
-        "name": "Малечковичі (Черга 3.1)",
+        "name": "Черга 3.1 (Малечковичі)",
+        "areaName": "Малечковичі",
         "districtId": "malechkovychi",
         "districtName": "Малечковичі",
         "group": "3.1",
@@ -26670,7 +26408,8 @@
       "id": "shchyrets",
       "properties": {
         "id": "shchyrets",
-        "name": "Щирець (Черга 3.1)",
+        "name": "Черга 3.1 (Щирець)",
+        "areaName": "Щирець",
         "districtId": "shchyrets",
         "districtName": "Щирець",
         "group": "3.1",
@@ -27140,7 +26879,8 @@
       "id": "kovyari",
       "properties": {
         "id": "kovyari",
-        "name": "Ков’ярі (Черга 1.2)",
+        "name": "Черга 1.2 (Ков’ярі)",
+        "areaName": "Ков’ярі",
         "districtId": "kovyari",
         "districtName": "Ков’ярі",
         "group": "1.2",
@@ -27288,7 +27028,8 @@
       "id": "chyshky",
       "properties": {
         "id": "chyshky",
-        "name": "Чишки (Черга 2.1)",
+        "name": "Черга 2.1 (Чишки)",
+        "areaName": "Чишки",
         "districtId": "chyshky",
         "districtName": "Чишки",
         "group": "2.1",
@@ -27798,7 +27539,8 @@
       "id": "vynnychky",
       "properties": {
         "id": "vynnychky",
-        "name": "Виннички (Черга 2.1)",
+        "name": "Черга 2.1 (Виннички)",
+        "areaName": "Виннички",
         "districtId": "vynnychky",
         "districtName": "Виннички",
         "group": "2.1",
@@ -28122,7 +27864,8 @@
       "id": "soroky_lvivski",
       "properties": {
         "id": "soroky_lvivski",
-        "name": "Сороки-Львівські (Черга 4.1)",
+        "name": "Черга 4.1 (Сороки-Львівські)",
+        "areaName": "Сороки-Львівські",
         "districtId": "soroky_lvivski",
         "districtName": "Сороки-Львівські",
         "group": "4.1",
@@ -28484,7 +28227,8 @@
       "id": "hamaliivka",
       "properties": {
         "id": "hamaliivka",
-        "name": "Гамаліївка (Черга 2.2)",
+        "name": "Черга 2.2 (Гамаліївка)",
+        "areaName": "Гамаліївка",
         "districtId": "hamaliivka",
         "districtName": "Гамаліївка",
         "group": "2.2",
@@ -28620,7 +28364,8 @@
       "id": "zapytiv",
       "properties": {
         "id": "zapytiv",
-        "name": "Запитів (Черга 2.2)",
+        "name": "Черга 2.2 (Запитів)",
+        "areaName": "Запитів",
         "districtId": "zapytiv",
         "districtName": "Запитів",
         "group": "2.2",
@@ -28879,7 +28624,8 @@
       "id": "yampil",
       "properties": {
         "id": "yampil",
-        "name": "Ямпіль (Черга 4.2)",
+        "name": "Черга 4.2 (Ямпіль)",
+        "areaName": "Ямпіль",
         "districtId": "yampil",
         "districtName": "Ямпіль",
         "group": "4.2",
@@ -29136,7 +28882,8 @@
       "id": "zbyranka",
       "properties": {
         "id": "zbyranka",
-        "name": "Збиранка (Черга 1.1)",
+        "name": "Черга 1.1 (Збиранка)",
+        "areaName": "Збиранка",
         "districtId": "zbyranka",
         "districtName": "Збиранка",
         "group": "1.1",
@@ -29512,7 +29259,8 @@
       "id": "kulykiv",
       "properties": {
         "id": "kulykiv",
-        "name": "Куликів (Черга 1.1)",
+        "name": "Черга 1.1 (Куликів)",
+        "areaName": "Куликів",
         "districtId": "kulykiv",
         "districtName": "Куликів",
         "group": "1.1",
@@ -29886,7 +29634,8 @@
       "id": "borky",
       "properties": {
         "id": "borky",
-        "name": "Бірки (Черга 1.1)",
+        "name": "Черга 1.1 (Бірки)",
+        "areaName": "Бірки",
         "districtId": "borky",
         "districtName": "Бірки",
         "group": "1.1",
@@ -30241,7 +29990,8 @@
       "id": "sknyliv",
       "properties": {
         "id": "sknyliv",
-        "name": "Скнилів (Черга 4.2)",
+        "name": "Черга 4.2 (Скнилів)",
+        "areaName": "Скнилів",
         "districtId": "sknyliv",
         "districtName": "Скнилів",
         "group": "4.2",
@@ -30981,7 +30731,8 @@
       "id": "lypnyky",
       "properties": {
         "id": "lypnyky",
-        "name": "Липники (Черга 1.2)",
+        "name": "Черга 1.2 (Липники)",
+        "areaName": "Липники",
         "districtId": "lypnyky",
         "districtName": "Липники",
         "group": "1.2",
